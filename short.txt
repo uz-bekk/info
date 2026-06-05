@@ -1,0 +1,16 @@
+1. baholar_jadvali.xlsx "1. Vazifa: 15 ta o‘quvchi, 5 ta fan bo‘yicha o‘rtacha baholarni hisoblovchi jadval
+yarating."
+2.kutubxona.xlsx "6. Vazifa: Kitoblar, a’zolar va ijara ma’lumotlarini boshqarish."
+3.sport_reyting.xlsx "4. Vazifa: 10 ta sportchi, 5 ta sport turi bo‘yicha reyting jadvali"
+4.kitob_katalogi.xlsx "3. Vazifa: 50 ta kitob katalogini boshqaruvchi jadval."
+5.savdo_hisoboti_30_kun.xlsx "2.Vazifa: 30 kunlik savdo hisobotini tahlil qilish"
+6.talabalar_yotoqxona.xlsx "5. Vazifa: Talabalar va ularning yotoqxona xonalari ma’lumotlar bazasi."
+7. Calc.HTML "1. 4 ta asosiy arifmetik amalni bajaruvchi kalkulyator yaratish."
+8.Currency.HTML "3. O'zbek so'midan AQSH dollari, Yevro va Rubllarga konvertatsiyasini amalga
+oshiruvchi dastur tuzish."
+9.app.HTML "2. Selsiy, Farengeyt va Kelvin o'rtasida harorat konvertatsiyasini amalga oshiruvchi
+dastur tuzish."
+10.shkala_transformatsiya.HTML "2. Selsiy, Farengeyt va Kelvin o'rtasida harorat konvertatsiyasini amalga oshiruvchi
+dastur tuzish."
+11.temperatura.HTML "2. Selsiy, Farengeyt va Kelvin o'rtasida harorat konvertatsiyasini amalga oshiruvchi
+dastur tuzish."
