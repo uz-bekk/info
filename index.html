@@ -192,41 +192,88 @@ button:hover{
     font-weight:bold;
 }
 
+:root{
+    --accent:#00ff66;
+    --console-h:160px;
+}
+
 .console{
     position:fixed;
     left:0;
     right:0;
     bottom:0;
+
+    height:var(--console-h);
     background:#050505;
     border-top:1px solid rgba(0,255,102,.35);
-    height:260px;
+
     display:flex;
-    flex-direction:column;
+    gap:10px;
+
+    padding:8px;
     z-index:100;
 }
 
-.console-header{
-    padding:10px;
-    color:var(--accent);
-    border-bottom:1px solid rgba(0,255,102,.2);
-}
-
+/* LEFT PANEL (logs) */
 .console-log{
-    flex:1;
+    flex:2;
     overflow:auto;
-    padding:10px;
-    font-size:12px;
+    font-size:11px;
     color:#9cffbc;
+
+    border:1px solid rgba(0,255,102,.15);
+    padding:6px;
 }
 
+/* RIGHT PANEL (tools) */
 .console-tools{
-    padding:10px;
-    border-top:1px solid rgba(0,255,102,.2);
+    flex:1;
+    display:flex;
+    flex-direction:column;
+    gap:6px;
+
+    border:1px solid rgba(0,255,102,.15);
+    padding:6px;
 }
 
+/* header small */
+.console-header{
+    position:absolute;
+    top:-18px;
+    left:10px;
+    font-size:10px;
+    color:var(--accent);
+}
+
+/* input smaller */
 .console-tools .row{
     display:flex;
-    gap:10px;
+    flex-direction:column;
+    gap:5px;
+}
+
+input{
+    font-size:11px;
+    padding:4px;
+}
+
+button{
+    font-size:11px;
+    padding:4px;
+}
+
+#hashResult{
+    font-size:11px;
+    color:#7cff7c;
+    word-break:break-all;
+}
+
+/* mobile stack */
+@media(max-width:600px){
+    .console{
+        flex-direction:column;
+        height:220px;
+    }
 }
 
 #hashResult{
@@ -237,7 +284,7 @@ button:hover{
 }
 
 .spacer{
-    height:280px;
+    height:40px;
 }
 
 @media(max-width:600px){
@@ -246,11 +293,11 @@ button:hover{
     }
 
     .console{
-        height:300px;
+        height:280px;
     }
 
     .console-tools .row{
-        flex-direction:column;
+        flex-direction:row;
     }
 }
 </style>
@@ -368,18 +415,24 @@ async function loadDescriptions(){
 
         const text = await response.text();
 
-        const lines = text.split("\n");
+        const lines = text.split(/\r?\n/);
 
         for(const line of lines){
 
             const cleaned = line.trim();
-
             if(!cleaned) continue;
 
-            const match = cleaned.match(/^\d+\.\s+(\S+)\s+(.*)$/);
+            // FIXED REGEX:
+            // supports:
+            // 1. name "text"
+            // 2.name "text"
+            const match = cleaned.match(/^\d+\.\s*([^\s]+)\s+"([\s\S]+)"/);
 
             if(match){
-                descriptions[match[1]] = match[2];
+                const file = match[1].trim();
+                const desc = match[2].replace(/\s+/g, " ").trim();
+
+                descriptions[file] = desc;
             }
         }
 
@@ -428,14 +481,15 @@ function createFileCard(file){
 
     return `
         <div class="file-card">
-            <div class="file-name">${file.name}</div>
-            <div class="file-desc">${desc}</div>
-            <a class="download-btn"
-               href="${file.download_url}"
-               target="_blank">
-               Download
-            </a>
-        </div>
+    <div class="file-name">${file.name}</div>
+    <div class="file-desc">${desc}</div>
+
+    <a class="download-btn"
+       href="${file.download_url}"
+       download="${file.name}">
+       Download
+    </a>
+</div>
     `;
 }
 
