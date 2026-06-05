@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Harorat O'zgartiruvchi</title>
+
+<style>
+body{
+    margin:0;
+    font-family:Arial;
+    background:#0f172a;
+    color:white;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    height:100vh;
+}
+
+.wrapper{
+    display:flex;
+    gap:50px;
+    align-items:right;
+}
+
+/* THERMOMETER */
+#termometer{
+    width:40px;
+    height:380px;
+    background:#2a2a2e;
+    border-radius:20px;
+    position:relative;
+    border:5px solid #111;
+}
+
+#fill{
+    position:absolute;
+    bottom:0;
+    width:100%;
+    height:0%;
+    background:linear-gradient(#ef4444, #f97316, #38bdf8);
+    border-radius:20px;
+}
+
+/* PANEL */
+.panel{
+    width:220px;
+}
+
+input, select{
+    width:100%;
+    padding:10px;
+    margin-top:10px;
+    border-radius:8px;
+    border:none;
+}
+
+.result{
+    margin-top:15px;
+    background:rgba(255,255,255,0.08);
+    padding:10px;
+    border-radius:10px;
+}
+
+.emoji{
+    font-size:180px;
+    text-align:center;
+    margin-top:10px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="wrapper">
+
+    <!-- THERMOMETER -->
+    <div id="termometer">
+        <div id="fill"></div>
+    </div>
+
+    <!-- CONVERTER -->
+    <div class="panel">
+
+        <input id="inputTemp" type="number" placeholder="Haroratni kiriting">
+
+        <select id="unit">
+            <option value="C">Selsiy</option>
+            <option value="F">Farengeyt</option>
+            <option value="K">Kelvin</option>
+        </select>
+
+        <div class="result" id="result"></div>
+
+        <div class="emoji" id="emoji">🙂</div>
+
+    </div>
+
+</div>
+
+<script>
+
+const input = document.getElementById("inputTemp");
+const unit = document.getElementById("unit");
+const fill = document.getElementById("fill");
+const result = document.getElementById("result");
+const emoji = document.getElementById("emoji");
+
+/* 🔥 REAL CONVERSION ENGINE */
+function toCelsius(value, unit){
+    if(unit === "C") return value;
+    if(unit === "F") return (value - 32) * 5/9;
+    if(unit === "K") return value - 273.15;
+}
+
+function update(){
+
+    let val = parseFloat(input.value);
+    let u = unit.value;
+
+    if(isNaN(val)) return;
+
+    let celsius = toCelsius(val, u);
+
+    // convert ALL
+    let f = celsius * 9/5 + 32;
+    let k = celsius + 273.15;
+
+    result.innerHTML = `
+       Selsiy: ${celsius.toFixed(2)}°C<br>
+        Farengeyt: ${f.toFixed(2)}°F<br>
+        Kelvin: ${k.toFixed(2)}K
+    `;
+
+    /* THERMOMETER (based ONLY on Celsius) */
+    let percent = (celsius + 20) / 70 * 100;
+    percent = Math.max(0, Math.min(100, percent));
+
+    fill.style.height = percent + "%";
+
+    /* emoji reaction */
+    if(celsius <= 0) emoji.textContent = "🥶";
+    else if(celsius <= 15) emoji.textContent = "😐";
+    else if(celsius <= 30) emoji.textContent = "🙂";
+    else if(celsius <= 40) emoji.textContent = "😎";
+    else emoji.textContent = "🔥";
+}
+
+input.addEventListener("input", update);
+unit.addEventListener("change", update);
+
+</script>
+
+</body>
+</html>

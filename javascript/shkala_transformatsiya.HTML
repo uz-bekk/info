@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Auto Currency Converter</title>
+
+<style>
+body {
+    font-family: Arial;
+    background: #0f172a;
+    color: white;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    min-height:100vh;
+    margin:0;
+}
+
+.container {
+    width: 400px;
+    background: rgba(255,255,255,0.08);
+    padding: 25px;
+    border-radius: 16px;
+    backdrop-filter: blur(10px);
+}
+
+h2 {
+    text-align:center;
+}
+
+input, select {
+    width:100%;
+    padding:12px;
+    margin-top:10px;
+    border-radius:8px;
+    border:none;
+    box-sizing:border-box;
+}
+
+input {
+    background:white;
+}
+
+select {
+    background:white;
+}
+
+#result, #rateInfo {
+    margin-top:15px;
+    padding:12px;
+    background: rgba(255,255,255,0.08);
+    border-radius:10px;
+    line-height:1.6;
+    font-size:14px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+    <h2>💱 Auto Converter</h2>
+
+    <input type="number" id="amount" placeholder="Miqdor kiriting">
+
+    <select id="from">
+        <option value="USD">USD</option>
+        <option value="UZS">UZS</option>
+        <option value="EUR">EUR</option>
+        <option value="RUB">RUB</option>
+    </select>
+
+    <div id="result">Natija shu yerda chiqadi</div>
+
+    <div id="rateInfo">API data...</div>
+</div>
+
+<script>
+
+const amountInput = document.getElementById("amount");
+const fromSelect = document.getElementById("from");
+
+amountInput.addEventListener("input", convert);
+fromSelect.addEventListener("change", convert);
+
+async function convert() {
+
+    const amount = parseFloat(amountInput.value);
+    const from = fromSelect.value;
+
+    if (!amount || isNaN(amount)) return;
+
+    const response = await fetch(
+        `https://v6.exchangerate-api.com/v6/b99b5219f17e0caed9af2a30/latest/${from}`
+    );
+
+    const data = await response.json();
+    const rates = data.conversion_rates;
+
+    document.getElementById("result").innerHTML = `
+        <strong>Converted:</strong><br>
+        UZS: ${(amount * rates.UZS).toFixed(2)}<br>
+        USD: ${(amount * rates.USD).toFixed(2)}<br>
+        EUR: ${(amount * rates.EUR).toFixed(2)}<br>
+        RUB: ${(amount * rates.RUB).toFixed(2)}
+    `;
+
+    document.getElementById("rateInfo").innerHTML = `
+        <strong>Base:</strong> ${from}<br>
+        1 ${from} = ${rates.UZS.toFixed(2)} UZS<br>
+        1 ${from} = ${rates.USD.toFixed(2)} USD<br>
+        1 ${from} = ${rates.EUR.toFixed(2)} EUR<br>
+        1 ${from} = ${rates.RUB.toFixed(2)} RUB<br>
+        <small>${data.time_last_update_utc}</small>
+    `;
+}
+
+</script>
+
+</body>
+</html>

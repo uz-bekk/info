@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Smart Multi Currency Cache</title>
+
+<style>
+body{
+    font-family: Arial;
+    background:#0f172a;
+    color:white;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    min-height:100vh;
+    margin:0;
+}
+
+.container{
+    width:400px;
+    background:rgba(255,255,255,0.08);
+    padding:25px;
+    border-radius:16px;
+}
+
+h2{text-align:center;}
+
+input,select{
+    width:100%;
+    padding:12px;
+    margin-top:10px;
+    border-radius:8px;
+    border:none;
+    box-sizing:border-box;
+}
+
+input{background:white;}
+select{background:white;}
+
+.card{
+    margin-top:15px;
+    padding:12px;
+    background:rgba(255,255,255,0.08);
+    border-radius:10px;
+    line-height:1.6;
+}
+
+small{opacity:0.7;}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+    <h2>⚡ Smart Cache Converter</h2>
+
+    <input type="number" id="amount" placeholder="Miqdor">
+
+    <select id="from"></select>
+
+    <div id="result" class="card">Loading rates...</div>
+</div>
+
+<script>
+
+let ratesCache = {};
+const currencies = ["USD","UZS","EUR","RUB"];
+
+// 1️⃣ LOAD ONLY ONCE
+async function init() {
+
+    const res = await fetch(
+        "https://v6.exchangerate-api.com/v6/b99b5219f17e0caed9af2a30/latest/USD"
+    );
+
+    const data = await res.json();
+
+    ratesCache = data.conversion_rates;
+
+    // build dropdown dynamically
+    const select = document.getElementById("from");
+    select.innerHTML = currencies.map(c =>
+        `<option value="${c}">${c}</option>`
+    ).join("");
+
+    document.getElementById("result").innerHTML =
+        "Rates loaded ✔ Start typing...";
+
+    convert();
+}
+
+// 2️⃣ PURE LOCAL CALCULATION (NO API)
+function convert() {
+
+    const amount = parseFloat(document.getElementById("amount").value);
+    const from = document.getElementById("from").value;
+
+    if (!amount || !ratesCache[from]) return;
+
+    const baseUSD = amount / ratesCache[from];
+
+    let html = `<strong>Converted from ${from}</strong><br><br>`;
+
+    currencies.forEach(to => {
+        const value = baseUSD * ratesCache[to];
+        html += `${to}: ${value.toFixed(2)}<br>`;
+    });
+
+    html += `<br><small>⚡ Cached rates (no API calls)</small>`;
+
+    document.getElementById("result").innerHTML = html;
+}
+
+// events
+document.getElementById("amount").addEventListener("input", convert);
+document.getElementById("from").addEventListener("change", convert);
+
+init();
+
+</script>
+
+</body>
+</html>

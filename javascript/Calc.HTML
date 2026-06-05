@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Matrix Neon Calculator</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    overflow:hidden;
+    height:100vh;
+    background:black;
+    font-family:Consolas, monospace;
+}
+
+/* FULLSCREEN MATRIX */
+canvas{
+    position:fixed;
+    inset:0;
+    width:100%;
+    height:100%;
+    z-index:-1;
+}
+
+/* CALCULATOR WINDOW */
+.container{
+    position:absolute;
+    top:120px;
+    left:120px;
+
+    width:360px;
+
+    padding:15px;
+
+    border-radius:18px;
+
+    background:rgba(0,20,0,0.85);
+
+    border:2px solid #00ff66;
+
+    backdrop-filter:blur(8px);
+
+    box-shadow:
+        0 0 15px #00ff66,
+        0 0 40px rgba(0,255,100,0.4);
+}
+
+/* DRAG BAR */
+.drag-bar{
+    height:45px;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    margin-bottom:15px;
+
+    border-radius:12px;
+
+    background:#001500;
+
+    color:#00ff66;
+
+    font-size:20px;
+    font-weight:bold;
+    letter-spacing:2px;
+
+    cursor:move;
+
+    user-select:none;
+
+    box-shadow:
+        inset 0 0 10px rgba(0,255,100,0.25);
+}
+
+/* DISPLAY */
+#result{
+    width:100%;
+    height:70px;
+
+    margin-bottom:15px;
+
+    border:none;
+    outline:none;
+
+    border-radius:12px;
+
+    padding:15px;
+
+    text-align:right;
+
+    font-size:28px;
+
+    background:#001000;
+    color:#00ff66;
+
+    box-shadow:
+        inset 0 0 12px #00ff66,
+        0 0 10px rgba(0,255,100,0.3);
+}
+
+/* TABLE */
+table{
+    width:100%;
+    table-layout:fixed;
+    border-spacing:10px;
+}
+
+td{
+    width:25%;
+    height:70px;
+}
+
+/* BUTTONS */
+.calc-btn{
+    width:100%;
+    height:100%;
+
+    border:none;
+    border-radius:12px;
+
+    background:#001f00;
+    color:#00ff66;
+
+    font-size:22px;
+    font-weight:bold;
+
+    cursor:pointer;
+
+    transition:0.1s;
+
+    box-shadow:
+        0 0 8px rgba(0,255,100,0.4),
+        inset 0 0 6px rgba(0,255,100,0.2);
+}
+
+.calc-btn:hover{
+    background:#00ff66;
+    color:black;
+
+    transform:scale(1.04);
+
+    box-shadow:
+        0 0 20px #00ff66;
+}
+
+/* PRESSED EFFECT */
+.calc-btn.active{
+    background:#00ff66 !important;
+    color:black !important;
+
+    transform:scale(0.92);
+
+    box-shadow:
+        0 0 25px #00ff66,
+        inset 0 0 20px white;
+}
+
+.operator{
+    background:#003000;
+}
+
+.equal{
+    background:#00ff66;
+    color:black;
+}
+
+.clear{
+    background:#0b3d0b;
+}
+</style>
+</head>
+
+<body>
+
+<!-- MATRIX BACKGROUND -->
+<canvas id="matrix"></canvas>
+
+<!-- CALCULATOR -->
+<div class="container" id="calc">
+
+    <div class="drag-bar" id="dragBar">
+        MATRIX CALC
+    </div>
+
+    <input type="text" id="result" readonly>
+
+    <table>
+
+        <tr>
+            <td><button class="calc-btn" data-key="7" onclick="pressBtn('7')">7</button></td>
+            <td><button class="calc-btn" data-key="8" onclick="pressBtn('8')">8</button></td>
+            <td><button class="calc-btn" data-key="9" onclick="pressBtn('9')">9</button></td>
+            <td><button class="calc-btn operator" data-key="/" onclick="pressBtn('/')">/</button></td>
+        </tr>
+
+        <tr>
+            <td><button class="calc-btn" data-key="4" onclick="pressBtn('4')">4</button></td>
+            <td><button class="calc-btn" data-key="5" onclick="pressBtn('5')">5</button></td>
+            <td><button class="calc-btn" data-key="6" onclick="pressBtn('6')">6</button></td>
+            <td><button class="calc-btn operator" data-key="*" onclick="pressBtn('*')">*</button></td>
+        </tr>
+
+        <tr>
+            <td><button class="calc-btn" data-key="1" onclick="pressBtn('1')">1</button></td>
+            <td><button class="calc-btn" data-key="2" onclick="pressBtn('2')">2</button></td>
+            <td><button class="calc-btn" data-key="3" onclick="pressBtn('3')">3</button></td>
+            <td><button class="calc-btn operator" data-key="-" onclick="pressBtn('-')">-</button></td>
+        </tr>
+
+        <tr>
+            <td><button class="calc-btn" data-key="0" onclick="pressBtn('0')">0</button></td>
+            <td><button class="calc-btn" data-key="." onclick="pressBtn('.')">.</button></td>
+            <td><button class="calc-btn equal" data-key="Enter" onclick="solve()">=</button></td>
+            <td><button class="calc-btn operator" data-key="+" onclick="pressBtn('+')">+</button></td>
+        </tr>
+
+        <tr>
+            <td colspan="4">
+                <button class="calc-btn clear" data-key="Escape" onclick="clr()">
+                    CLEAR
+                </button>
+            </td>
+        </tr>
+
+    </table>
+
+</div>
+
+<script>
+/* =========================
+   CALCULATOR
+========================= */
+
+function dis(val){
+    document.getElementById("result").value += val;
+}
+
+function solve(){
+
+    try{
+
+        let x =
+            document.getElementById("result").value;
+
+        let y = eval(x);
+
+        document.getElementById("result").value = y;
+
+    }catch{
+
+        document.getElementById("result").value = "Error";
+    }
+}
+
+function clr(){
+    document.getElementById("result").value = "";
+}
+
+function pressBtn(val){
+
+    animateButton(val);
+
+    dis(val);
+}
+
+/* =========================
+   BUTTON ANIMATION
+========================= */
+
+function animateButton(key){
+
+    const btn =
+        document.querySelector(`[data-key="${key}"]`);
+
+    if(btn){
+
+        btn.classList.add("active");
+
+        setTimeout(()=>{
+            btn.classList.remove("active");
+        },120);
+    }
+}
+
+/* =========================
+   KEYBOARD SUPPORT
+========================= */
+
+document.addEventListener("keydown", (e)=>{
+
+    const key = e.key;
+
+    if("0123456789+-*/.".includes(key)){
+
+        animateButton(key);
+
+        dis(key);
+    }
+
+    else if(key === "Enter"){
+
+        animateButton("Enter");
+
+        solve();
+    }
+
+    else if(key === "Escape"){
+
+        animateButton("Escape");
+
+        clr();
+    }
+
+    else if(key === "Backspace"){
+
+        let current =
+            document.getElementById("result").value;
+
+        document.getElementById("result").value =
+            current.slice(0,-1);
+    }
+});
+
+/* =========================
+   DRAGGABLE WINDOW
+========================= */
+
+const calc = document.getElementById("calc");
+const dragBar = document.getElementById("dragBar");
+
+let isDragging = false;
+
+let offsetX = 0;
+let offsetY = 0;
+
+dragBar.addEventListener("mousedown",(e)=>{
+
+    isDragging = true;
+
+    offsetX = e.clientX - calc.offsetLeft;
+    offsetY = e.clientY - calc.offsetTop;
+});
+
+document.addEventListener("mousemove",(e)=>{
+
+    if(isDragging){
+
+        calc.style.left =
+            (e.clientX - offsetX) + "px";
+
+        calc.style.top =
+            (e.clientY - offsetY) + "px";
+    }
+});
+
+document.addEventListener("mouseup",()=>{
+
+    isDragging = false;
+});
+
+/* TOUCH DRAG */
+
+dragBar.addEventListener("touchstart",(e)=>{
+
+    isDragging = true;
+
+    offsetX =
+        e.touches[0].clientX - calc.offsetLeft;
+
+    offsetY =
+        e.touches[0].clientY - calc.offsetTop;
+});
+
+document.addEventListener("touchmove",(e)=>{
+
+    if(isDragging){
+
+        calc.style.left =
+            (e.touches[0].clientX - offsetX) + "px";
+
+        calc.style.top =
+            (e.touches[0].clientY - offsetY) + "px";
+    }
+});
+
+document.addEventListener("touchend",()=>{
+
+    isDragging = false;
+});
+
+/* =========================
+   MATRIX RAIN
+========================= */
+
+const canvas = document.getElementById("matrix");
+const ctx = canvas.getContext("2d");
+
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+const letters =
+"アカサタナハマヤラワ0123456789";
+
+const fontSize = 16;
+
+const columns = canvas.width / fontSize;
+
+const drops = [];
+
+for(let i = 0; i < columns; i++){
+    drops[i] = 1;
+}
+
+function draw(){
+
+    ctx.fillStyle = "rgba(0,0,0,0.05)";
+    ctx.fillRect(0,0,canvas.width,canvas.height);
+
+    ctx.fillStyle = "#00ff66";
+    ctx.font = fontSize + "px monospace";
+
+    for(let i = 0; i < drops.length; i++){
+
+        const text =
+            letters[Math.floor(Math.random()*letters.length)];
+
+        ctx.fillText(
+            text,
+            i * fontSize,
+            drops[i] * fontSize
+        );
+
+        if(
+            drops[i] * fontSize > canvas.height &&
+            Math.random() > 0.975
+        ){
+            drops[i] = 0;
+        }
+
+        drops[i]++;
+    }
+}
+
+setInterval(draw,35);
+
+window.addEventListener("resize",()=>{
+
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+});
+</script>
+
+</body>
+</html>

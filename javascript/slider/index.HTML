@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Synced Temperature Converter</title>
+
+<style>
+@import url("https://fonts.googleapis.com/css?family=Jaldi&display=swap");
+
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
+  font-family: "Jaldi", sans-serif;
+  background: #0f172a;
+  color: white;
+}
+
+#wrapper {
+  display: flex;
+  gap: 50px;
+  align-items: center;
+}
+
+/* THERMOMETER */
+#termometer {
+  width: 40px;
+  height: 360px;
+  background: #2a2a2e;
+  border-radius: 20px;
+  position: relative;
+  border: 6px solid #1f1f23;
+}
+
+#temperature {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: 0%;
+  background: linear-gradient(#ef4444, #f97316, #38bdf8);
+  border-radius: 20px;
+  transition: height 0.2s ease;
+}
+
+#temperature::after {
+  content: attr(data-value);
+  position: absolute;
+  left: 60px;
+  top: -10px;
+  background: rgba(0,0,0,0.6);
+  padding: 5px 10px;
+  border-radius: 6px;
+}
+
+/* RIGHT PANEL */
+#playground {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 220px;
+}
+
+input, select {
+  padding: 8px;
+  border-radius: 6px;
+  border: none;
+  outline: none;
+}
+
+#unit {
+  cursor: pointer;
+  text-align: center;
+  margin-top: 10px;
+  opacity: 0.8;
+}
+</style>
+</head>
+
+<body>
+
+<div id="wrapper">
+
+  <!-- THERMOMETER -->
+  <div id="termometer">
+    <div id="temperature" data-value="0°C"></div>
+  </div>
+
+  <!-- CONTROLS -->
+  <div id="playground">
+
+    <input id="tempInput" type="number" value="0">Harorat</>
+
+    <input id="minTemp" type="number" value="-20">Minimum harorat shkalasi</>
+    <input id="maxTemp" type="number" value="50">Maximum harorat shkalasi</>
+
+    <div id="unit">Unit: Celsius</div>
+
+  </div>
+
+</div>
+
+<script>
+
+const tempInput = document.getElementById("tempInput");
+const minTemp = document.getElementById("minTemp");
+const maxTemp = document.getElementById("maxTemp");
+const unit = document.getElementById("unit");
+const temperature = document.getElementById("temperature");
+
+let config = {
+  min: -20,
+  max: 50,
+  unit: "C"
+};
+
+function updateUI(temp) {
+
+  let percent = (temp - config.min) / (config.max - config.min) * 100;
+  percent = Math.max(0, Math.min(100, percent));
+
+  temperature.style.height = percent + "%";
+
+  let display = config.unit === "C"
+    ? `${temp.toFixed(1)}°C`
+    : `${(temp * 9/5 + 32).toFixed(1)}°F`;
+
+  temperature.dataset.value = display;
+}
+
+/* MAIN SYNC */
+tempInput.addEventListener("input", () => {
+  updateUI(parseFloat(tempInput.value));
+});
+
+/* MIN/MAX CHANGE */
+minTemp.addEventListener("input", () => {
+  config.min = parseFloat(minTemp.value);
+  updateUI(parseFloat(tempInput.value));
+});
+
+maxTemp.addEventListener("input", () => {
+  config.max = parseFloat(maxTemp.value);
+  updateUI(parseFloat(tempInput.value));
+});
+
+/* UNIT SWITCH */
+unit.addEventListener("click", () => {
+  config.unit = config.unit === "C" ? "F" : "C";
+  unit.innerText = "Unit: " + (config.unit === "C" ? "Celsius" : "Fahrenheit");
+  updateUI(parseFloat(tempInput.value));
+});
+
+/* INIT */
+updateUI(0);
+
+</script>
+
+</body>
+</html>
