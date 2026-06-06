@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Vault System v2</title>
+<title>Vault System v3</title>
 
 <style>
 :root{
@@ -39,21 +39,105 @@ body::before{
     pointer-events:none;
 }
 
+/* --- UPDATED FULL-WIDTH SCROLLABLE HEADER --- */
 header{
     padding:20px;
-    text-align:center;
-    border-bottom:1px solid rgba(0,255,102,.25);
     background:#050505;
-    position:sticky;
-    top:0;
-    z-index:10;
+    border-bottom:1px solid rgba(0,255,102,.25);
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+    width:100%; /* Spans across the entire viewport */
 }
 
-header h1{
+.header-title-box {
+    border: 1px solid var(--accent);
+    padding: 12px;
+    text-align: center;
+    box-shadow: 0 0 10px rgba(0,255,102,.1);
+}
+
+.header-title-box h1{
     color:var(--accent);
     letter-spacing:4px;
     text-shadow:0 0 10px var(--accent);
+    font-size:22px;
 }
+
+.header-main-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+.console-panel, .core-panel {
+    border: 1px solid var(--accent);
+    background: #070707;
+    padding: 12px;
+    height: 180px;
+    display: flex;
+    flex-direction: column;
+}
+
+.panel-title {
+    color: var(--accent);
+    font-size: 13px;
+    font-weight: bold;
+    letter-spacing: 1px;
+    margin-bottom: 8px;
+    border-bottom: 1px dashed rgba(0,255,102,.2);
+    padding-bottom: 4px;
+}
+
+.console-log{
+    flex:1;
+    overflow-y:auto;
+    font-size:11px;
+    color:#9cffbc;
+    line-height:1.4;
+}
+
+.core-panel {
+    align-items: center;
+}
+
+.core-panel .panel-title {
+    width: 100%;
+    text-align: center;
+}
+
+.ascii-art {
+    color: var(--accent);
+    font-family: monospace;
+    white-space: pre;
+    text-align: center;
+    margin-top: auto;
+    margin-bottom: auto;
+    line-height: 1.2;
+    text-shadow: 0 0 8px var(--accent);
+}
+
+.header-action-bar {
+    border: 1px solid var(--accent);
+    padding: 10px;
+    text-align: center;
+    font-size: 13px;
+    color: rgba(0,255,102,.5);
+}
+
+.action-link {
+    color: var(--accent);
+    text-decoration: none;
+    padding: 0 8px;
+    transition: .2s;
+    cursor: pointer;
+}
+
+.action-link:hover {
+    text-shadow: 0 0 8px var(--accent);
+    color: #fff;
+}
+/* --- END OF HEADER STYLES --- */
 
 #loginScreen{
     min-height:100vh;
@@ -192,112 +276,34 @@ button:hover{
     font-weight:bold;
 }
 
-:root{
-    --accent:#00ff66;
-    --console-h:160px;
-}
-
-.console{
-    position:fixed;
-    left:0;
-    right:0;
-    bottom:0;
-
-    height:var(--console-h);
-    background:#050505;
-    border-top:1px solid rgba(0,255,102,.35);
-
-    display:flex;
-    gap:10px;
-
-    padding:8px;
-    z-index:100;
-}
-
-/* LEFT PANEL (logs) */
-.console-log{
-    flex:2;
-    overflow:auto;
-    font-size:11px;
-    color:#9cffbc;
-
-    border:1px solid rgba(0,255,102,.15);
-    padding:6px;
-}
-
-/* RIGHT PANEL (tools) */
-.console-tools{
-    flex:1;
-    display:flex;
-    flex-direction:column;
-    gap:6px;
-
-    border:1px solid rgba(0,255,102,.15);
-    padding:6px;
-}
-
-/* header small */
-.console-header{
-    position:absolute;
-    top:-18px;
-    left:10px;
-    font-size:10px;
-    color:var(--accent);
-}
-
-/* input smaller */
-.console-tools .row{
-    display:flex;
-    flex-direction:column;
-    gap:5px;
-}
-
-input{
-    font-size:11px;
-    padding:4px;
-}
-
-button{
-    font-size:11px;
-    padding:4px;
-}
-
-#hashResult{
-    font-size:11px;
-    color:#7cff7c;
-    word-break:break-all;
-}
-
-/* mobile stack */
-@media(max-width:600px){
-    .console{
-        flex-direction:column;
-        height:220px;
-    }
-}
-
-#hashResult{
-    margin-top:8px;
-    color:#7cff7c;
-    word-break:break-all;
-    font-size:12px;
-}
-
 .spacer{
     height:40px;
 }
 
-@media(max-width:600px){
+.file-actions{
+    display:flex;
+    gap:8px;
+}
+
+.run-btn{
+    display:inline-block;
+    text-decoration:none;
+    color:black;
+    background:#00c853;
+    padding:10px 12px;
+    border-radius:8px;
+    font-weight:bold;
+}
+
+@media(max-width:650px){
+    .header-main-grid {
+        grid-template-columns: 1fr;
+    }
+    .console-panel, .core-panel {
+        height: 140px;
+    }
     .folder-content{
         grid-template-columns:1fr;
-    }
-
-    .console{
-        height:280px;
-    }
-
-    .console-tools .row{
-        flex-direction:row;
     }
 }
 </style>
@@ -315,26 +321,42 @@ button{
 
 <div id="vaultApp">
     <header>
-        <h1>VAULT SYSTEM</h1>
+        <div class="header-title-box">
+            <h1>VAULT SYSTEM v3</h1>
+        </div>
+
+        <div class="header-main-grid">
+            <div class="console-panel">
+                <div class="panel-title">DEV CONSOLE</div>
+                <div class="console-log" id="consoleLog"></div>
+            </div>
+
+            <div class="core-panel">
+                <div class="panel-title">VAULT CORE</div>
+                <div class="ascii-art">───▄▀▀▀▄▄▄▄▄▄▄▀▀▀▄───
+───█▒▒░░░░░░░░░▒▒█───
+────█░░█░░░░░█░░█────
+─▄▄──█░░░▀█▀░░░█──▄▄─
+█░░█─▀▄░░░░░░░▄▀─█░░█
+█▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀█
+█░░╦─╦╔╗╦─╔╗╔╗╔╦╗╔╗░░█
+█░░║║║╠─║─║─║║║║║╠─░░█
+█░░╚╩╝╚╝╚╝╚╝╚╝╩─╩╚╝░░█
+█▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄█
+</div>
+            </div>
+        </div>
+
+        <div class="header-action-bar">
+            <span class="action-link">Search</span> | 
+            <span class="action-link">Hash Generator</span> | 
+            <span class="action-link">System Status</span>
+        </div>
     </header>
 
     <div id="loading">Loading repository...</div>
     <div id="foldersContainer"></div>
     <div class="spacer"></div>
-</div>
-
-<div class="console">
-    <div class="console-header">DEV CONSOLE v2</div>
-
-    <div class="console-log" id="consoleLog"></div>
-
-    <div class="console-tools">
-        <div class="row">
-            <input id="hashInput" placeholder="Enter text to SHA-256 hash">
-            <button id="hashBtn">Generate Hash</button>
-        </div>
-        <div id="hashResult"></div>
-    </div>
 </div>
 
 <script>
@@ -350,10 +372,15 @@ const PASSWORD_HASH =
 "2bf0064d802c91d9dff63bd0d406922198f2843d9338b5b5ec52890e040c00fc";
 
 const descriptions = {};
+function getRunUrl(file){
+    const repoBase = "https://uz-bekk.github.io/info/";
+    return repoBase + file.path;
+}
 
 function log(message){
     const box = document.getElementById("consoleLog");
-    const time = new Date().toLocaleTimeString();
+    if (!box) return;
+    const time = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
     box.innerHTML += `[${time}] ${message}<br>`;
     box.scrollTop = box.scrollHeight;
 }
@@ -422,17 +449,13 @@ async function loadDescriptions(){
             const cleaned = line.trim();
             if(!cleaned) continue;
 
-            // FIXED REGEX:
-            // supports:
-            // 1. name "text"
-            // 2.name "text"
             const match = cleaned.match(/^\d+\.\s*([^\s]+)\s+"([\s\S]+)"/);
 
             if(match){
                 const file = match[1].trim();
                 const desc = match[2].replace(/\s+/g, " ").trim();
 
-                descriptions[file] = desc;
+                descriptions[file.toLowerCase()] = desc;
             }
         }
 
@@ -476,20 +499,29 @@ async function getFolderContents(url){
 
 function createFileCard(file){
 
-    const desc =
-        descriptions[file.name] || "No description";
+    const desc = descriptions[file.name.toLowerCase()] || "No description";
+    const isHtml = file.name.toLowerCase().endsWith(".html");
 
     return `
         <div class="file-card">
-    <div class="file-name">${file.name}</div>
-    <div class="file-desc">${desc}</div>
+            <div class="file-name">${file.name}</div>
+            <div class="file-desc">${desc}</div>
 
-    <a class="download-btn"
-       href="${file.download_url}"
-       download="${file.name}">
-       Download
-    </a>
-</div>
+            <div class="file-actions">
+                <a class="download-btn"
+                   href="${file.download_url}"
+                   download="${file.name}">
+                   Download
+                </a>
+
+                ${isHtml ? `
+                <a class="run-btn"
+                   href="${getRunUrl(file)}"
+                   target="_blank">
+                   Run
+                </a>` : ""}
+            </div>
+        </div>
     `;
 }
 
@@ -574,23 +606,9 @@ document.getElementById("passwordInput")
     if(e.key === "Enter") login();
 });
 
-document.getElementById("hashBtn")
-.addEventListener("click", async ()=>{
-
-    const text =
-        document.getElementById("hashInput").value;
-
-    const hash = await sha256(text);
-
-    document.getElementById("hashResult").textContent =
-        hash;
-
-    log("SHA-256 hash generated");
-});
-
 window.addEventListener("load", ()=>{
 
-    log("Vault System v2 initialized");
+    log("Vault System v3 initialized");
 
     if(sessionStorage.getItem(SESSION_KEY) === "true"){
 
