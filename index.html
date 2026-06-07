@@ -74,7 +74,7 @@ header{
     border: 1px solid var(--accent);
     background: #070707;
     padding: 12px;
-    height: 180px;
+    height: 220px;
     display: flex;
     flex-direction: column;
 }
@@ -510,6 +510,7 @@ function createFileCard(file){
             <div class="file-actions">
                 <a class="download-btn"
                    href="${file.download_url}"
+                   target="_blank"
                    download="${file.name}">
                    Download
                 </a>
