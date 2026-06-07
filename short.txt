@@ -6,11 +6,7 @@ yarating."
 5.2_savdo_hisoboti_30_kun.xlsx "2.Vazifa: 30 kunlik savdo hisobotini tahlil qilish"
 6.5_talabalar_yotoqxona.xlsx "5. Vazifa: Talabalar va ularning yotoqxona xonalari ma’lumotlar bazasi."
 7.Calc.HTML "1. 4 ta asosiy arifmetik amalni bajaruvchi kalkulyator yaratish."
-8.Currency.HTML "3. O'zbek so'midan AQSH dollari, Yevro va Rubllarga konvertatsiyasini amalga
-oshiruvchi dastur tuzish."
-9.app.HTML "2. Selsiy, Farengeyt va Kelvin o'rtasida harorat konvertatsiyasini amalga oshiruvchi
-dastur tuzish."
-10.shkala_transformatsiya.HTML "2. Selsiy, Farengeyt va Kelvin o'rtasida harorat konvertatsiyasini amalga oshiruvchi
-dastur tuzish."
-11.temperatura.HTML "2. Selsiy, Farengeyt va Kelvin o'rtasida harorat konvertatsiyasini amalga oshiruvchi
-dastur tuzish."
+8.Currency.HTML "3. O'zbek so'midan AQSH dollari, Yevro va Rubllarga konvertatsiyasini amalga oshiruvchi dastur tuzish."
+9.app.HTML "2. Selsiy, Farengeyt va Kelvin o'rtasida harorat konvertatsiyasini amalga oshiruvchi dastur tuzish."
+10.pul.HTML "3. O'zbek so'midan AQSH dollari, Yevro va Rubllarga konvertatsiyasini amalga oshiruvchi dastur tuzish."
+11.temperatura.HTML "2. Selsiy, Farengeyt va Kelvin o'rtasida harorat konvertatsiyasini amalga oshiruvchi dastur tuzish."
