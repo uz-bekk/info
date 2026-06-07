@@ -1,0 +1,853 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css"
+        integrity="sha384-DyZ88mC6Up2uqS4h/KRgHuoeGwBcD4Ng9SiP4dIRy0EXTlnuz47vAwmeGwVChigm" crossorigin="anonymous">
+    <link rel="stylesheet" href="./css/styles.css">
+    <link rel="stylesheet" href="./css/desktop.css" media="(min-width:768px)">
+
+    <title>Pervolar Calculator App</title>
+</head>
+
+<body class="preload">
+    <nav></nav>
+    <main class="container">
+        <section>
+            <div class="container_welcome">
+                <h1 class="text_welcome">
+                    Welcome to The <span class="name_calculator">Pervolar</span> Calculator
+                </h1>
+            </div>
+            <div class="container_titleMain">
+                <h2 class="title_main">Select the button to calculate</h2>
+            </div>
+            <div class="container_select_button">
+                <form class="subContainer_select_button">
+                    <!--CIRCLE--> <label for="circle">
+                        <input type="radio" value="circle" onchange="showInputs()" name="figures" id="circle"
+                            class="button_geobutton circle " id="circle" checked>
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                            class="feather feather-circle">
+                            <circle cx="12" cy="12" r="10"></circle>
+                        </svg>
+                        </input>
+                    </label>
+                    <!--SQUARE--> <label for="square">
+                        <input type="radio" value="square" onchange="showInputs()" name="figures" id="square"
+                            class="button_geobutton square" id="square">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                            class="feather feather-square">
+                            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                        </svg>
+                        </input>
+                    </label>
+                    <!--TRIANGLE--> <label for="triangle">
+                        <input type="radio" value="triangle" onchange="showInputs()" name="figures" id="triangle"
+                            class="button_geobutton triangle" id="triangle">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                            class="feather feather-triangle">
+                            <path
+                                d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z">
+                            </path>
+                        </svg>
+                        </input>
+                    </label>
+                    <!--SPHERE--> <label for="sphere">
+                        <input type="radio" value="sphere" onchange="showInputs()" name="figures" id="sphere"
+                            class="button_geobutton sphere" id="sphere">
+                        <svg version="1.1" id="Icons" xmlns="http://www.w3.org/2000/svg"
+                            xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 32 32"
+                            style="enable-background:new 0 0 32 32;" xml:space="preserve">
+                            <style type="text/css">
+                                .st0 {
+                                    fill: none;
+                                    stroke: currentColor;
+                                    currentColorstroke-width: 2;
+                                    stroke-linecap: round;
+                                    stroke-linejoin: round;
+                                    stroke-miterlimit: 10;
+                                }
+                            </style>
+                            <circle class="st0" cx="16" cy="16" r="14" />
+                            <ellipse class="st0" cx="16" cy="16" rx="6" ry="14" />
+                            <ellipse class="st0" cx="16" cy="16" rx="14" ry="6" />
+                        </svg>
+                        </input>
+                    </label>
+                    <!--CUBE--> <label for="cube">
+                        <input type="radio" value="cube" onchange="showInputs()" name="figures" id="cube"
+                            class="button_geobutton cube" id="cube">
+                        <svg version="1.1" id="Icons" xmlns="http://www.w3.org/2000/svg"
+                            xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 32 32"
+                            style="enable-background:new 0 0 32 32;" xml:space="preserve">
+                            <style type="text/css">
+                                .st0 {
+                                    fill: none;
+                                    stroke: currentColor;
+                                    stroke-width: 2;
+                                    stroke-linecap: round;
+                                    stroke-linejoin: round;
+                                    stroke-miterlimit: 10;
+                                }
+
+                                .st1 {
+                                    fill: none;
+                                    stroke: currentColor;
+                                    stroke-width: 2;
+                                    stroke-linecap: round;
+                                    stroke-linejoin: round;
+                                }
+
+                                .st2 {
+                                    fill: none;
+                                    stroke: currentColor;
+                                    stroke-width: 2;
+                                    stroke-linecap: round;
+                                    stroke-linejoin: round;
+                                    stroke-dasharray: 6, 6;
+                                }
+
+                                .st3 {
+                                    fill: none;
+                                    stroke: currentColor;
+                                    stroke-width: 2;
+                                    stroke-linecap: round;
+                                    stroke-linejoin: round;
+                                    stroke-dasharray: 4, 4;
+                                }
+
+                                .st4 {
+                                    fill: none;
+                                    stroke: currentColor;
+                                    stroke-width: 2;
+                                    stroke-linecap: round;
+                                }
+
+                                .st5 {
+                                    fill: none;
+                                    stroke: currentColor;
+                                    stroke-width: 2;
+                                    stroke-linecap: round;
+                                    stroke-dasharray: 3.1081, 3.1081;
+                                }
+
+                                .st6 {
+                                    fill: none;
+                                    stroke: currentColor#000000;
+                                    stroke-width: 2;
+                                    stroke-linecap: round;
+                                    stroke-linejoin: round;
+                                    stroke-miterlimit: 10;
+                                    stroke-dasharray: 4, 3;
+                                }
+                            </style>
+                            <polygon class="st0" points="4,9.7 4,23.2 16,30 28,23.2 28,9.7 16,3 " />
+                            <polyline class="st0" points="4,10.2 16,17 28,10.2 " />
+                            <line class="st0" x1="16" y1="30" x2="16" y2="17" />
+                        </svg>
+                        </input>
+                    </label>
+                </form>
+            </div>
+            <div class="container_calculator">
+                <div class="sub_container_inputs_circle">
+                    <h3 class="inputs_title">Enter the values</h3>
+                    <label class="label_input" for="inputCircleA" id="labelCircleA">Enter the measure of radio of you
+                        circle:</label>
+                    <input class="input" type="number" id="inputCircleA">
+                    <label class="label_input" for="inputCircleB" id="labelCircleB">Enter the measure of diameter of you
+                        circle:</label>
+                    <input class="input" type="number" id="inputCircleB">
+                </div>
+                <div class="sub_container_inputs_square">
+                    <h3 class="inputs_title">Enter the values</h3>
+                    <label class="label_input" for="inputSquareA" id="labelSquareA">Enter the measure of sideA of you
+                        square</label>
+                    <input class="input" type="number" id="inputSquareA">
+
+                    <label class="label_input" for="inputSquareB" id="labelSquareB">Enter the measure of sideB of you
+                        square</label>
+                    <input class="input" type="number" id="inputSquareB">
+                </div>
+
+
+                <div class="sub_container_inputs_triangle">
+                    <h3 class="inputs_title">Enter the values</h3>
+                    <label class="label_input" for="inputTriangleA" id="labelTriangleA">Enter the measure of sideA of
+                        you triangle</label>
+                    <input class="input" type="number" id="inputTriangleA">
+
+                    <label class="label_input" for="inputTriangleB" id="labelTriangleB">Enter the measure of sideB of
+                        you triangle</label>
+                    <input class="input" type="number" id="inputTriangleB">
+
+                    <label class="label_input" for="inputTriangleBase" id="labelTriangleC">Enter the measure of base of
+                        you triangle</label>
+                    <input class="input" type="number" id="inputTriangleBase">
+
+                    <label class="label_input" for="inputTriangleHeight" id="labelTriangleD">Enter the measure of height
+                        of you triangle</label>
+                    <input class="input" type="number" id="inputTriangleHeight">
+                </div>
+
+
+                <div class="sub_container_inputs_sphere">
+                    <h3 class="inputs_title">Enter the values</h3>
+                    <label class="label_input" for="inputSphereA" id="labelSphereA">Enter the measure of radio of you
+                        sphere</label>
+                    <input class="input" type="number" id="inputSphereA">
+                </div>
+
+
+                <div class="sub_container_inputs_cube">
+                    <h3 class="inputs_title">Enter the values</h3>
+                    <label class="label_input" for="inputCubeA" id="labelCubeA">Enter the measure of edge of you
+                        cube</label>
+                    <input class="input" type="number" id="inputCubeA">
+                </div>
+
+
+                <div class="container_buttons">
+                    <button class="button_submit" type="submit" id="submitOperation">Submit</button>
+                </div>
+                <div class="container_showResults">
+                    <h3 class="results_title">Results</h3>
+                    <label class="label_input">The area of you figure is:</label>
+                    <span class="result_input" id="result_output_one"></span>
+                    <label class="label_input">The Perimeter of you is:</label>
+                    <span class="result_input" id="result_output_two"></span>
+                </div>
+
+
+                <div class="container_showResults" id="container_showResults_volume">
+                    <h3 class="results_title">Results</h3>
+                    <label class="label_input">The volumen of you figure is:</label>
+                    <span class="result_input" id="result_output_one_volume"></span>
+                    <label class="label_input">The area of you is:</label>
+                    <span class="result_input" id="result_output_two_volume"></span>
+                </div>
+        </section>
+    </main>
+    <script>
+
+
+
+function showInputs(){
+    // let labelA = document.querySelector('#labelA').innerHTML;
+    // let labelB = document.querySelector('#labelB').innerHTML;
+
+    if(circle.checked == true){
+        console.log('is circle')
+        
+        document.querySelector('.sub_container_inputs_circle').style.display = 'flex';
+        document.querySelector('.sub_container_inputs_square').style.display = 'none';
+        document.querySelector('.sub_container_inputs_triangle').style.display = 'none';
+        document.querySelector('.sub_container_inputs_sphere').style.display = 'none';
+        document.querySelector('.sub_container_inputs_cube').style.display = 'none';
+
+        document.querySelector('.container_showResults').style.display = 'flex';
+        document.querySelector('#container_showResults_volume').style.display = 'none';
+    }
+    else if(square.checked == true){
+        console.log('is square')
+        document.querySelector('.sub_container_inputs_circle').style.display = 'none';
+        document.querySelector('.sub_container_inputs_square').style.display = 'flex';
+        document.querySelector('.sub_container_inputs_triangle').style.display = 'none';
+        document.querySelector('.sub_container_inputs_sphere').style.display = 'none';
+        document.querySelector('.sub_container_inputs_cube').style.display = 'none';
+        
+        document.querySelector('.container_showResults').style.display = 'flex';
+        document.querySelector('#container_showResults_volume').style.display = 'none';
+    }
+    else if(triangle.checked == true){
+        console.log('is triangle')
+
+        document.querySelector('.sub_container_inputs_circle').style.display = 'none';
+        document.querySelector('.sub_container_inputs_square').style.display = 'none';
+        document.querySelector('.sub_container_inputs_triangle').style.display = 'flex';
+        document.querySelector('.sub_container_inputs_sphere').style.display = 'none';
+        document.querySelector('.sub_container_inputs_cube').style.display = 'none';
+
+        document.querySelector('.container_showResults').style.display = 'flex';
+        document.querySelector('#container_showResults_volume').style.display = 'none';
+    }
+    else if(sphere.checked == true){
+        console.log('is sphere')
+        document.querySelector('.sub_container_inputs_circle').style.display = 'none';
+        document.querySelector('.sub_container_inputs_square').style.display = 'none';
+        document.querySelector('.sub_container_inputs_triangle').style.display = 'none';
+        document.querySelector('.sub_container_inputs_sphere').style.display = 'flex';
+        document.querySelector('.sub_container_inputs_cube').style.display = 'none';
+        document.querySelector('#container_showResults_volume').style.display = 'none';
+
+        document.querySelector('.container_showResults').style.display = 'none';
+        document.querySelector('#container_showResults_volume').style.display = 'flex';
+    }
+    else if(cube.checked == true){
+        console.log('is cube')
+        document.querySelector('.sub_container_inputs_circle').style.display = 'none';
+        document.querySelector('.sub_container_inputs_square').style.display = 'none';
+        document.querySelector('.sub_container_inputs_triangle').style.display = 'none';
+        document.querySelector('.sub_container_inputs_sphere').style.display = 'none';
+        document.querySelector('.sub_container_inputs_cube').style.display = 'flex';
+        
+        document.querySelector('.container_showResults').style.display = 'none';
+        document.querySelector('#container_showResults_volume').style.display = 'flex';
+    }
+}
+
+
+document.getElementById("submitOperation").addEventListener("click", operation);
+function operation(){
+
+    const circle = document.querySelector('#circle');
+    const square = document.querySelector('#square');
+    const triangle = document.querySelector('#triangle');
+    const sphere = document.querySelector('#sphere');
+    const cube = document.querySelector('#cube');
+    
+    const buttonSelected = document.getElementsByName('figures').checked;
+    
+    if(circle.checked == true){
+        console.log('is circle')
+        const inputA = document.querySelector('#inputCircleA').value;
+        const inputB = document.querySelector('#inputCircleB').value;
+        const results_field_one = document.querySelector('#result_output_one');
+        const results_field_two = document.querySelector('#result_output_two');
+
+        if(inputA == '' || inputB == ''){
+            let showError = document.querySelector('#error_NaN')
+            alert('Error. You must enter numeric type values')
+        }
+        else{
+            // * OPERATIONS MATHEMATIC
+            // * OPERATIONS MATHEMATIC
+            let results_one = Math.pow(parseFloat(inputA), 2);
+            results_field_one.innerHTML = `${results_one}`
+
+            let results_two = parseFloat(inputB) * Math.PI
+            results_two = parseFloat(results_two.toFixed(2))
+            results_field_two.innerHTML = `${results_two}` 
+        }
+    }
+    else if(square.checked == true){
+        console.log('is square')
+        const inputA = document.querySelector('#inputSquareA').value;
+        const inputB = document.querySelector('#inputSquareB').value;
+        const results_field_one = document.querySelector('#result_output_one');
+        const results_field_two = document.querySelector('#result_output_two');
+
+        if( inputA == '' && inputB == ''){
+            alert('Error. You must enter numeric type values')
+        }
+        else{
+            // * OPERATIONS MATHEMATIC
+            // * OPERATIONS MATHEMATIC
+            let results_one = parseFloat(inputA) + parseFloat(inputB);
+            results_one = parseFloat(results_one.toFixed(2))
+            results_field_one.innerHTML = `${results_one}` 
+
+            let results_two = parseFloat(inputA) * parseFloat(inputB)
+            results_two = parseFloat(results_two.toFixed(2))
+            results_field_two.innerHTML = `${results_two}` 
+        }
+    }
+    else if(triangle.checked == true){
+        console.log('is triangle')
+        const inputA = document.querySelector('#inputTriangleA').value;
+        const inputB = document.querySelector('#inputTriangleB').value;
+        const inputBase = document.querySelector('#inputTriangleBase').value;
+        const inputHeight = document.querySelector('#inputTriangleHeight').value;
+        const results_field_one = document.querySelector('#result_output_one');
+        const results_field_two = document.querySelector('#result_output_two');
+
+        if(inputA == '' || inputB == '' || inputBase == '' || inputHeight == ''){
+            alert('Error. You must complete the fields and enter numeric type values')
+        }
+        else{
+            // * OPERATIONS MATHEMATIC
+            // * OPERATIONS MATHEMATIC
+            let results_one = parseFloat(inputA) + parseFloat(inputB) + parseFloat(inputBase);
+            results_one = parseFloat(results_one.toFixed(2))
+            results_field_one.innerHTML = `${results_one}`
+
+
+            let results_two = parseFloat(inputBase) * parseFloat(inputHeight) / 2; 
+            results_two = parseFloat(results_two.toFixed(2))
+            results_field_two.innerHTML = `${results_two}`
+        }
+
+    }
+    else if(sphere.checked == true){
+        console.log('is sphere')
+        const inputA = document.querySelector('#inputSphereA').value;
+        const results_field_one = document.querySelector('#result_output_one_volume');
+        const results_field_two = document.querySelector('#result_output_two_volume');
+
+
+        if(inputA == ''){
+            alert('Error. You must complete the fields and enter numeric type values')
+        }
+        else{
+            // * OPERATIONS MATHEMATIC
+            // * OPERATIONS MATHEMATIC
+            let results_one = parseFloat(4) * Math.PI * parseFloat(inputA);
+            results_one = parseFloat(results_one.toFixed(2));
+            results_field_one.innerHTML = `${results_one}`;
+
+            let results_two = (4/3) * Math.PI * Math.pow(inputA, 3);
+            results_two = parseFloat(results_two.toFixed(2))
+            results_field_two.innerHTML = `${results_two}` 
+        }
+    }
+    else if(cube.checked == true){
+        console.log('is cube')
+        const inputA = document.querySelector('#inputCubeA').value;
+        const results_field_one = document.querySelector('#result_output_one_volume');
+        const results_field_two = document.querySelector('#result_output_two_volume');
+
+        if(inputA == ''){
+            alert('Error. You must complete the fields and enter numeric type values')
+        }
+        else{
+            // * OPERATIONS MATHEMATIC
+            // * OPERATIONS MATHEMATIC
+            let results_one = Math.pow(parseFloat(inputA), 3);
+            results_one = parseFloat(results_one.toFixed(2))
+            results_field_one.innerHTML = `${results_one}`
+
+
+            let results_two = 6 * parseFloat(inputA) * parseFloat(inputA); 
+            results_two = parseFloat(results_two.toFixed(2))
+            results_field_two.innerHTML = `${results_two}` 
+        }
+    }
+}
+</script>
+
+<style>
+/* body{
+    background: rgb(255,255,0);
+} */
+
+.container {
+    width: 100%;
+}
+
+.subContainer_select_button {
+    justify-content: center;
+    gap: 25px;
+}
+
+.container_calculator {
+    width: 730px;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.sub_container_inputs_circle,
+.sub_container_inputs_square,
+.sub_container_inputs_triangle,
+.sub_container_inputs_sphere,
+.sub_container_inputs_cube {
+    padding: 1rem;
+}
+
+.container_buttons {
+    height: 60px;
+    width: 180px;
+    margin-top: 70px;
+}
+
+.container_buttons {
+    padding: 0;
+}
+
+.container_showResults {
+    width: 243px;
+}
+
+.footer_container {
+    flex-direction: column;
+}
+:root {
+    font-size: 62.5%;
+    /* --blanco: #edf2f4;
+    --primario: #d90429;
+    --secundario: #ef233c;
+    --gris: #adb5bd;
+    --grisClaro: #f1f1f3;
+    --oscuro: #212529;
+    --negro: #121212; */
+
+    --blanco: #fff;
+    --primario: #ffd60a;
+    --secundario: #ffc300;
+    --azulClaro: #003566;
+    --azulNeutral: #001d3d;
+    --gris: #adb5bd;
+    --grisClaro: #f1f1f3;
+    --oscuro: #212529;
+    --negro: #121212;
+
+    --titles: 2.6rem;
+    --secondary_title: 2rem;
+    --paragraph: 1.8rem;
+    --small_text: 1.4rem;
+}
+
+html {
+    min-height: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    min-width: 320px;
+}
+
+body {
+    position: relative;
+    box-sizing: border-box;
+    margin: 0;
+    min-height: 100%;
+    width: 100%;
+    min-width: 320px;
+    font-family: 'Rubik', sans-serif;
+    background: rgb(255, 255, 255);
+    line-height: 1.5;
+    display: flex;
+    align-items: center;
+    padding-bottom: 6rem;
+    padding-top: 1rem
+}
+
+.preload * {
+    -webkit-transition: none !important;
+    -moz-transition: none !important;
+    -ms-transition: none !important;
+    -o-transition: none !important;
+}
+
+*,
+*:before,
+*:after {
+    box-sizing: inherit;
+}
+
+
+/* HERE FINALLY MY INITIAL SETTINGS */
+/* HERE STARTS THE STYLES STYLES */
+.container {
+    margin: 0 auto;
+    width: 320px;
+    margin-bottom: 8rem;
+    padding: 1rem;
+    border-radius: 5px;
+    box-shadow: 0px 0px 15px 1px rgba(0, 0, 0, 0.45);
+    -webkit-box-shadow: 0px 0px 15px 1px rgba(0, 0, 0, 0.45);
+}
+
+/* WELCOME AND NAME APP TOP SECTION */
+.container_welcome {
+    background-color: var(--azulNeutral);
+    margin: 0 auto;
+    border-top: 1px solid var(--gris);
+    border-right: 1px solid var(--gris);
+    border-left: 1px solid var(--gris);
+    border-bottom: 1px solid var(--gris);
+    border-radius: 5px 5px 0 0;
+}
+
+.text_welcome {
+    text-align: center;
+    color: var(--blanco);
+    font-size: var(--titles);
+    font-weight: 500;
+}
+
+.name_calculator {
+    color: var(--secundario);
+    font-weight: 700;
+}
+
+.container_titleMain {
+    background-color: var(--azulNeutral);
+    text-align: center;
+    padding: 1rem;
+    border-left: 1px solid var(--gris);
+    border-right: 1px solid var(--gris);
+}
+
+.title_main {
+    margin: 0;
+    font-size: var(--paragraph);
+    font-weight: 400;
+    color: var(--blanco);
+}
+
+/* FIGURES SELECTOR BUTTONS SECTION */
+.container_select_button {
+    background-color: var(--azulNeutral);
+    margin: 0 auto;
+    padding-bottom: 1rem;
+    border-left: 1px solid var(--gris);
+    border-right: 1px solid var(--gris);
+}
+
+.subContainer_select_button {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    align-items: center;
+    margin: 0 auto;
+}
+
+.subContainer_select_button label {
+    position: relative;
+    background-color: var(--azulNeutral);
+    border: 1px solid var(--gris);
+    border-radius: 5px;
+    padding: .8rem;
+    width: auto;
+    display: flex;
+    box-shadow: 0px 12px 24px -12px rgb(0 0 0 / 40%);
+    -webkit-box-shadow: 2px 2px 4px 0px rgb(0 0 0 / 40%);
+    -webkit-transition: all 0.2s;
+    transition: all 0.2s;
+}
+
+.subContainer_select_button label:hover {
+    background-color: var(--azulClaro);
+}
+
+.button_geobutton {
+    margin: 0;
+    padding: 1rem;
+    border-radius: 5px;
+    position: absolute;
+    opacity: 0;
+}
+
+.button_geobutton+svg {
+    color: var(--gris);
+    width: 3.5rem;
+    cursor: pointer;
+}
+
+.button_geobutton svg {
+    margin: 0;
+    padding: 0;
+}
+
+.button_geobutton:hover+svg,
+.button_geobutton:checked+svg,
+.button_geobutton:focus+svg {
+    color: var(--secundario);
+    cursor: pointer;
+}
+
+.button_geobutton+svg {
+    -webkit-transition: all 0.2s;
+    transition: all 0.2s;
+}
+
+
+/* INPUTS SECTION */
+.container_calculator {
+    border-top: 1px solid var(--gris);
+    border-right: 1px solid var(--gris);
+    border-left: 1px solid var(--gris);
+    border-bottom: 1px solid var(--gris);
+    border-radius: 0 0 5px 5px;
+    /* padding: 1rem; */
+    width: 80%;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    width: 300px;
+    background-color: var(--azulNeutral);
+}
+
+.sub_container_inputs_circle,
+.sub_container_inputs_square,
+.sub_container_inputs_triangle,
+.sub_container_inputs_sphere,
+.sub_container_inputs_cube {
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+}
+
+.sub_container_inputs_square,
+.sub_container_inputs_triangle,
+.sub_container_inputs_sphere,
+.sub_container_inputs_cube {
+    display: none;
+}
+
+.inputs_title {
+    font-size: var(--paragraph);
+    font-weight: 400;
+    color: var(--blanco);
+    margin: 0 auto;
+}
+
+.label_input {
+    padding: .2rem;
+    /* font-size: var(--small_text); */
+    font-size: 1.2rem;
+    font-weight: 300;
+    color: var(--blanco);
+    background-color: var(--azulNeutral);
+    border-top: 1px solid var(--gris);
+    border-left: 1px solid var(--gris);
+    border-right: 1px solid var(--gris);
+    border-bottom: none;
+    border-radius: 5px 5px 0px 0px;
+}
+
+.input {
+    padding: 1rem;
+    margin-bottom: 1rem;
+    border: 1px solid var(--gris);
+    border-radius: 0px 0px 5px 5px;
+    outline: none;
+    font-size: var(--paragraph);
+    background-color: var(--azulNeutral);
+    color: var(--blanco);
+    -webkit-transition: all 0.2s;
+    transition: all 0.2s;
+}
+
+.input:hover {
+    background-color: var(--azulClaro);
+}
+
+.input:focus {
+    background-color: var(--azulClaro);
+}
+
+/* HIDE ARROW OF INPUT FIELDS DEFAULT */
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+    -moz-appearance: textfield;
+}
+
+/* BUTTONS SECTION */
+.container_buttons {
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    padding: 1rem;
+}
+
+.button_submit {
+    background-color: var(--primario);
+    color: var(--azulClaro);
+    font-size: var(--secondary_title);
+    font-weight: 700;
+    text-transform: uppercase;
+    padding: 1rem 4rem;
+    outline: none;
+    border: none;
+    border-radius: 5px;
+    width: 100%;
+    cursor: pointer;
+}
+
+.button_submit:hover {
+    background-color: var(--secundario);
+}
+
+/* SHOW RESULTS SECTION */
+.container_showResults {
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+}
+
+.results_title {
+    font-size: var(--paragraph);
+    font-weight: 400;
+    color: var(--blanco);
+    margin: 0 auto;
+}
+
+.result_input {
+    width: 100%;
+    height: 40px;
+    margin-bottom: 1rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    border: 1px solid var(--gris);
+    border-radius: 0px 0px 5px 5px;
+    background-color: var(--azulNeutral);
+    color: var(--blanco);
+    font-size: var(--paragraph);
+    text-align: center;
+}
+
+#container_showResults_volume {
+    display: none;
+}
+
+
+/* FOOTER FOOTER FOOTER SECTION */
+.footer_container {
+
+    padding: 1.5rem 2rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    background-color: var(--grisClaro);
+    box-shadow: 0px -10px 20px -10px rgba(0, 0, 0, 0.3);
+    -webkit-box-shadow: 0px -10px 20px -10px rgba(0, 0, 0, 0.3);
+    margin-top: 10rem;
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    left: 0;
+}
+
+.copyright {
+    font-size: 1.4rem;
+}
+
+.madeBy {
+    font-size: 1.4rem;
+    margin: 0;
+}
+
+.fa-heart {
+    color: #db001d;
+}
+
+.dev {
+    font-weight: 500;
+    color: var(--oscuro);
+}
+</style>
+</body>
+
+</html
