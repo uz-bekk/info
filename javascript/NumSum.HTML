@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Raqamlar Yig'indisi (№ 8)</title>
+    <title>Raqamlar Yig'indisi</title>
     <style>
         :root {
             --bg-main: #09090b;
@@ -71,13 +71,13 @@
 <body>
 <main class="container">
     <header class="header">
-        <h1><span>№ 8</span> Raqamlar Yig'indisi</h1>
+        <h1>Raqamlar Yig'indisi</h1>
         <p>Kiritilgan n sonining raqamlari yig‘indisini hisoblash</p>
     </header>
     <form onsubmit="event.preventDefault(); hisobla();">
         <div class="field">
             <label for="numVal">Istalgan butun son kiriting</label>
-            <input type="number" id="numVal" min="0" required>
+            <input type="text" id="numVal" inputmode="numeric" pattern="[0-9\-]*" required placeholder="Masalan: 1234567890...">
         </div>
         <button type="submit" class="btn-submit">Hisoblash</button>
     </form>
@@ -88,14 +88,20 @@
 </main>
 <script>
 function hisobla() {
-    const valStr = document.getElementById('numVal').value;
-    if(valStr !== '') {
-        let sum = 0;
-        const arr = Math.abs(parseInt(valStr)).toString().split('');
-        arr.forEach(d => { sum += parseInt(d); });
-        document.getElementById('res1').textContent = sum;
-        document.getElementById('res2').textContent = arr.length + " ta";
+    const valStr = document.getElementById('numVal').value.trim();
+    let sum = 0;
+    let count = 0;
+    
+    // Direct character memory stream pointer - runs instantly on any low-end hardware
+    for (let i = 0; i < valStr.length; i++) {
+        const code = valStr.charCodeAt(i);
+        if (code >= 48 && code <= 57) { // Validates ASCII digits '0' through '9'
+            sum += (code - 48);
+            count++;
+        }
     }
+    document.getElementById('res1').textContent = sum;
+    document.getElementById('res2').textContent = count + " ta";
 }
 </script>
 </body>
