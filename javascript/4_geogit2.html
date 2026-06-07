@@ -1,6 +1,5 @@
-
-<!DOCTYPE html>
-<html lang="en">
+﻿<!DOCTYPE html>
+<html lang="uz">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -336,7 +335,7 @@ function showInputs() {
     
     if (activeShape === 'sphere' || activeShape === 'cube') {
         labelOne.textContent = 'Hajm:';
-        labelTwo.textContent = 'To'la sirt:';
+        labelTwo.textContent = 'To\'la sirt:';
     } else {
         labelOne.textContent = 'Yuza:';
         labelTwo.textContent = 'Perimeter:';
@@ -353,12 +352,15 @@ function calculate() {
     const outTwo = document.getElementById('output-two');
     
     let resOne = 0, resTwo = 0;
+    let suffixOne = '', suffixTwo = ''; // Used to handle dynamic 'π' presentation
 
     switch(activeShape) {
         case 'circle':
             const radius = parseFloat(document.getElementById('inputCircleA').value);
-            resOne = Math.PI * Math.pow(radius, 2);
-            resTwo = 2 * Math.PI * radius;
+            resOne = Math.pow(radius, 2); // Radius squared
+            resTwo = 2 * radius;          // Diameter constant
+            suffixOne = 'π';
+            suffixTwo = 'π';
             break;
             
         case 'square':
@@ -378,8 +380,10 @@ function calculate() {
             
         case 'sphere':
             const sRadius = parseFloat(document.getElementById('inputSphereA').value);
-            resOne = (4/3) * Math.PI * Math.pow(sRadius, 3);
-            resTwo = 4 * Math.PI * Math.pow(sRadius, 2);
+            resOne = (4/3) * Math.pow(sRadius, 3); // Volume coefficient
+            resTwo = 4 * Math.pow(sRadius, 2);     // Surface Area coefficient
+            suffixOne = 'π';
+            suffixTwo = 'π';
             break;
             
         case 'cube':
@@ -389,8 +393,21 @@ function calculate() {
             break;
     }
 
-    outOne.textContent = isNaN(resOne) ? 'Error' : resOne.toFixed(2);
-    outTwo.textContent = isNaN(resTwo) ? 'Error' : resTwo.toFixed(2);
+    // Output parsing and presentation configuration
+    if (isNaN(resOne)) {
+        outOne.textContent = 'Error';
+    } else {
+        // Number(val.toFixed(2)) safely strips unnecessary trailing zeroes while enforcing decimal thresholds
+        let cleanValOne = Number(resOne.toFixed(2));
+        outOne.textContent = cleanValOne + suffixOne;
+    }
+
+    if (isNaN(resTwo)) {
+        outTwo.textContent = 'Error';
+    } else {
+        let cleanValTwo = Number(resTwo.toFixed(2));
+        outTwo.textContent = cleanValTwo + suffixTwo;
+    }
 }
 
 // Initial setup to handle inputs configuration on load
@@ -398,3 +415,4 @@ showInputs();
 </script>
 </body>
 </html>
+

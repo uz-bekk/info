@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Son Tahlili (№ 5)</title>
+    <title>Son Tahlili</title>
     <style>
         :root {
             --bg-main: #09090b;
@@ -71,13 +71,13 @@
 <body>
 <main class="container">
     <header class="header">
-        <h1><span>№ 5</span> Son Tahlili</h1>
+        <h1>Son Tahlili</h1>
         <p>Kiritilgan sonning juft/toq va xonali ekanini aniqlash</p>
     </header>
     <form onsubmit="event.preventDefault(); tahlil();">
         <div class="field">
             <label for="num">Istalgan butun son kiriting</label>
-            <input type="number" id="num" required>
+            <input type="number" id="num" required placeholder="Masalan: 99999999999999999999">
         </div>
         <button type="submit" class="btn-submit">Aniqlash</button>
     </form>
@@ -88,12 +88,42 @@
 </main>
 <script>
 function tahlil() {
-    const val = parseInt(document.getElementById('num').value);
-    if(!isNaN(val)) {
-        document.getElementById('res1').textContent = (val % 2 === 0) ? 'Juft son' : 'Toq son';
-        document.getElementById('res2').textContent = Math.abs(val).toString().length + ' xonali';
+    const rawValue = document.getElementById('num').value.trim();
+    if (!rawValue) return;
+
+    // Isboti va hisob-kitob uchun ishora (+/-) hamda ortiqcha nollarni tozalaymiz
+    let cleanStr = rawValue.replace(/^[+-]/, '').replace(/^0+/, '');
+    if (cleanStr === '') cleanStr = '0';
+
+    // Agar kiritilgan qiymat toza butun son formatida bo'lsa (Giant sonlar uchun)
+    if (/^\d+$/.test(cleanStr)) {
+        // Juft/toqlikni aniqlash (faqat eng oxirgi raqamga qarab - eng xavfsiz va tezkor usul)
+        const lastDigit = parseInt(cleanStr.slice(-1));
+        document.getElementById('res1').textContent = (lastDigit % 2 === 0) ? 'Juft son' : 'Toq son';
+        
+        // Xonalar sonini aniqlash
+        document.getElementById('res2').textContent = cleanStr.length + ' xonali';
+    } else {
+        // Agar son ilmiy ko'rinishda (e+21 kabi) kiritilgan bo'lsa
+        const num = Number(rawValue);
+        if (!isNaN(num) && Number.isInteger(num)) {
+            try {
+                // Katta sonlarni xavfsiz formatga o'tkazish
+                const bigNum = BigInt(rawValue.includes('e') ? Math.round(num) : rawValue);
+                document.getElementById('res1').textContent = (bigNum % 2n === 0n) ? 'Juft son' : 'Toq son';
+                document.getElementById('res2').textContent = bigNum.toString().replace('-', '').length + ' xonali';
+            } catch(e) {
+                // Standart holatga qaytish (fallback)
+                document.getElementById('res1').textContent = (num % 2 === 0) ? 'Juft son' : 'Toq son';
+                document.getElementById('res2').textContent = Math.abs(num).toString().length + ' xonali';
+            }
+        } else {
+            document.getElementById('res1').textContent = 'Faqat butun son kiriting!';
+            document.getElementById('res2').textContent = '—';
+        }
     }
 }
 </script>
 </body>
 </html>
+

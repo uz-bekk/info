@@ -15,3 +15,5 @@
 15.6_JuftSum.HTML "6. Vazifa: Foydalanuvchi n kiritganda, 1 dan n gacha bo‘lgan juft sonlar yig‘indisini hisoblash dasturini yaratish."
 16.7_AgeYear.HTML "7. Vazifa: Foydalanuvchi kiritgan yosh bo‘yicha nechanchi yilda tu‘g‘ilganini va aksinchani topish dasturini yaratish."
 17.8_NumSum.HTML "8. Vazifa: Kiritilgan n sonini raqamlari yig‘indisini xisoblovchi dastur tuzish."
+18.4_geogit2.html "Geometrik shakllar (aylana, kvadrat, uchburchak, shar, kub) yuzi va perimetrini hisoblovchi dastur."
+19.7_AgeYear2.html "7. Vazifa: Foydalanuvchi kiritgan yosh bo‘yicha nechanchi yilda tu‘g‘ilganini va aksinchani topish dasturini yaratish."
