@@ -69,7 +69,7 @@ body::before{
     pointer-events:none;
 }
 
-/* --- UPDATED FULL-WIDTH SCROLLABLE HEADER --- */
+/* --- SCROLLABLE HEADER --- */
 header{
     padding:20px;
     background:var(--header-bg);
@@ -167,7 +167,6 @@ header{
     text-shadow: 0 0 8px var(--accent);
     color: var(--text);
 }
-/* --- END OF HEADER STYLES --- */
 
 #loginScreen{
     min-height:100vh;
@@ -264,16 +263,20 @@ button:hover{
 
 .folder-content{
     display:grid;
-    grid-template-columns:repeat(auto-fill,minmax(260px,1fr));
+    grid-template-columns:repeat(auto-fill,minmax(280px,1fr));
     gap:15px;
     padding:15px;
 }
 
+/* --- MEDIA CARDS & PREVIEW BOX EXCEPTIONS --- */
 .file-card{
     background:var(--card);
     border:1px solid var(--border-alpha);
     border-radius:12px;
     padding:15px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
     transition:.3s;
 }
 
@@ -286,14 +289,42 @@ button:hover{
 .file-name{
     color:var(--accent);
     word-break:break-word;
-    margin-bottom:10px;
+    margin-bottom:12px;
+    font-weight: bold;
+}
+
+.media-preview-box {
+    width: 100%;
+    height: 160px;
+    background: rgba(0, 0, 0, 0.15);
+    border: 1px dashed var(--border-alpha);
+    border-radius: 8px;
+    margin-bottom: 12px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+}
+
+.media-preview-box img, 
+.media-preview-box video {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    background: transparent;
 }
 
 .file-desc{
     color:var(--muted);
     font-size:14px;
-    min-height:50px;
     margin-bottom:12px;
+    line-height: 1.4;
+}
+
+.file-actions{
+    display:flex;
+    gap:8px;
+    margin-top: auto;
 }
 
 .download-btn{
@@ -304,15 +335,8 @@ button:hover{
     padding:10px 12px;
     border-radius:8px;
     font-weight:bold;
-}
-
-.spacer{
-    height:40px;
-}
-
-.file-actions{
-    display:flex;
-    gap:8px;
+    text-align: center;
+    flex: 1;
 }
 
 .run-btn{
@@ -323,6 +347,12 @@ button:hover{
     padding:10px 12px;
     border-radius:8px;
     font-weight:bold;
+    text-align: center;
+    flex: 1;
+}
+
+.spacer{
+    height:40px;
 }
 
 @media(max-width:650px){
@@ -401,7 +431,6 @@ function initTheme() {
     const savedTheme = localStorage.getItem(THEME_STORAGE_KEY) || "dark";
     document.documentElement.setAttribute("data-theme", savedTheme);
 }
-// Run immediately to block flash of dark styles on light background
 initTheme();
 
 function updateThemeUI() {
@@ -428,18 +457,13 @@ document.addEventListener("click", e => {
 });
 /* --- END OF THEME CONTROLLER ENGINE --- */
 
-const API_ROOT =
-"https://api.github.com/repos/uz-bekk/info/contents";
-
-const SHORT_TXT_URL =
-"https://raw.githubusercontent.com/uz-bekk/info/main/short.txt";
-
+const API_ROOT = "https://api.github.com/repos/uz-bekk/info/contents";
+const SHORT_TXT_URL = "https://raw.githubusercontent.com/uz-bekk/info/main/short.txt";
 const SESSION_KEY = "vault_session_v2";
-
-const PASSWORD_HASH =
-"2bf0064d802c91d9dff63bd0d406922198f2843d9338b5b5ec52890e040c00fc";
+const PASSWORD_HASH = "2bf0064d802c91d9dff63bd0d406922198f2843d9338b5b5ec52890e040c00fc";
 
 const descriptions = {};
+
 function getRunUrl(file){
     const repoBase = "https://uz-bekk.github.io/info/";
     return repoBase + file.path;
@@ -463,70 +487,53 @@ async function sha256(text){
 
 async function login(){
     const input = document.getElementById("passwordInput").value;
-
     log("Password check initiated");
-
     const hash = await sha256(input);
 
     if(hash === PASSWORD_HASH){
         log("Authentication successful");
-
         sessionStorage.setItem(SESSION_KEY, "true");
-
         showVault();
     }else{
         log("Authentication failed");
-        document.getElementById("errorMsg").textContent =
-            "Invalid password";
+        document.getElementById("errorMsg").textContent = "Invalid password";
     }
 }
 
 function showVault(){
     document.getElementById("loginScreen").style.display = "none";
     document.getElementById("vaultApp").style.display = "block";
-
     loadVault();
 }
 
 async function fetchJSON(url){
     const response = await fetch(url);
-
     if(!response.ok){
         throw new Error(`${response.status} ${response.statusText}`);
     }
-
     return response.json();
 }
 
 async function loadDescriptions(){
     try{
         log("Loading short.txt");
-
         const response = await fetch(SHORT_TXT_URL);
-
         if(!response.ok){
             throw new Error("short.txt unavailable");
         }
-
         const text = await response.text();
-
         const lines = text.split(/\r?\n/);
 
         for(const line of lines){
-
             const cleaned = line.trim();
             if(!cleaned) continue;
-
             const match = cleaned.match(/^\d+\.\s*([^\s]+)\s+"([\s\S]+)"/);
-
             if(match){
                 const file = match[1].trim();
                 const desc = match[2].replace(/\s+/g, " ").trim();
-
                 descriptions[file.toLowerCase()] = desc;
             }
         }
-
         log("short.txt loaded");
     }
     catch(error){
@@ -536,24 +543,16 @@ async function loadDescriptions(){
 
 async function getFolderContents(url){
     let files = [];
-
     try{
         const items = await fetchJSON(url);
-
         for(const item of items){
-
             if(item.type === "dir"){
-
                 log("Scanning folder: " + item.name);
-
                 const nested = await getFolderContents(item.url);
-
                 files.push(...nested);
             }
             else if(item.type === "file"){
-
                 files.push(item);
-
                 log("File loaded: " + item.name);
             }
         }
@@ -561,19 +560,49 @@ async function getFolderContents(url){
     catch(error){
         log("Folder scan error: " + error.message);
     }
-
     return files;
 }
 
+/* --- DETECT MEDIA AND RENDER PREVIEWS --- */
 function createFileCard(file){
+    const filenameLower = file.name.toLowerCase();
+    const desc = descriptions[filenameLower] || "No description provided.";
+    const isHtml = filenameLower.endsWith(".html");
+    
+    // Check file extensions
+    const isImage = filenameLower.endsWith(".png") || filenameLower.endsWith(".jpg") || 
+                    filenameLower.endsWith(".jpeg") || filenameLower.endsWith(".gif") || 
+                    filenameLower.endsWith(".svg") || filenameLower.endsWith(".webp");
+                    
+    const isVideo = filenameLower.endsWith(".mp4") || filenameLower.endsWith(".webm") || 
+                    filenameLower.endsWith(".ogg");
 
-    const desc = descriptions[file.name.toLowerCase()] || "No description";
-    const isHtml = file.name.toLowerCase().endsWith(".html");
+    let mediaPreviewHtml = "";
+
+    // Exception condition for images/GIFs
+    if(isImage && file.download_url) {
+        mediaPreviewHtml = `
+            <div class="media-preview-box">
+                <img src="${file.download_url}" alt="${file.name}" loading="lazy">
+            </div>
+        `;
+    } 
+    // Exception condition for video animations
+    else if(isVideo && file.download_url) {
+        mediaPreviewHtml = `
+            <div class="media-preview-box">
+                <video src="${file.download_url}" controls muted loop preload="metadata"></video>
+            </div>
+        `;
+    }
 
     return `
         <div class="file-card">
-            <div class="file-name">${file.name}</div>
-            <div class="file-desc">${desc}</div>
+            <div>
+                <div class="file-name">${file.name}</div>
+                ${mediaPreviewHtml}
+                <div class="file-desc">${desc}</div>
+            </div>
 
             <div class="file-actions">
                 <a class="download-btn"
@@ -595,35 +624,20 @@ function createFileCard(file){
 }
 
 async function loadVault(){
-
     document.getElementById("loading").style.display = "block";
-
     try{
-
         await loadDescriptions();
-
         log("Fetching repository root");
-
         const rootItems = await fetchJSON(API_ROOT);
-
-        const container =
-            document.getElementById("foldersContainer");
-
+        const container = document.getElementById("foldersContainer");
         container.innerHTML = "";
 
-        const folders =
-            rootItems.filter(item => item.type === "dir");
-
+        const folders = rootItems.filter(item => item.type === "dir");
         log(`Detected ${folders.length} folders`);
 
         for(const folder of folders){
-
-            const files =
-                await getFolderContents(folder.url);
-
-            const folderElement =
-                document.createElement("div");
-
+            const files = await getFolderContents(folder.url);
+            const folderElement = document.createElement("div");
             folderElement.className = "folder";
 
             folderElement.innerHTML = `
@@ -636,54 +650,34 @@ async function loadVault(){
                 </div>
             `;
 
-            const header =
-                folderElement.querySelector(".folder-header");
-
-            const content =
-                folderElement.querySelector(".folder-content");
+            const header = folderElement.querySelector(".folder-header");
+            const content = folderElement.querySelector(".folder-content");
 
             header.addEventListener("click",()=>{
-                content.style.display =
-                    content.style.display === "none"
-                    ? "grid"
-                    : "none";
+                content.style.display = content.style.display === "none" ? "grid" : "none";
             });
 
             container.appendChild(folderElement);
         }
-
         log("Repository load complete");
-
     }catch(error){
-
         log("Repository fetch error: " + error.message);
-
         document.getElementById("foldersContainer").innerHTML =
-            `<div style="padding:20px;color:#ff6666;">
-                Failed to load repository.
-             </div>`;
+            `<div style="padding:20px;color:#ff6666;">Failed to load repository.</div>`;
     }
-
     document.getElementById("loading").style.display = "none";
 }
 
-document.getElementById("loginBtn")
-.addEventListener("click", login);
-
-document.getElementById("passwordInput")
-.addEventListener("keydown", e=>{
+document.getElementById("loginBtn").addEventListener("click", login);
+document.getElementById("passwordInput").addEventListener("keydown", e=>{
     if(e.key === "Enter") login();
 });
 
 window.addEventListener("load", ()=>{
-
     log("Vault System v3 initialized");
     updateThemeUI();
-
     if(sessionStorage.getItem(SESSION_KEY) === "true"){
-
         log("Existing session restored");
-
         showVault();
     }
 });
