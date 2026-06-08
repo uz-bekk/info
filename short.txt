@@ -22,3 +22,5 @@
 22.2.png "Vazifa 1. maktab uchun logotip."
 23.3.png "Vazifa 1. maktab uchun logotip."
 24.4.png "Vazifa 1. maktab uchun logotip."
+25. 7_sport_klubi_bazasi.xlsx "7. Vazifa: Sport klubi a’zolari va ularning to‘lovlari bazasi."
+26.8_maktab_jihozlari_DB.xlsx "8. Vazifa: Maktab jihozlari va ularning holati ma’lumotlar bazasi."
