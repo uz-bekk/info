@@ -6,13 +6,42 @@
 <title>Vault System v3</title>
 
 <style>
-:root{
+/* --- CONFIGURABLE THEME ROOT VARIABLES --- */
+:root {
     --bg:#0a0a0a;
     --card:#111;
     --border:#00ff66;
+    --border-alpha: rgba(0,255,102,.25);
     --text:#e5ffe5;
     --muted:#8cbf99;
     --accent:#00ff66;
+    --header-bg: #050505;
+    --panel-bg: #070707;
+    --input-bg: #0b0b0b;
+    --input-border: #1f1f1f;
+    --glow-1: rgba(0,255,102,.08);
+    --glow-2: rgba(0,255,102,.05);
+    --error: #ff6666;
+    --btn-text: black;
+}
+
+/* --- LIGHT / DAY MODE PALETTE --- */
+[data-theme="light"] {
+    --bg:#f4f7f5;
+    --card:#ffffff;
+    --border:#007a33;
+    --border-alpha: rgba(0,122,51,.25);
+    --text:#0a1c11;
+    --muted:#5c7565;
+    --accent:#007a33;
+    --header-bg: #e6ede8;
+    --panel-bg: #edf2ee;
+    --input-bg: #ffffff;
+    --input-border: #cbd6ce;
+    --glow-1: rgba(0,122,51,.04);
+    --glow-2: rgba(0,122,51,.02);
+    --error: #c92a2a;
+    --btn-text: white;
 }
 
 *{
@@ -27,6 +56,7 @@ body{
     font-family:Consolas, monospace;
     min-height:100vh;
     overflow-x:hidden;
+    transition: background 0.3s, color 0.3s;
 }
 
 body::before{
@@ -34,27 +64,27 @@ body::before{
     position:fixed;
     inset:0;
     background:
-        radial-gradient(circle at 20% 20%, rgba(0,255,102,.08), transparent 25%),
-        radial-gradient(circle at 80% 70%, rgba(0,255,102,.05), transparent 25%);
+        radial-gradient(circle at 20% 20%, var(--glow-1), transparent 25%),
+        radial-gradient(circle at 80% 70%, var(--glow-2), transparent 25%);
     pointer-events:none;
 }
 
 /* --- UPDATED FULL-WIDTH SCROLLABLE HEADER --- */
 header{
     padding:20px;
-    background:#050505;
-    border-bottom:1px solid rgba(0,255,102,.25);
+    background:var(--header-bg);
+    border-bottom:1px solid var(--border-alpha);
     display:flex;
     flex-direction:column;
     gap:12px;
-    width:100%; /* Spans across the entire viewport */
+    width:100%; 
 }
 
 .header-title-box {
     border: 1px solid var(--accent);
     padding: 12px;
     text-align: center;
-    box-shadow: 0 0 10px rgba(0,255,102,.1);
+    box-shadow: 0 0 10px var(--border-alpha);
 }
 
 .header-title-box h1{
@@ -72,7 +102,7 @@ header{
 
 .console-panel, .core-panel {
     border: 1px solid var(--accent);
-    background: #070707;
+    background: var(--panel-bg);
     padding: 12px;
     height: 220px;
     display: flex;
@@ -85,7 +115,7 @@ header{
     font-weight: bold;
     letter-spacing: 1px;
     margin-bottom: 8px;
-    border-bottom: 1px dashed rgba(0,255,102,.2);
+    border-bottom: 1px dashed var(--border-alpha);
     padding-bottom: 4px;
 }
 
@@ -93,7 +123,7 @@ header{
     flex:1;
     overflow-y:auto;
     font-size:11px;
-    color:#9cffbc;
+    color:var(--text);
     line-height:1.4;
 }
 
@@ -122,7 +152,7 @@ header{
     padding: 10px;
     text-align: center;
     font-size: 13px;
-    color: rgba(0,255,102,.5);
+    color: var(--muted);
 }
 
 .action-link {
@@ -135,7 +165,7 @@ header{
 
 .action-link:hover {
     text-shadow: 0 0 8px var(--accent);
-    color: #fff;
+    color: var(--text);
 }
 /* --- END OF HEADER STYLES --- */
 
@@ -150,11 +180,11 @@ header{
 .login-box{
     width:100%;
     max-width:420px;
-    background:#111;
+    background:var(--card);
     border:1px solid var(--accent);
     border-radius:14px;
     padding:30px;
-    box-shadow:0 0 20px rgba(0,255,102,.15);
+    box-shadow:0 0 20px var(--border-alpha);
 }
 
 .login-box h2{
@@ -166,16 +196,16 @@ header{
 input{
     width:100%;
     padding:12px;
-    background:#0b0b0b;
-    border:1px solid #1f1f1f;
-    color:white;
+    background:var(--input-bg);
+    border:1px solid var(--input-border);
+    color:var(--text);
     outline:none;
     border-radius:8px;
 }
 
 input:focus{
     border-color:var(--accent);
-    box-shadow:0 0 10px rgba(0,255,102,.25);
+    box-shadow:0 0 10px var(--border-alpha);
 }
 
 button{
@@ -184,14 +214,14 @@ button{
     padding:12px 16px;
     border-radius:8px;
     background:var(--accent);
-    color:black;
+    color:var(--btn-text);
     font-weight:bold;
     transition:.25s;
 }
 
 button:hover{
     transform:translateY(-2px);
-    box-shadow:0 0 15px rgba(0,255,102,.4);
+    box-shadow:0 0 15px var(--border-alpha);
 }
 
 #loginBtn{
@@ -200,7 +230,7 @@ button:hover{
 }
 
 #errorMsg{
-    color:#ff6666;
+    color:var(--error);
     margin-top:12px;
     text-align:center;
 }
@@ -217,14 +247,14 @@ button:hover{
 
 .folder{
     margin:20px;
-    border:1px solid rgba(0,255,102,.25);
+    border:1px solid var(--border-alpha);
     border-radius:12px;
     overflow:hidden;
 }
 
 .folder-header{
     padding:14px 18px;
-    background:#111;
+    background:var(--panel-bg);
     color:var(--accent);
     cursor:pointer;
     display:flex;
@@ -241,7 +271,7 @@ button:hover{
 
 .file-card{
     background:var(--card);
-    border:1px solid rgba(0,255,102,.2);
+    border:1px solid var(--border-alpha);
     border-radius:12px;
     padding:15px;
     transition:.3s;
@@ -250,7 +280,7 @@ button:hover{
 .file-card:hover{
     transform:translateY(-4px);
     border-color:var(--accent);
-    box-shadow:0 0 15px rgba(0,255,102,.15);
+    box-shadow:0 0 15px var(--border-alpha);
 }
 
 .file-name{
@@ -269,7 +299,7 @@ button:hover{
 .download-btn{
     display:inline-block;
     text-decoration:none;
-    color:black;
+    color:var(--btn-text);
     background:var(--accent);
     padding:10px 12px;
     border-radius:8px;
@@ -312,6 +342,9 @@ button:hover{
 
 <div id="loginScreen">
     <div class="login-box">
+        <div style="text-align: right; margin-bottom: 15px;">
+            <span class="action-link theme-toggle-btn" style="font-size: 12px;">Day Mode</span>
+        </div>
         <h2>VAULT ACCESS</h2>
         <input type="password" id="passwordInput" placeholder="Enter password">
         <button id="loginBtn">Unlock Vault</button>
@@ -348,6 +381,7 @@ button:hover{
         </div>
 
         <div class="header-action-bar">
+            <span class="action-link theme-toggle-btn">Day Mode</span> | 
             <span class="action-link">Search</span> | 
             <span class="action-link">Hash Generator</span> | 
             <span class="action-link">System Status</span>
@@ -360,6 +394,40 @@ button:hover{
 </div>
 
 <script>
+/* --- THEME CONTROLLER ENGINE --- */
+const THEME_STORAGE_KEY = "vault_theme_mode";
+
+function initTheme() {
+    const savedTheme = localStorage.getItem(THEME_STORAGE_KEY) || "dark";
+    document.documentElement.setAttribute("data-theme", savedTheme);
+}
+// Run immediately to block flash of dark styles on light background
+initTheme();
+
+function updateThemeUI() {
+    const currentTheme = document.documentElement.getAttribute("data-theme") || "dark";
+    const buttons = document.querySelectorAll(".theme-toggle-btn");
+    buttons.forEach(btn => {
+        btn.textContent = currentTheme === "dark" ? "Day Mode" : "Dark Mode";
+    });
+}
+
+function toggleTheme() {
+    const currentTheme = document.documentElement.getAttribute("data-theme") || "dark";
+    const newTheme = currentTheme === "dark" ? "light" : "dark";
+    document.documentElement.setAttribute("data-theme", newTheme);
+    localStorage.setItem(THEME_STORAGE_KEY, newTheme);
+    updateThemeUI();
+    log(`System theme toggled to: ${newTheme.toUpperCase()} MODE`);
+}
+
+document.addEventListener("click", e => {
+    if (e.target.classList.contains("theme-toggle-btn")) {
+        toggleTheme();
+    }
+});
+/* --- END OF THEME CONTROLLER ENGINE --- */
+
 const API_ROOT =
 "https://api.github.com/repos/uz-bekk/info/contents";
 
@@ -610,6 +678,7 @@ document.getElementById("passwordInput")
 window.addEventListener("load", ()=>{
 
     log("Vault System v3 initialized");
+    updateThemeUI();
 
     if(sessionStorage.getItem(SESSION_KEY) === "true"){
 
