@@ -1,426 +1,265 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="uz">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Temperature Slider</title>
-
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Harorat Tahlili va Metrikasi</title>
+    <style>
+        :root {
+            --bg-main: #09090b;
+            --bg-card: #18181b;
+            --bg-input: #27272a;
+            --text-main: #f4f4f5;
+            --text-muted: #a1a1aa;
+            --accent: #f97316; /* Issiqlik/alanga ramzi sifatida to'q sariq */
+            --accent-cold: #38bdf8; /* Sovuq iqlim uchun ko'k rang */
+            --border: #3f3f46;
+            --radius: 12px;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 1rem;
+        }
+        .container {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            width: 100%;
+            max-width: 480px;
+            padding: 2rem;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
+        }
+        .header { text-align: center; margin-bottom: 2rem; }
+        .header h1 { font-size: 1.5rem; font-weight: 700; margin-bottom: 0.5rem; letter-spacing: -0.025em; }
+        .header span { color: var(--accent); }
+        .header p { color: var(--text-muted); font-size: 0.9rem; }
+        
+        /* Vizual va boshqaruv paneli uyg'unligi */
+        .main-layout {
+            display: flex;
+            gap: 2rem;
+            align-items: flex-start;
+        }
+        
+        /* Termometr dizayni */
+        .thermometer-zone {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .thermometer {
+            width: 24px;
+            height: 310px;
+            background-color: var(--bg-main);
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: inset 0 2px 5px rgba(0,0,0,0.7);
+        }
+        .thermometer-fill {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            height: 0%;
+            background: linear-gradient(to top, var(--accent, #f97316), var(--accent-cold, #38bdf8));
+            border-radius: 12px;
+            transition: height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        /* O'ng tarafdagi boshqaruv paneli */
+        .control-panel {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .field { display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 1.25rem; }
+        .field label { font-size: 0.85rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; font-weight: 500; }
+        .field input, .field select {
+            background-color: var(--bg-input);
+            border: 1px solid var(--border);
+            color: var(--text-main);
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            font-size: 1rem;
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            width: 100%;
+        }
+        .field input:focus, .field select:focus { 
+            border-color: var(--accent); 
+            box-shadow: 0 0 0 2px rgba(249, 115, 22, 0.2);
+        }
+        
+        .results-panel { 
+            display: flex; 
+            flex-direction: column; 
+            gap: 0.6rem; 
+            margin-top: 0.5rem;
+        }
+        .result-box { 
+            background-color: var(--bg-main); 
+            border: 1px solid var(--border); 
+            padding: 0.75rem 1rem; 
+            border-radius: 8px; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center;
+            gap: 0.5rem;
+            /* Ulkan son kiritilganda matn blokdan chiqib ketmasligi uchun himoya */
+            overflow-wrap: anywhere; 
+        }
+        .result-label { font-size: 0.85rem; font-weight: 600; color: var(--text-muted); white-space: nowrap; }
+        .result-value { font-size: 1rem; font-weight: 700; color: var(--text-main); text-align: right; }
+        
+        .reaction-display {
+            font-size: 4.5rem;
+            text-align: center;
+            margin-top: 1rem;
+            line-height: 1;
+        }
+    </style>
 </head>
-
 <body>
-<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 800 600">
-  <defs>
-    <linearGradient id="liquidGrad" x1="557" y1="150" x2="557" y2="546" gradientUnits="userSpaceOnUse">
-      <stop offset="0" stop-color="#FF0909"/>
-      <stop offset="0.2" stop-color="#F3481A"/>
-      <stop offset="0.5" stop-color="#FABA2C"/>
-      <stop offset="1" stop-color="#00BCF2"/>
-    </linearGradient>
-<rect id="tube" x="357" y="150" width="86" height="400" rx="43" ry="43"/>   
-    <clipPath id="liquidMask">
-        <use xlink:href="#tube" class="liquidMask" />
-    </clipPath>
-   <clipPath id="tubeMask">
-        <use xlink:href="#tube" class="liquidMask" />
-    </clipPath>
-   <path id="liquid" d="M757,552v490H357V552c50,0,50,20,100,20s50-20,100-20,50,20,100,20S707,552,757,552Z" />
-<mask id="gradMask">   
 
-      <use xlink:href="#liquid" class="liquid" x="0" fill="#FCEFD6" />
-      <use xlink:href="#liquid" class="liquid" x="0" fill="#EEE" opacity="0.7"/>
- 
-    </mask>
-  </defs>
-  
-  
-    <g class="whole" transform="translate(0, -40)">
+<main class="container">
+    <header class="header">
+        <h1><span>🌡️ Harorat</span> Metrikasi</h1>
+        <p>Xalqaro standartlar bo'yicha harorat ko'rsatkichlarini hisoblash va tahlil qilish tizimi</p>
+    </header>
 
-           <use xlink:href="#tube" class="tubeBg" fill="#C8D9D3" opacity="0.61"/>
-   
-      <g class="dragger" transform="translate(-6, 0)">
-        <circle cx="294" cy="540" r="36" fill="#3A3335"/>
-        <path class="dragTip" d="M315.5,556.76,299.24,540.5l16.26-16.26,36.26,16.26Z" fill="#3A3335"/>
-        <text class="label" x="294" y="551">100</text>
-<!--  <path id="dragShine" d="M330,540c-26,2-18-44-72,0a36,36,0,0,1,72,0Z" fill="#E9E9E9" opacity="0.052"/>    -->    
-      </g>       
-     
-    
- <g mask="url(#gradMask)">
-        <use xlink:href="#tube" fill="url(#liquidGrad)" />
-  </g>
-  <line class="tubeShine" x1="371" y1="200" x2="371" y2="443" fill="none" stroke="#FFF" stroke-linecap="round" stroke-miterlimit="10" stroke-width="8" opacity="0.21" stroke-dasharray="153 30" stroke-dashoffset="-20"/>
- <!--        <text class="tubeLabel" x="400" y="180">100°</text>
-        <text class="tubeLabel" x="400" y="356">50°</text>
-        <text class="tubeLabel" x="400" y="540">0°</text> -->
-      <g class="measurements" fill="none" stroke="#FCEFD6" stroke-width="3" stroke-linecap="round" opacity="1">
-        <line x1="358" y1="196" x2="370" y2="196" />
-        <line x1="358" y1="234" x2="370" y2="234" />
-        <line x1="358" y1="273" x2="370" y2="273" />
-        <line x1="358" y1="311" x2="370" y2="311" />
-        <line x1="358" y1="350" x2="370" y2="350" />
-        <line x1="358" y1="388" x2="370" y2="388" />
-        <line x1="358" y1="426" x2="370" y2="426" />
-        <line x1="358" y1="465" x2="370" y2="465" />
-        <line x1="358" y1="503" x2="370" y2="503" />
-      </g>
-     
-<!--  <rect class="tubeShine" x="372" y="162" width="56" height="364.02" rx="31.5" ry="31.5" fill="none" stroke="#fff" stroke-miterlimit="10" stroke-width="8" stroke-linecap="round" stroke-dasharray="15 30" opacity="0.31"/> -->
-  <circle class="follower" cx="400" cy="540" r="0" fill="#62B6CB" fill-opacity="1" stroke="#FCEFD6" stroke-width="0"/>
+    <div class="main-layout">
+        <div class="thermometer-zone">
+            <div class="thermometer">
+                <div class="thermometer-fill" id="indicatorFill"></div>
+            </div>
+        </div>
 
-     
- 
-     
- </g>   
-</svg>
+        <div class="control-panel">
+            <div class="field">
+                <label for="inputTemp">Ko'rsatkichni kiriting</label>
+                <input id="inputTemp" type="number" placeholder="Masalan: 25" step="any">
+            </div>
 
+            <div class="field">
+                <label for="unit">O'lchov tizimi</label>
+                <select id="unit">
+                    <option value="C">Selsiy (°C)</option>
+                    <option value="F">Farengeyt (°F)</option>
+                    <option value="K">Kelvin (K)</option>
+                </select>
+            </div>
 
+            <div class="results-panel">
+                <div class="result-box">
+                    <span class="result-label">Selsiy:</span>
+                    <span class="result-value" id="resCelsius">—</span>
+                </div>
+                <div class="result-box">
+                    <span class="result-label">Farengeyt:</span>
+                    <span class="result-value" id="resFahrenheit">—</span>
+                </div>
+                <div class="result-box">
+                    <span class="result-label">Kelvin:</span>
+                    <span class="result-value" id="resKelvin">—</span>
+                </div>
+            </div>
 
-<style>
-body {
- background-color: #FCEFD6;
- overflow: hidden;
- text-align:center;
- margin:0;
-    font-family:Arial;
-    transition: background 0.5s ease;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    min-height:100vh;
-}
-body,
-html {
- height: 100%;
- width: 100%;
- margin: 0;
- padding: 0;
- overflow: hidden;
-}
-svg {
- 
- width: 100%;
- height: 100%;
- 
-}
-
-.label{
- fill:#FFFCF9;
- font-size:1.8em;
- font-family: "din-condensed-web", sans-serif;
- /* font-family: "filson-soft", sans-serif; */
- text-anchor:middle;
- letter-spacing:1.2px;
-}
-
-
- .tubeLabel{
- fill:#FCEFD6;
- font-size:1.4em;
- font-family: "din-condensed-web", sans-serif;
- /* font-family: "filson-soft", sans-serif; */
- text-anchor:middle;
-}
-.dragger{
- -webkit-tap-highlight-color:transparent;
-}
- 
-
-//body{
-    margin:0;
-    font-family:Arial;
-    transition: background 0.5s ease;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    min-height:100vh;
-}
-
-.card{
-    width:380px;
-    background:rgba(255,255,255,0.12);
-    backdrop-filter: blur(14px);
-    padding:25px;
-    border-radius:18px;
-    text-align:center;
-    color:white;
-}
-
-h2{
-    margin-bottom:15px;
-}
-
-/* SLIDER CONTAINER */
-.slider-container{
-    margin-top:20px;
-    position:relative;
-}
-
-/* LONG BAR */
-.slider-track{
-    width:100%;
-    height:14px;
-    border-radius:10px;
-    background: linear-gradient(to right, #0ea5e9, #22c55e, #facc15, #ef4444);
-    position:relative;
-}
-
-/* DRAG POINT */
-.slider-thumb{
-    width:26px;
-    height:26px;
-    background:white;
-    border-radius:50%;
-    position:absolute;
-    top:-6px;
-    left:0%;
-    transform:translateX(-50%);
-    cursor:pointer;
-    box-shadow:0 0 10px rgba(0,0,0,0.4);
-}
-
-/* RESULT */
-.result{
-    margin-top:20px;
-    line-height:1.6;
-}
-
-/* EMOJI */
-.emoji{
-    font-size:70px;
-    margin-top:15px;
-    transition: transform 0.2s ease;
-}
-
-.emoji.animate{
-    transform: scale(1.3)
-}
-
-small{opacity:0.7;}
-</style>
-
-
-<div class="card">
-    <h2>🌡️ Drag Temperature</h2>
-
-    <div class="slider-container">
-        <div class="slider-track" id="track"></div>
-        <div class="slider-thumb" id="thumb"></div>
+            <div class="reaction-display" id="statusReaction">😐</div>
+        </div>
     </div>
-
-    <div class="result" id="result"></div>
-
-    <div class="emoji" id="emoji">🙂</div>
-
-</div>
+</main>
 
 <script>
+const inputElement = document.getElementById("inputTemp");
+const unitElement = document.getElementById("unit");
+const fillElement = document.getElementById("indicatorFill");
+const reactionElement = document.getElementById("statusReaction");
 
-const thumb = document.getElementById("thumb");
-const track = document.getElementById("track");
+const displayCelsius = document.getElementById("resCelsius");
+const displayFahrenheit = document.getElementById("resFahrenheit");
+const displayKelvin = document.getElementById("resKelvin");
 
-const result = document.getElementById("result");
-const emoji = document.getElementById("emoji");
-
-let dragging = false;
-
-// temperature range
-const MIN = -20;
-const MAX = 50;
-
-// convert position → temperature
-function positionToTemp(percent){
-    return MIN + (percent * (MAX - MIN) / 100);
+// Haroratni Selsiy shkalasiga o'tkazish muvozanati
+function boshlangichTizimgaOtkazish(qiymat, birlik) {
+    if (birlik === "C") return qiymat;
+    if (birlik === "F") return (qiymat - 32) * 5 / 9;
+    if (birlik === "K") return qiymat - 273.15;
+    return qiymat;
 }
 
-// update UI
-function update(temp){
-
-    let f = (temp * 9/5) + 32;
-    let k = temp + 273.15;
-
-    result.innerHTML = `
-        Celsius: ${temp.toFixed(1)}°C<br>
-        Fahrenheit: ${f.toFixed(1)}°F<br>
-        Kelvin: ${k.toFixed(1)}K
-    `;
-
-    let bg = "";
-    let e = "🙂";
-
-    if(temp <= 0){
-        bg = "linear-gradient(135deg, #0ea5e9, #1e3a8a)";
-        e = "🥶";
+// Ulkan sonlarni interfeysga moslab xavfsiz formatlash funksiyasi
+function xavfsizFormatlash(son, belgi) {
+    if (isNaN(son)) return "—";
+    if (!isFinite(son)) return son > 0 ? "∞" : "-∞"; // Matematik cheksizlik holati ramzi
+    
+    // Agar son o'ta ulkan yoki o'ta kichik bo'lsa, ilmiy eksponent formatga o'tadi
+    if (Math.abs(son) > 1e12 || (Math.abs(son) < 1e-4 && son !== 0)) {
+        return son.toExponential(4) + belgi;
     }
-    else if(temp <= 15){
-        bg = "linear-gradient(135deg, #38bdf8, #334155)";
-        e = "😐";
-    }
-    else if(temp <= 30){
-        bg = "linear-gradient(135deg, #22c55e, #0f172a)";
-        e = "🙂";
-    }
-    else if(temp <= 40){
-        bg = "linear-gradient(135deg, #facc15, #f97316)";
-        e = "😎";
-    }
-    else{
-        bg = "linear-gradient(135deg, #ef4444, #7f1d1d)";
-        e = "🔥";
-    }
-
-    document.body.style.background = bg;
-
-    emoji.classList.remove("animate");
-    void emoji.offsetWidth;
-    emoji.classList.add("animate");
-
-    emoji.textContent = e;
+    // Standart holatda chiroyli bank/metrologiya ko'rinishida ajratib chiqariladi
+    return son.toLocaleString('uz-UZ', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + belgi;
 }
 
-// move thumb
-function setThumb(percent){
-    thumb.style.left = percent + "%";
+// Harorat o'zgarganda ishlovchi asosiy jarayon
+function joriyHolatniYangilash() {
+    const xomQiymat = inputElement.value;
+    const tanlanganBirlik = unitElement.value;
+
+    if (xomQiymat === "" || isNaN(parseFloat(xomQiymat))) {
+        displayCelsius.textContent = "—";
+        displayFahrenheit.textContent = "—";
+        displayKelvin.textContent = "—";
+        fillElement.style.height = "0%";
+        reactionElement.textContent = "😐";
+        return;
+    }
+
+    const haroratQiymati = parseFloat(xomQiymat);
+    const celsius = boshlangichTizimgaOtkazish(haroratQiymati, tanlanganBirlik);
+
+    // Barcha o'lchovlar uchun qayta hisoblash
+    const fahrenheit = celsius * 9 / 5 + 32;
+    const kelvin = celsius + 273.15;
+
+    // Natijalarni xavfsiz chop etish
+    displayCelsius.textContent = xavfsizFormatlash(celsius, " °C");
+    displayFahrenheit.textContent = xavfsizFormatlash(fahrenheit, " °F");
+    displayKelvin.textContent = xavfsizFormatlash(kelvin, " K");
+
+    // Termometr ko'rsatkichini xavfsiz chegaralash (Giant sonlar kiritilganda ham 100% dan oshmaydi)
+    let foizUluhi = (celsius + 20) / 70 * 100;
+    if (isNaN(foizUluhi)) foizUluhi = 0;
+    foizUluhi = Math.max(0, Math.min(100, foizUluhi));
+    fillElement.style.height = foizUluhi + "%";
+
+    // Iqlimga nisbatan vizual munosabat (Emotsiyalar)
+    if (isNaN(celsius)) {
+        reactionElement.textContent = "😐";
+    } else if (celsius <= 0) {
+        reactionElement.textContent = "🥶";
+    } else if (celsius <= 15) {
+        reactionElement.textContent = "😐";
+    } else if (celsius <= 30) {
+        reactionElement.textContent = "🙂";
+    } else if (celsius <= 40) {
+        reactionElement.textContent = "😎";
+    } else {
+        reactionElement.textContent = "🔥";
+    }
 }
 
-// pointer events
-function move(e){
-    let rect = track.getBoundingClientRect();
-    let x = e.clientX - rect.left;
-
-    let percent = (x / rect.width) * 100;
-
-    if(percent < 0) percent = 0;
-    if(percent > 100) percent = 100;
-
-    setThumb(percent);
-
-    let temp = positionToTemp(percent);
-
-    update(temp);
-}
-
-// mouse
-thumb.addEventListener("mousedown", () => dragging = true);
-window.addEventListener("mouseup", () => dragging = false);
-window.addEventListener("mousemove", (e) => {
-    if(dragging) move(e);
-});
-
-
-// initial
-setThumb(50);
-update(15);
-
-var xmlns = "http://www.w3.org/2000/svg",
-  xlinkns = "http://www.w3.org/1999/xlink",
-  select = function(s) {
-    return document.querySelector(s);
-  },
-  selectAll = function(s) {
-    return document.querySelectorAll(s);
-  },
-    liquid = selectAll('.liquid'),
-    tubeShine = select('.tubeShine'),
-    label = select('.label'),
-    follower = select('.follower'),
-    dragger = select('.dragger'),
-    dragTip = select('.dragTip'),
-    minDragY = -380,
-    liquidId = 0,
-    step = Math.abs(minDragY/100),
-    snap = Math.abs(minDragY/10),
-    followerVY = 0
-  
-
-TweenMax.set('svg', {
-  visibility: 'visible'
-})
-
-TweenMax.set(dragTip, {
- transformOrigin:'20% 50%'
-})
-
-var tl = new TimelineMax()
-tl.staggerTo(liquid, 0.7, {
- x:'-=200',
- ease:Linear.easeNone,
- repeat:-1
-},0.9)
-
-tl.time(100);
-
-document.addEventListener("touchmove", function(event){
-    event.preventDefault();
-});
-Draggable.create(dragger, {
- type:'y',
- bounds:{minY:minDragY, maxY:0},
- onDrag:onUpdate,
- throwProps:true,
- throwResistance:2300,
- onThrowUpdate:onUpdate,
- overshootTolerance:0,
- snap:function(value){
-  //Use this to snap the values to steps of 10
-  //return Math.round(value/snap) * snap
- }
-})
-
-function onUpdate(){
- liquidId = Math.abs(Math.round(dragger._gsTransform.y/step));
-
- label.textContent = liquidId + '°';
- TweenMax.to(liquid, 1.3, {
-  y:dragger._gsTransform.y*1.12,
-  ease:Elastic.easeOut.config(1,0.4)
- })
- 
-}
-
-TweenMax.to(follower, 1, {
- y:'+=0',
- repeat:-1,
- modifiers:{
-  y:function(y, count){
-  followerVY += (dragger._gsTransform.y - follower._gsTransform.y) * 0.23;
-   followerVY *= 0.69;
-   return follower._gsTransform.y + followerVY; 
-  }
- }
-})
-
-TweenMax.to(dragTip, 1, {
- rotation:'+=0',
- repeat:-1,
- modifiers:{
-  rotation:function(rotation, count){
-   return rotation-followerVY
-  }
- }
-})
-
-TweenMax.to(label, 1, {
- y:'+=0',
- repeat:-1,
- modifiers:{
-  y:function(y, count){
-   return y-followerVY * 0.5
-  }
- }
-})
-
-
-TweenMax.to(dragger, 1.4, {
- y:minDragY/2,
- onUpdate:onUpdate,
- ease:Expo.easeInOut
-})
-
-
-//ScrubGSAPTimeline(tl);
-
-
-
+// Jarayonlarni boshqaruvchi darchalarga biriktirish
+inputElement.addEventListener("input", joriyHolatniYangilash);
+unitElement.addEventListener("change", joriyHolatniYangilash);
 </script>
 
 </body>
