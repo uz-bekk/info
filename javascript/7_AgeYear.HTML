@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Yosh va Yil Kalkulyatori</title>
+    <title>Yosh va Yil Avtomatik Tahlili</title>
     <style>
         :root {
             --bg-main: #09090b;
@@ -11,7 +11,7 @@
             --bg-input: #27272a;
             --text-main: #f4f4f5;
             --text-muted: #a1a1aa;
-            --accent: #10b981;
+            --accent: #10b981; /* Barqarorlik va aniqlik uchun yashil tus */
             --border: #3f3f46;
             --radius: 8px;
         }
@@ -36,11 +36,12 @@
             box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
         }
         .header { text-align: center; margin-bottom: 2rem; }
-        .header h1 { font-size: 1.5rem; font-weight: 700; margin-bottom: 0.5rem; }
+        .header h1 { font-size: 1.5rem; font-weight: 700; margin-bottom: 0.5rem; letter-spacing: -0.025em; }
         .header span { color: var(--accent); }
-        .header p { color: var(--text-muted); font-size: 0.9rem; }
-        .field { display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 1rem; }
-        .field label { font-size: 0.85rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; }
+        .header p { color: var(--text-muted); font-size: 0.9rem; line-height: 1.4; }
+        
+        .field { display: flex; flex-direction: column; gap: 0.5rem; margin-bottom: 1.5rem; }
+        .field label { font-size: 0.85rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; font-weight: 500; }
         .field input {
             background-color: var(--bg-input);
             border: 1px solid var(--border);
@@ -49,72 +50,133 @@
             border-radius: var(--radius);
             font-size: 1rem;
             outline: none;
-        }
-        .field input:focus { border-color: var(--accent); }
-        .divider { text-align: center; color: var(--text-muted); font-size: 0.8rem; margin: 0.5rem 0; }
-        .btn-submit {
+            transition: border-color 0.2s, box-shadow 0.2s;
             width: 100%;
-            background-color: var(--accent);
-            color: white;
-            border: none;
-            padding: 0.85rem;
-            font-size: 1rem;
-            font-weight: 600;
-            border-radius: var(--radius);
-            cursor: pointer;
-            margin-top: 1rem;
         }
-        .results-panel { margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid var(--border); display: flex; flex-direction: column; gap: 1rem; }
-        .result-box { background-color: var(--bg-main); border: 1px solid var(--border); padding: 0.75rem 1rem; border-radius: var(--radius); display: flex; justify-content: space-between; align-items: center; }
+        .field input:focus { 
+            border-color: var(--accent); 
+            box-shadow: 0 0 0 2px rgba(16, 185, 129, 0.2);
+        }
+        
+        .results-panel { display: flex; flex-direction: column; gap: 0.75rem; }
+        .result-box { 
+            background-color: var(--bg-main); 
+            border: 1px solid var(--border); 
+            padding: 0.75rem 1rem; 
+            border-radius: var(--radius); 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+        }
         .result-label { font-size: 0.9rem; color: var(--text-muted); }
-        .result-value { font-size: 1.1rem; font-weight: 700; color: var(--accent); }
+        .result-value { font-size: 1.1rem; font-weight: 700; color: var(--text-main); }
+        
+        /* Faol holatdagi natijani ajratib ko'rsatish */
+        .result-box.active-indicator {
+            border-color: rgba(16, 185, 129, 0.4);
+        }
+        .result-box.active-indicator .result-value {
+            color: var(--accent);
+        }
+
+        .info-box {
+            margin-top: 1.25rem;
+            padding: 0.75rem 1rem;
+            background-color: rgba(39, 39, 42, 0.4);
+            border-radius: var(--radius);
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            line-height: 1.5;
+            border-left: 3px solid var(--accent);
+        }
     </style>
 </head>
 <body>
+
 <main class="container">
     <header class="header">
-        <h1>Yosh va Yil</h1>
-        <p>Kiritilgan yosh bo'yicha yilni yoki aksinchasini topish</p>
+        <h1><span>Xronologik</span> Metrika</h1>
+        <p>Kiritilgan ko'rsatkichlardan biri (tug'ilgan yili yoki yoshi) orqali ikkinchisini aniqlash mexanizmi</p>
     </header>
-    <form onsubmit="event.preventDefault(); hisobla();">
-        <div class="field">
-            <label for="age">Yosh kiriting (Yilni topish)</label>
-            <input type="number" id="age" min="0" max="150">
-        </div>
-        <div class="divider">— YOKI —</div>
-        <div class="field">
-            <label for="year">Tug'ilgan yil kiriting (Yoshni topish)</label>
-            <input type="number" id="year" min="1900" max="2026">
-        </div>
-        <button type="submit" class="btn-submit">Hisoblash</button>
-    </form>
+
+    <div class="field">
+        <label for="dataInput">Ko'rsatkichni kiriting</label>
+        <input type="number" id="dataInput" placeholder="Masalan: 18 yoki 2008" min="1" max="2026">
+    </div>
+
     <div class="results-panel">
-        <div class="result-box"><span class="result-label">Tug'ilgan yili:</span><span class="result-value" id="res1">—</span></div>
-        <div class="result-box"><span class="result-label">Hozirgi yoshi:</span><span class="result-value" id="res2">—</span></div>
+        <div class="result-box" id="boxYear">
+            <span class="result-label">Tug'ilgan yil:</span>
+            <span class="result-value" id="resYear">—</span>
+        </div>
+        <div class="result-box" id="boxAge">
+            <span class="result-label">Joriy yosh:</span>
+            <span class="result-value" id="resAge">—</span>
+        </div>
+    </div>
+
+    <div class="info-box">
+        <strong>✓ Aqlli boshqaruv:</strong> Agar 1, 2 yoki 3 xonali son kiritilsa yosh deb, 4 xonali son kiritilsa tug'ilgan yil deb qabul qilinadi.
     </div>
 </main>
-<script>
-const CURRENT_YEAR = 2026;
-function hisobla() {
-    const ageInput = document.getElementById('age').value;
-    const yearInput = document.getElementById('year').value;
-    const out1 = document.getElementById('res1');
-    const out2 = document.getElementById('res2');
 
-    if (ageInput !== '') {
-        const age = parseInt(ageInput);
-        out1.textContent = (CURRENT_YEAR - age) + "-yil";
-        out2.textContent = age + " yoshda";
-        document.getElementById('year').value = ''; 
-    } else if (yearInput !== '') {
-        const year = parseInt(yearInput);
-        out1.textContent = year + "-yil";
-        out2.textContent = (CURRENT_YEAR - year) + " yoshda";
-        document.getElementById('age').value = '';
-    } else {
-        alert('Iltimos, kataklardan birini to\'ldiring!');
+<script>
+const inputElement = document.getElementById("dataInput");
+const displayYear = document.getElementById("resYear");
+const displayAge = document.getElementById("resAge");
+
+const boxYear = document.getElementById("boxYear");
+const boxAge = document.getElementById("boxAge");
+
+inputElement.addEventListener("input", xronologikTahlil);
+
+function xronologikTahlil() {
+    const xomQiymat = inputElement.value.trim();
+    const joriyYil = new Date().getFullYear(); // Tizim joriy yilni (2026) avtomatik oladi
+
+    // Dastlabki holatga qaytarish va belgilarni o'chirish
+    displayYear.textContent = "—";
+    displayAge.textContent = "—";
+    boxYear.classList.remove("active-indicator");
+    boxAge.classList.remove("active-indicator");
+
+    if (xomQiymat === "" || isNaN(xomQiymat)) {
+        return;
     }
+
+    const son = parseInt(xomQiymat, 10);
+
+    // 1️⃣ 2 yoki 3 xonali sonlar -> YOSH deb hisoblanadi
+    if (son >= 1 && son <= 999) {
+        const yosh = son;
+        const hisoblanganYil = joriyYil - yosh;
+
+        displayYear.textContent = hisoblanganYil + "-yil";
+        displayAge.textContent = yosh + " yoshda";
+        
+        // Yosh kiritilganini bildirish uchun vizual urg'u berish
+        boxAge.classList.add("active-indicator");
+
+    // 2️⃣ 4 xonali sonlar -> TUG'ILGAN YIL deb hisoblanadi
+    } else if (son >= 1000 && son <= 9999) {
+        const tugilganYil = son;
+        const hisoblanganYosh = joriyYil - tugilganYil;
+
+        if (hisoblanganYosh >= 0) {
+            displayYear.textContent = tugilganYil + "-yil";
+            displayAge.textContent = hisoblanganYosh + " yoshda";
+        } else {
+            // Kelajak yili kiritilgan holat uchun professional qayd
+            displayYear.textContent = tugilganYil + "-yil";
+            displayAge.textContent = "Ko'rsatilgan yil hali kelmagan";
+        }
+
+        // Yil kiritilganini bildirish uchun vizual urg'u berish
+        boxYear.classList.add("active-indicator");
+    }
+    // Boshqa har qanday xonali sonlarda (1 xonali yoki 5 xonali) natijalar bo'sh ("—") qoladi.
 }
 </script>
+
 </body>
 </html>

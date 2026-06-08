@@ -8,7 +8,7 @@
 8.3_Currency.HTML "$$3. O'zbek so'midan AQSH dollari, Yevro va Rubllarga konvertatsiyasini amalga oshiruvchi dastur tuzish."
 9.2_app.HTML "$$2. Selsiy, Farengeyt va Kelvin o'rtasida harorat konvertatsiyasini amalga oshiruvchi dastur tuzish."
 10.3_pul.HTML "3. O'zbek so'midan AQSH dollari, Yevro va Rubllarga konvertatsiyasini amalga oshiruvchi dastur tuzish."
-11.2_temperatura.HTML "2. Selsiy, Farengeyt va Kelvin o'rtasida harorat konvertatsiyasini amalga oshiruvchi dastur tuzish."
+11.2_temperatura.HTML "$$2. Selsiy, Farengeyt va Kelvin o'rtasida harorat konvertatsiyasini amalga oshiruvchi dastur tuzish."
 12.4_GeoGIt.HTML "Geometrik shakllar (aylana, kvadrat, uchburchak, shar, kub) yuzi va perimetrini hisoblovchi dastur."
 13.4_Geometriya.HTML "Geometrik shakllar (aylana, kvadrat, uchburchak, shar, kub) yuzi, hajmi va perimetrini hisoblovchi dastur."
 14.5_JuftToq.HTML "$$5. Vazifa: Kiritilgan sonning juft yoki toq, necha xonali ekanligini aniqlovchi dastur tuzish."

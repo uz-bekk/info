@@ -4,7 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Vault System v3</title>
-<link rel="icon" type="image/png" href="https://uz-bekk.github.io/info/favicon-32x32.png">
+
+<link rel="icon" type="image/jpeg" href="https://uz-bekk.github.io/info/graphics/pro.jpg">
 
 <style>
 /* --- CONFIGURABLE THEME ROOT VARIABLES --- */
@@ -70,7 +71,7 @@ body::before{
     pointer-events:none;
 }
 
-/* --- SCROLLABLE HEADER --- */
+/* --- HEADER STYLES --- */
 header{
     padding:20px;
     background:var(--header-bg);
@@ -269,7 +270,6 @@ button:hover{
     padding:15px;
 }
 
-/* --- MEDIA CARDS & PREVIEW BOX EXCEPTIONS --- */
 .file-card{
     background:var(--card);
     border:1px solid var(--border-alpha);
@@ -315,6 +315,7 @@ button:hover{
     background: transparent;
 }
 
+
 .file-desc{
     color:var(--muted);
     font-size:14px;
@@ -356,15 +357,331 @@ button:hover{
     height:40px;
 }
 
-@media(max-width:650px){
-    .header-main-grid {
+/* ==========================================================================
+   HIGH-FIDELITY DECOY SPLIT-SCREEN WORKSPACE OVERLAY
+   ========================================================================== */
+#visionBlock {
+    display: none;
+    position: fixed;
+    inset: 0;
+    width: 100vw;
+    height: 100vh;
+    background: #111111;
+    z-index: 100000;
+    user-select: text;
+}
+
+#visionBlock.active {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4px;
+    background: #202020;
+}
+
+/* --- LEFT SIDE: WINDOWS 11 NOTEPAD CLONE --- */
+.decoy-notepad {
+    background: #1e1e1e;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    overflow: hidden;
+    font-family: "Segoe UI", -apple-system, sans-serif;
+}
+
+.np-titlebar {
+    height: 40px;
+    background: #1c1c1c;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 12px;
+    font-size: 12px;
+    color: #ffffff;
+    border-bottom: 1px solid #2b2b2b;
+}
+
+.np-tabs {
+    display: flex;
+    align-items: flex-end;
+    height: 100%;
+}
+
+.np-tab {
+    background: #1e1e1e;
+    padding: 8px 16px 6px 16px;
+    border-radius: 6px 6px 0 0;
+    font-size: 12px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    border: 1px solid #2b2b2b;
+    border-bottom: none;
+    margin-bottom: -1px;
+}
+
+.np-menubar {
+    height: 35px;
+    background: #1e1e1e;
+    display: flex;
+    align-items: center;
+    padding: 0 10px;
+    gap: 18px;
+    font-size: 12px;
+    color: #cccccc;
+    border-bottom: 1px solid #2b2b2b;
+}
+
+.np-textarea-container {
+    flex: 1;
+    padding: 12px;
+    background: #1e1e1e;
+}
+
+.np-textarea {
+    width: 100%;
+    height: 100%;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: #e3e3e3;
+    font-family: "Consolas", "Courier New", monospace;
+    font-size: 13px;
+    line-height: 1.5;
+    resize: none;
+}
+
+.np-statusbar {
+    height: 24px;
+    background: #1c1c1c;
+    border-top: 1px solid #2b2b2b;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding: 0 20px;
+    font-size: 11px;
+    color: #858585;
+    gap: 20px;
+}
+
+/* --- RIGHT SIDE: MOCK LOCALHOST CHROMIUM BROWSER --- */
+.decoy-browser {
+    background: #ffffff;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    overflow: hidden;
+    font-family: system-ui, -apple-system, sans-serif;
+    color: #333333;
+}
+
+.br-header {
+    background: #dee1e6;
+    padding: 8px 8px 4px 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    border-bottom: 1px solid #b6b9be;
+}
+
+.br-tabs {
+    display: flex;
+    gap: 4px;
+}
+
+.br-tab {
+    background: #ffffff;
+    padding: 6px 16px;
+    border-radius: 8px 8px 0 0;
+    font-size: 12px;
+    font-weight: 500;
+    color: #1f2023;
+}
+
+.br-navigation-bar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 2px 4px;
+}
+
+.br-nav-arrows {
+    color: #5f6368;
+    font-size: 16px;
+    display: flex;
+    gap: 12px;
+    font-weight: bold;
+    cursor: default;
+}
+
+.br-address-bar {
+    flex: 1;
+    background: #f1f3f4;
+    border-radius: 30px;
+    padding: 6px 16px;
+    font-size: 13px;
+    color: #202124;
+    border: 1px solid transparent;
+}
+
+/* --- RENDER CONTAINER FOR THE BROKEN MOCK APP --- */
+.br-viewport {
+    flex: 1;
+    background-color: #09090b;
+    color: #f4f4f5;
+    padding: 1rem;
+    overflow-x: auto;
+    overflow-y: auto;
+    position: relative;
+}
+
+/* APP CONTAINER WITH BUG #1: Extreme Overflow Boundary Shift */
+.broken-app-container {
+    background-color: #18181b;
+    border: 1px solid #3f3f46;
+    border-radius: 8px;
+    padding: 2rem;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
+    position: relative;
+    
+    width: 140%; /* INTENTIONAL BUG: Forces horizontal distortion */
+    border: 2px dashed #ff3333; /* Highlights the workspace container malfunction */
+}
+
+.layout-error-tag {
+    position: absolute;
+    top: -12px;
+    right: 20px;
+    background: #ff3333;
+    color: white;
+    font-family: monospace;
+    font-size: 11px;
+    font-weight: bold;
+    padding: 2px 8px;
+    border-radius: 4px;
+}
+
+/* HEADER WITH BUG #2: Overlapping Absolute CSS Placement Collision */
+.broken-app-header {
+    text-align: center;
+    margin-bottom: 2rem;
+    position: relative;
+    height: 65px; /* Too small for contents, causes absolute items to smash together */
+}
+
+.broken-app-header h1 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    letter-spacing: -0.025em;
+    position: absolute;
+    width: 100%;
+    top: 0;
+    left: 0;
+}
+
+.broken-app-header h1 span {
+    color: #10b981;
+}
+
+.broken-app-header p {
+    color: #a1a1aa;
+    font-size: 0.9rem;
+    line-height: 1.4;
+    position: absolute;
+    width: 100%;
+    top: 12px; /* INTENTIONAL CRASH: Directly overlapping with the H1 element text */
+}
+
+/* Standard mock form styles below the bug zones */
+.mock-field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.mock-field label {
+    font-size: 0.85rem;
+    color: #a1a1aa;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.mock-field input {
+    background-color: #27272a;
+    border: 1px solid #3f3f46;
+    color: #f4f4f5;
+    padding: 0.75rem 1rem;
+    border-radius: 8px;
+    font-size: 1rem;
+    outline: none;
+    width: 100%;
+}
+
+.mock-results-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.mock-result-box {
+    background-color: #09090b;
+    border: 1px solid #3f3f46;
+    padding: 0.75rem 1rem;
+    border-radius: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.mock-result-box.active-indicator {
+    border-color: rgba(16, 185, 129, 0.4);
+}
+
+.mock-result-box.active-indicator .result-value {
+    color: #10b981;
+}
+
+.result-label { font-size: 0.9rem; color: #a1a1aa; }
+.result-value { font-size: 1.1rem; font-weight: 700; }
+
+.mock-info-box {
+    margin-top: 1.25rem;
+    padding: 0.75rem 1rem;
+    background-color: rgba(39, 39, 42, 0.4);
+    border-radius: 8px;
+    font-size: 0.8rem;
+    color: #a1a1aa;
+    border-left: 3px solid #10b981;
+}
+
+/* BUG #3: Red Browser Inspect Debug Log Trace */
+.mock-browser-console {
+    height: 140px;
+    background: #181818;
+    border-top: 2px solid #333333;
+    font-family: 'Consolas', monospace;
+    font-size: 12px;
+    padding: 10px;
+    color: #cccccc;
+    overflow-y: auto;
+}
+
+.console-entry-err {
+    color: #ff5252;
+    margin-bottom: 4px;
+}
+
+.console-entry-warn {
+    color: #ffb300;
+    margin-bottom: 4px;
+}
+
+@media(max-width:850px){
+    #visionBlock.active {
         grid-template-columns: 1fr;
     }
-    .console-panel, .core-panel {
-        height: 140px;
-    }
-    .folder-content{
-        grid-template-columns:1fr;
+    .decoy-browser {
+        display: none;
     }
 }
 </style>
@@ -424,6 +741,132 @@ button:hover{
     <div class="spacer"></div>
 </div>
 
+<div id="visionBlock">
+    <div class="decoy-notepad">
+        <div class="np-titlebar">
+            <div class="np-tabs">
+                <div class="np-tab">
+                    <span>7_AgeYear.HTML</span>
+                    <span style="color:#858585; font-size:10px; margin-left:10px;">✕</span>
+                </div>
+            </div>
+            <div style="font-size:14px; letter-spacing:4px; color:#888;">─ ▢ ✕</div>
+        </div>
+        <div class="np-menubar">
+            <span>File</span> <span>Edit</span> <span>View</span>
+        </div>
+        <div class="np-textarea-container">
+            <textarea class="np-textarea" spellcheck="false"><!DOCTYPE html>
+<html lang="uz">
+<head>
+    <style>
+        .container {
+            background-color: #18181b;
+            width: 140%; /* BUG: Causes severe viewport clipping bounds */
+            position: relative;
+        }
+        .header {
+            text-align: center;
+            position: relative;
+            height: 65px; /* BUG: Box container height constraint forces collision */
+        }
+        .header h1 {
+            font-size: 1.5rem;
+            position: absolute;
+            top: 0;
+        }
+        .header p {
+            color: #a1a1aa;
+            position: absolute;
+            top: 12px; /* BUG: Positions description directly over h1 header text */
+        }
+    </style>
+</head>
+<body>
+<main class="container">
+    <header class="header">
+        <h1><span>Xronologik</span> Metrika</h1>
+        <p>Kiritilgan ko'rsatkichlardan biri (tug'ilgan yili yoki yoshi) orqali ikkinchisini aniqlash mexanizmi</p>
+    </header>
+
+    <div class="field">
+        <label>Ko'rsatkichni kiriting</label>
+        <input type="number" id="dataInput" placeholder="Masalan: 18 yoki 2008" value="2008">
+    </div>
+
+    <div class="results-panel">
+        <div class="result-box active-indicator" id="boxYear">
+            <span class="result-label">Tug'ilgan yil:</span>
+            <span class="result-value">2008-yil</span>
+        </div>
+        <div class="result-box" id="boxAge">
+            <span class="result-label">Joriy yosh:</span>
+            <span class="result-value">18 yoshda</span>
+        </div>
+    </div>
+</main>
+</body>
+</html></textarea>
+        </div>
+        <div class="np-statusbar">
+            <span id="npLineCol">Ln 18, Col 21</span>
+            <span>Windows (CRLF)</span>
+            <span>UTF-8</span>
+        </div>
+    </div>
+
+    <div class="decoy-browser">
+        <div class="br-header">
+            <div class="br-tabs">
+                <div class="br-tab">🌐 Localhost App Preview</div>
+            </div>
+            <div class="br-navigation-bar">
+                <div class="br-nav-arrows"><span>←</span> <span>→</span> <span>↻</span></div>
+                <div class="br-address-bar">http://localhost:5500/workspace/7_AgeYear.HTML</div>
+            </div>
+        </div>
+        
+        <div class="br-viewport">
+            
+            <div class="broken-app-container">
+                <span class="layout-error-tag">[OVERFLOW BURSTED]</span>
+                
+                <div class="broken-app-header">
+                    <h1><span>Xronologik</span> Metrika</h1>
+                    <p>Kiritilgan ko'rsatkichlardan biri (tug'ilgan yili yoki yoshi) orqali ikkinchisini aniqlash mexanizmi</p>
+                </div>
+
+                <div class="mock-field">
+                    <label>Ko'rsatkichni kiriting</label>
+                    <input type="number" value="2008" readonly>
+                </div>
+
+                <div class="mock-results-panel">
+                    <div class="mock-result-box active-indicator" id="boxYear">
+                        <span class="result-label">Tug'ilgan yil:</span>
+                        <span class="result-value" style="color:#10b981;">2008-yil</span>
+                    </div>
+                    <div class="mock-result-box">
+                        <span class="result-label">Joriy yosh:</span>
+                        <span class="result-value">18 yoshda</span>
+                    </div>
+                </div>
+
+                <div class="mock-info-box">
+                    <strong>✓ Aqlli boshqaruv:</strong> Agar 1, 2 yoki 3 xonali son kiritilsa yosh deb, 4 xonali son kiritilsa tug'ilgan yil deb qabul qilinadi.
+                </div>
+            </div>
+            
+        </div>
+        
+        <div class="mock-browser-console">
+            <div class="console-entry-err">❌ Uncaught BoundsError: Layout dimension configurations exceeded maximum document space (at 7_AgeYear.HTML:11)</div>
+            <div class="console-entry-warn">⚠️ [CSS Layout] Overlapping viewport elements detected. Text boundary '.header p' collision over parent header element frame height.</div>
+            <div style="color: #00ff66;">&gt; _</div>
+        </div>
+    </div>
+</div>
+
 <script>
 /* --- THEME CONTROLLER ENGINE --- */
 const THEME_STORAGE_KEY = "vault_theme_mode";
@@ -457,6 +900,60 @@ document.addEventListener("click", e => {
     }
 });
 /* --- END OF THEME CONTROLLER ENGINE --- */
+
+/* --- HOTKEY VISION LOCK ENGINE (SPLIT WORKSPACE SYSTEM) --- */
+let isLocked = false;
+
+window.addEventListener('keydown', function(e) {
+    if (e.ctrlKey && e.shiftKey && e.key.toLowerCase() === 'l') {
+        e.preventDefault();
+        toggleVisionBlock();
+    }
+});
+
+function toggleVisionBlock() {
+    const overlay = document.getElementById('visionBlock');
+    isLocked = !isLocked;
+    
+    if (isLocked) {
+        overlay.classList.add('active');
+        log("CRITICAL: Vision block deployed [SPLIT SYSTEM WORKSPACE DECOY]");
+        
+        // Pause active previews
+        document.querySelectorAll('.media-preview-box video').forEach(video => {
+            if(!video.paused) {
+                video.pause();
+                video.dataset.wasPlaying = "true";
+            }
+        });
+    } else {
+        overlay.classList.remove('active');
+        log("SYSTEM: Decoy deactivated. Vault restored.");
+        
+        // Resume active previews
+        document.querySelectorAll('.media-preview-box video').forEach(video => {
+            if(video.dataset.wasPlaying === "true") {
+                video.play();
+                delete video.dataset.wasPlaying;
+            }
+        });
+    }
+}
+
+// Track Row/Col selection changes inside the decoy notepad text space
+const textarea = document.querySelector('.np-textarea');
+const lineColDisplay = document.getElementById('npLineCol');
+
+function updateLineCol() {
+    const textLines = textarea.value.substr(0, textarea.selectionStart).split("\n");
+    const currentLine = textLines.length;
+    const currentCol = textLines[textLines.length - 1].length + 1;
+    lineColDisplay.textContent = `Ln ${currentLine}, Col ${currentCol}`;
+}
+
+textarea.addEventListener('keyup', updateLineCol);
+textarea.addEventListener('click', updateLineCol);
+/* --- END OF HOTKEY DECOY ENGINE --- */
 
 const API_ROOT = "https://api.github.com/repos/uz-bekk/info/contents";
 const SHORT_TXT_URL = "https://raw.githubusercontent.com/uz-bekk/info/main/short.txt";
@@ -564,13 +1061,11 @@ async function getFolderContents(url){
     return files;
 }
 
-/* --- DETECT MEDIA AND RENDER PREVIEWS --- */
 function createFileCard(file){
     const filenameLower = file.name.toLowerCase();
     const desc = descriptions[filenameLower] || "No description provided.";
     const isHtml = filenameLower.endsWith(".html");
     
-    // Check file extensions
     const isImage = filenameLower.endsWith(".png") || filenameLower.endsWith(".jpg") || 
                     filenameLower.endsWith(".jpeg") || filenameLower.endsWith(".gif") || 
                     filenameLower.endsWith(".svg") || filenameLower.endsWith(".webp");
@@ -580,7 +1075,6 @@ function createFileCard(file){
 
     let mediaPreviewHtml = "";
 
-    // Exception condition for images/GIFs
     if(isImage && file.download_url) {
         mediaPreviewHtml = `
             <div class="media-preview-box">
@@ -588,7 +1082,6 @@ function createFileCard(file){
             </div>
         `;
     } 
-    // Exception condition for video animations
     else if(isVideo && file.download_url) {
         mediaPreviewHtml = `
             <div class="media-preview-box">
