@@ -17,3 +17,8 @@
 17.8_NumSum.HTML "$$8. Vazifa: Kiritilgan n sonini raqamlari yig‘indisini xisoblovchi dastur tuzish."
 18.4_geogit2.html "$$Geometrik shakllar (aylana, kvadrat, uchburchak, shar, kub) yuzi va perimetrini hisoblovchi dastur."
 19.7_AgeYear2.html "$$7. Vazifa: Foydalanuvchi kiritgan yosh bo‘yicha nechanchi yilda tu‘g‘ilganini va aksinchani topish dasturini yaratish."
+20.1.png "Vazifa 1. maktab uchun logotip."
+21.1withbg.png "Vazifa 1. maktab uchun logotip."
+22.2.png "Vazifa 1. maktab uchun logotip."
+23.3.png "Vazifa 1. maktab uchun logotip."
+24.4.png "Vazifa 1. maktab uchun logotip."
