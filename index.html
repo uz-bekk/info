@@ -264,7 +264,7 @@ button:hover{
 }
 
 .folder-content{
-    display:grid;
+    display:none;
     grid-template-columns:repeat(auto-fill,minmax(280px,1fr));
     gap:15px;
     padding:15px;
@@ -544,7 +544,7 @@ button:hover{
     position: relative;
     
     width: 140%; /* INTENTIONAL BUG: Forces horizontal distortion */
-    border: 2px dashed #ff3333; /* Highlights the workspace container malfunction */
+    order: 2px dashed #ff3333; /* Highlights the workspace container malfunction */
 }
 
 .layout-error-tag {
@@ -684,6 +684,14 @@ button:hover{
         display: none;
     }
 }
+.canva-btn {
+    transition: .25s;
+}
+.canva-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0 15px rgba(0, 196, 204, 0.4);
+    background: #00a4ab;
+}
 </style>
 </head>
 <body>
@@ -731,8 +739,8 @@ button:hover{
         <div class="header-action-bar">
             <span class="action-link theme-toggle-btn">Day Mode</span> | 
             <span class="action-link">Search</span> | 
-            <span class="action-link">Hash Generator</span> | 
-            <span class="action-link">System Status</span>
+            <span class="action-link" id="syncRepoBtn">Sync Repo</span> | 
+            <span class="action-link" id="toggleFoldersBtn">Open Folders</span>
         </div>
     </header>
 
@@ -746,14 +754,14 @@ button:hover{
         <div class="np-titlebar">
             <div class="np-tabs">
                 <div class="np-tab">
-                    <span>7_AgeYear.HTML</span>
+                    <span>index.html</span>
                     <span style="color:#858585; font-size:10px; margin-left:10px;">✕</span>
                 </div>
             </div>
             <div style="font-size:14px; letter-spacing:4px; color:#888;">─ ▢ ✕</div>
         </div>
         <div class="np-menubar">
-            <span>File</span> <span>Edit</span> <span>View</span>
+            <span>File</span> <span>Edit</span> <span>Format</span> <span>View</span> <span>Help</span>
         </div>
         <div class="np-textarea-container">
             <textarea class="np-textarea" spellcheck="false"><!DOCTYPE html>
@@ -818,11 +826,13 @@ button:hover{
     <div class="decoy-browser">
         <div class="br-header">
             <div class="br-tabs">
-                <div class="br-tab">🌐 Localhost App Preview</div>
+                <div class="br-tab">Xronologik metrika</div>
+                <div class ="br-tab">New tab</div>
+                <div class ="br-tab">+</div>
             </div>
             <div class="br-navigation-bar">
                 <div class="br-nav-arrows"><span>←</span> <span>→</span> <span>↻</span></div>
-                <div class="br-address-bar">http://localhost:5500/workspace/7_AgeYear.HTML</div>
+                <div class="br-address-bar">file:///C:/Users/admin/Desktop/Informatika/index.html</div>
             </div>
         </div>
         
@@ -860,7 +870,7 @@ button:hover{
         </div>
         
         <div class="mock-browser-console">
-            <div class="console-entry-err">❌ Uncaught BoundsError: Layout dimension configurations exceeded maximum document space (at 7_AgeYear.HTML:11)</div>
+            <div class="console-entry-err">❌ Uncaught BoundsError: Layout dimension configurations exceeded maximum document space (at index.html:11)</div>
             <div class="console-entry-warn">⚠️ [CSS Layout] Overlapping viewport elements detected. Text boundary '.header p' collision over parent header element frame height.</div>
             <div style="color: #00ff66;">&gt; _</div>
         </div>
@@ -905,8 +915,13 @@ document.addEventListener("click", e => {
 let isLocked = false;
 
 window.addEventListener('keydown', function(e) {
-    if (e.ctrlKey && e.shiftKey && e.key.toLowerCase() === 'l') {
+    if (e.key === 'Escape') {
         e.preventDefault();
+        document.documentElement.requestFullscreen();
+        toggleVisionBlock();
+    }else if (e.key === 'Delete') {
+        e.preventDefault();
+        document.documentElement.requestFullscreen();
         toggleVisionBlock();
     }
 });
@@ -1011,7 +1026,6 @@ async function fetchJSON(url){
     }
     return response.json();
 }
-
 async function loadDescriptions(){
     try{
         log("Loading short.txt");
@@ -1027,9 +1041,22 @@ async function loadDescriptions(){
             if(!cleaned) continue;
             const match = cleaned.match(/^\d+\.\s*([^\s]+)\s+"([\s\S]+)"/);
             if(match){
-                const file = match[1].trim();
-                const desc = match[2].replace(/\s+/g, " ").trim();
-                descriptions[file.toLowerCase()] = desc;
+                const file = match[1].trim().toLowerCase();
+                let fullDesc = match[2].replace(/\s+/g, " ").trim();
+                
+                // Check if a Canva link is embedded in the description
+                let canvaUrl = null;
+                if (fullDesc.includes("| Canva:")) {
+                    const parts = fullDesc.split("| Canva:");
+                    fullDesc = parts[0].trim(); // Clean description
+                    canvaUrl = parts[1].trim(); // Extracted URL
+                }
+
+                // Store both the clean description and the optional Canva link
+                descriptions[file] = {
+                    text: fullDesc,
+                    canva: canvaUrl
+                };
             }
         }
         log("short.txt loaded");
@@ -1063,9 +1090,13 @@ async function getFolderContents(url){
 
 function createFileCard(file){
     const filenameLower = file.name.toLowerCase();
-    const desc = descriptions[filenameLower] || "No description provided.";
-    const isHtml = filenameLower.endsWith(".html");
     
+    // Get description object (fallback to default structure if missing)
+    const descObj = descriptions[filenameLower] || { text: "No description provided.", canva: null };
+    const descText = descObj.text;
+    const canvaLink = descObj.canva;
+
+    const isHtml = filenameLower.endsWith(".html");
     const isImage = filenameLower.endsWith(".png") || filenameLower.endsWith(".jpg") || 
                     filenameLower.endsWith(".jpeg") || filenameLower.endsWith(".gif") || 
                     filenameLower.endsWith(".svg") || filenameLower.endsWith(".webp");
@@ -1095,69 +1126,120 @@ function createFileCard(file){
             <div>
                 <div class="file-name">${file.name}</div>
                 ${mediaPreviewHtml}
-                <div class="file-desc">${desc}</div>
+                <div class="file-desc">${descText}</div>
             </div>
 
-            <div class="file-actions">
-                <a class="download-btn"
-                   href="${file.path}"
-                   target="_blank"
-                   download="${file.name}">
-                   Download
-                </a>
+            <div class="file-actions" style="display: flex; flex-direction: column; gap: 8px;">
+                <div style="display: flex; gap: 8px; width: 100%;">
+                    <a class="download-btn"
+                       href="${file.path}"
+                       target="_blank"
+                       download="${file.name}">
+                       Download
+                    </a>
 
-                ${isHtml ? `
-                <a class="run-btn"
-                   href="${getRunUrl(file)}"
-                   target="_blank">
-                   Run
+                    ${isHtml ? `
+                    <a class="run-btn"
+                       href="${getRunUrl(file)}"
+                       target="_blank">
+                       Run
+                    </a>` : ""}
+                </div>
+                
+                ${canvaLink ? `
+                <a class="canva-btn" 
+                   href="${canvaLink}" 
+                   target="_blank" 
+                   style="display: block; text-align: center; text-decoration: none; background: #00c4cc; color: white; padding: 10px 12px; border-radius: 8px; font-weight: bold; width: 100%;">
+                   Edit in Canva
                 </a>` : ""}
             </div>
         </div>
     `;
 }
 
-async function loadVault(){
+async function loadVault(forceRefresh = false) {
     document.getElementById("loading").style.display = "block";
-    try{
-        await loadDescriptions();
-        log("Fetching repository root");
-        const rootItems = await fetchJSON(API_ROOT);
-        const container = document.getElementById("foldersContainer");
+    const container = document.getElementById("foldersContainer");
+    
+    // Cache keys
+    const CACHE_FOLDERS_KEY = "vault_cached_folders";
+    const CACHE_DESCS_KEY = "vault_cached_descriptions";
+
+    try {
+        let foldersData = null;
+
+        // If we are NOT forcing a refresh, try reading from localStorage
+        if (!forceRefresh) {
+            const cachedFolders = localStorage.getItem(CACHE_FOLDERS_KEY);
+            const cachedDescs = localStorage.getItem(CACHE_DESCS_KEY);
+
+            if (cachedFolders && cachedDescs) {
+                log("CACHE: Restoring repository from local storage cache...");
+                foldersData = JSON.parse(cachedFolders);
+                
+                // Restore descriptions object
+                Object.assign(descriptions, JSON.parse(cachedDescs));
+            }
+        }
+
+        // If no cache was found, or forceRefresh is true, fetch from GitHub API
+        if (!foldersData) {
+            log("NETWORK: Fetching fresh repository data...");
+            await loadDescriptions(); // Fetches short.txt
+            
+            log("Fetching repository root...");
+            const rootItems = await fetchJSON(API_ROOT);
+            const folders = rootItems.filter(item => item.type === "dir");
+            log(`Detected ${folders.length} folders. Starting compilation...`);
+
+            foldersData = [];
+            for (const folder of folders) {
+                const files = await getFolderContents(folder.url);
+                foldersData.push({
+                    name: folder.name,
+                    files: files
+                });
+            }
+
+            // Save the compiled result to localStorage cache
+            localStorage.setItem(CACHE_FOLDERS_KEY, JSON.stringify(foldersData));
+            localStorage.setItem(CACHE_DESCS_KEY, JSON.stringify(descriptions));
+            log("CACHE: Repository data cached successfully.");
+        }
+
+        // --- RENDER THE INTERFACE ---
         container.innerHTML = "";
+        log(`Rendering ${foldersData.length} structural folders...`);
 
-        const folders = rootItems.filter(item => item.type === "dir");
-        log(`Detected ${folders.length} folders`);
-
-        for(const folder of folders){
-            const files = await getFolderContents(folder.url);
+        for (const folder of foldersData) {
             const folderElement = document.createElement("div");
             folderElement.className = "folder";
 
             folderElement.innerHTML = `
                 <div class="folder-header">
                     <span>${folder.name}</span>
-                    <span>(${files.length})</span>
+                    <span>(${folder.files.length})</span>
                 </div>
                 <div class="folder-content">
-                    ${files.map(createFileCard).join("")}
+                    ${folder.files.map(createFileCard).join("")}
                 </div>
             `;
 
             const header = folderElement.querySelector(".folder-header");
             const content = folderElement.querySelector(".folder-content");
 
-            header.addEventListener("click",()=>{
-                content.style.display = content.style.display === "none" ? "grid" : "none";
+            header.addEventListener("click", () => {
+                content.style.display = content.style.display === "grid" ? "none" : "grid";
             });
 
             container.appendChild(folderElement);
         }
-        log("Repository load complete");
-    }catch(error){
+        log("Repository load complete.");
+    } catch (error) {
         log("Repository fetch error: " + error.message);
-        document.getElementById("foldersContainer").innerHTML =
-            `<div style="padding:20px;color:#ff6666;">Failed to load repository.</div>`;
+        container.innerHTML =
+            `<div style="padding:20px;color:#ff6666;">Failed to load repository. Error: ${error.message}</div>`;
     }
     document.getElementById("loading").style.display = "none";
 }
@@ -1173,6 +1255,30 @@ window.addEventListener("load", ()=>{
     if(sessionStorage.getItem(SESSION_KEY) === "true"){
         log("Existing session restored");
         showVault();
+    }
+});
+// Sync Button Event Listener
+document.getElementById("syncRepoBtn").addEventListener("click", () => {
+    log("SYSTEM: Manual synchronization requested...");
+    loadVault(true); // Passes true to bypass cache and force a refresh
+});
+// Smart Master Toggle for Folders
+let allFoldersRevealed = false;
+
+document.getElementById("toggleFoldersBtn").addEventListener("click", function() {
+    const contents = document.querySelectorAll(".folder-content");
+    allFoldersRevealed = !allFoldersRevealed; // Flip the state
+
+    if (allFoldersRevealed) {
+        log("SYSTEM: Revealing all folder contents...");
+        contents.forEach(content => content.style.display = "grid");
+        this.textContent = "Close Folders";
+       // this.style.color = "#ff6666"; // Optional: change color to red when open
+    } else {
+        log("SYSTEM: Collapsing all folder contents...");
+        contents.forEach(content => content.style.display = "none");
+        this.textContent = "Open Folders";
+       // this.style.color = "#00ffbb"; // Optional: change back to green when closed
     }
 });
 </script>
