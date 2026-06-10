@@ -4,726 +4,1327 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Vault System v3</title>
+<link rel="icon" type="image/png" href="https://uz-bekk.github.io/info/favicon-32x32.png">
 
-<link rel="icon" type="image/jpeg" href="https://uz-bekk.github.io/info/favicon-32x32.png">
+<!-- Google Fonts: Inter (UI body) + JetBrains Mono (terminal/monospace) -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 
 <style>
-/* --- CONFIGURABLE THEME ROOT VARIABLES --- */
+/* ============================================================
+   DESIGN TOKENS — all theming flows from here
+   ============================================================ */
 :root {
-    --bg:#0a0a0a;
-    --card:#111;
-    --border:#00ff66;
-    --border-alpha: rgba(0,255,102,.25);
-    --text:#e5ffe5;
-    --muted:#8cbf99;
-    --accent:#00ff66;
-    --header-bg: #050505;
-    --panel-bg: #070707;
-    --input-bg: #0b0b0b;
-    --input-border: #1f1f1f;
-    --glow-1: rgba(0,255,102,.08);
-    --glow-2: rgba(0,255,102,.05);
-    --error: #ff6666;
-    --btn-text: black;
+  /* Dark mode (default) — deep charcoal + electric emerald */
+  --bg:            #0d0f0d;
+  --surface:       #131613;
+  --surface-2:     #1a1e1a;
+  --surface-3:     #1f251f;
+  --border:        rgba(0, 200, 85, 0.18);
+  --border-strong: rgba(0, 200, 85, 0.45);
+  --text:          #e2ede4;
+  --text-secondary:#8ba893;
+  --accent:        #00c855;
+  --accent-dim:    rgba(0, 200, 85, 0.12);
+  --accent-glow:   rgba(0, 200, 85, 0.25);
+  --error:         #f05050;
+  --error-dim:     rgba(240, 80, 80, 0.12);
+  --btn-text:      #000;
+  --shadow-sm:     0 1px 3px rgba(0,0,0,0.5);
+  --shadow-md:     0 4px 16px rgba(0,0,0,0.5);
+  --shadow-glow:   0 0 20px rgba(0, 200, 85, 0.15);
+  --radius-sm:     6px;
+  --radius-md:     10px;
+  --radius-lg:     14px;
+  --font-ui:       'Inter', system-ui, sans-serif;
+  --font-mono:     'JetBrains Mono', 'Consolas', monospace;
 }
 
-/* --- LIGHT / DAY MODE PALETTE --- */
+/* Light / Day mode overrides */
 [data-theme="light"] {
-    --bg:#f4f7f5;
-    --card:#ffffff;
-    --border:#007a33;
-    --border-alpha: rgba(0,122,51,.25);
-    --text:#0a1c11;
-    --muted:#5c7565;
-    --accent:#007a33;
-    --header-bg: #e6ede8;
-    --panel-bg: #edf2ee;
-    --input-bg: #ffffff;
-    --input-border: #cbd6ce;
-    --glow-1: rgba(0,122,51,.04);
-    --glow-2: rgba(0,122,51,.02);
-    --error: #c92a2a;
-    --btn-text: white;
+  --bg:            #f0f4f1;
+  --surface:       #ffffff;
+  --surface-2:     #eaf0eb;
+  --surface-3:     #ddeade;
+  --border:        rgba(0, 130, 55, 0.18);
+  --border-strong: rgba(0, 130, 55, 0.45);
+  --text:          #0d1f12;
+  --text-secondary:#4d7057;
+  --accent:        #00892e;
+  --accent-dim:    rgba(0, 130, 55, 0.10);
+  --accent-glow:   rgba(0, 130, 55, 0.20);
+  --error:         #c82626;
+  --error-dim:     rgba(200, 38, 38, 0.09);
+  --btn-text:      #ffffff;
+  --shadow-sm:     0 1px 3px rgba(0,0,0,0.08);
+  --shadow-md:     0 4px 16px rgba(0,0,0,0.10);
+  --shadow-glow:   0 0 20px rgba(0, 130, 55, 0.12);
 }
 
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
+/* ============================================================
+   RESET & BASE
+   ============================================================ */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
-body{
-    background:var(--bg);
-    color:var(--text);
-    font-family:Consolas, monospace;
-    min-height:100vh;
-    overflow-x:hidden;
-    transition: background 0.3s, color 0.3s;
+html {
+  scroll-behavior: smooth;
 }
 
-body::before{
-    content:"";
-    position:fixed;
-    inset:0;
-    background:
-        radial-gradient(circle at 20% 20%, var(--glow-1), transparent 25%),
-        radial-gradient(circle at 80% 70%, var(--glow-2), transparent 25%);
-    pointer-events:none;
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-ui);
+  font-size: 14px;
+  line-height: 1.6;
+  min-height: 100vh;
+  overflow-x: hidden;
+  transition: background 0.35s ease, color 0.35s ease;
+  -webkit-font-smoothing: antialiased;
 }
 
-/* --- HEADER STYLES --- */
-header{
-    padding:20px;
-    background:var(--header-bg);
-    border-bottom:1px solid var(--border-alpha);
-    display:flex;
-    flex-direction:column;
-    gap:12px;
-    width:100%; 
+/* Subtle ambient background gradient — theme-aware */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 60% 40% at 15% 10%, var(--accent-dim), transparent),
+    radial-gradient(ellipse 50% 35% at 85% 80%, var(--accent-dim), transparent);
+  pointer-events: none;
+  z-index: 0;
 }
 
-.header-title-box {
-    border: 1px solid var(--accent);
-    padding: 12px;
-    text-align: center;
-    box-shadow: 0 0 10px var(--border-alpha);
+/* ============================================================
+   SCROLLBAR STYLING
+   ============================================================ */
+::-webkit-scrollbar { width: 5px; height: 5px }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 99px; }
+::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+
+/* ============================================================
+   LOGIN SCREEN
+   ============================================================ */
+#loginScreen {
+  position: relative;
+  z-index: 1;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
 }
 
-.header-title-box h1{
-    color:var(--accent);
-    letter-spacing:4px;
-    text-shadow:0 0 10px var(--accent);
-    font-size:22px;
+/* Animated grid backdrop — CSS only, performance-safe */
+#loginScreen::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background-image:
+    linear-gradient(var(--border) 1px, transparent 1px),
+    linear-gradient(90deg, var(--border) 1px, transparent 1px);
+  background-size: 48px 48px;
+  pointer-events: none;
+  mask-image: radial-gradient(ellipse 80% 70% at 50% 50%, black 40%, transparent 80%);
+  -webkit-mask-image: radial-gradient(ellipse 80% 70% at 50% 50%, black 40%, transparent 80%);
 }
 
-.header-main-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
+.login-box {
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  max-width: 400px;
+  background: var(--surface);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-lg);
+  padding: 36px 32px;
+  box-shadow: var(--shadow-md), var(--shadow-glow);
+  animation: fadeSlideUp 0.5s ease both;
 }
 
-.console-panel, .core-panel {
-    border: 1px solid var(--accent);
-    background: var(--panel-bg);
-    padding: 12px;
-    height: 220px;
-    display: flex;
-    flex-direction: column;
+@keyframes fadeSlideUp {
+  from { opacity: 0; transform: translateY(18px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
-.panel-title {
-    color: var(--accent);
-    font-size: 13px;
-    font-weight: bold;
-    letter-spacing: 1px;
-    margin-bottom: 8px;
-    border-bottom: 1px dashed var(--border-alpha);
-    padding-bottom: 4px;
+/* Vault logo / wordmark atop login card */
+.login-logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 28px;
 }
 
-.console-log{
-    flex:1;
-    overflow-y:auto;
-    font-size:11px;
-    color:var(--text);
-    line-height:1.4;
+.login-logo-icon {
+  width: 36px;
+  height: 36px;
+  border: 2px solid var(--accent);
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 12px var(--accent-glow);
 }
 
-.core-panel {
-    align-items: center;
+.login-logo-icon svg { display: block; }
+
+.login-logo-text {
+  font-family: var(--font-mono);
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--accent);
+  letter-spacing: 3px;
+  text-transform: uppercase;
 }
 
-.core-panel .panel-title {
-    width: 100%;
-    text-align: center;
+.login-box h2 {
+  text-align: center;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 2px;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  margin-bottom: 24px;
 }
 
-.ascii-art {
-    color: var(--accent);
-    font-family: monospace;
-    white-space: pre;
-    text-align: center;
-    margin-top: auto;
-    margin-bottom: auto;
-    line-height: 1.2;
-    text-shadow: 0 0 8px var(--accent);
+.login-theme-row {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 20px;
 }
 
-.header-action-bar {
-    border: 1px solid var(--accent);
-    padding: 10px;
-    text-align: center;
-    font-size: 13px;
-    color: var(--muted);
+/* ============================================================
+   FORM ELEMENTS — shared across login + anywhere
+   ============================================================ */
+.field-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 16px;
 }
 
+.field-group label {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+}
+
+input[type="password"],
+input[type="text"],
+input[type="number"] {
+  width: 100%;
+  padding: 11px 14px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  color: var(--text);
+  font-family: var(--font-mono);
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+input[type="password"]::placeholder,
+input[type="text"]::placeholder,
+input[type="number"]::placeholder { color: var(--text-secondary); opacity: 0.6; }
+
+input[type="password"]:focus,
+input[type="text"]:focus,
+input[type="number"]:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-dim);
+}
+
+/* ============================================================
+   BUTTONS
+   ============================================================ */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  cursor: pointer;
+  border: none;
+  border-radius: var(--radius-md);
+  font-family: var(--font-ui);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  padding: 10px 16px;
+  text-decoration: none;
+  transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease, opacity 0.18s ease;
+  white-space: nowrap;
+}
+
+.btn:hover  { transform: translateY(-2px); box-shadow: var(--shadow-md); }
+.btn:active { transform: translateY(0);    box-shadow: none; }
+
+/* Solid accent button */
+.btn-primary {
+  background: var(--accent);
+  color: var(--btn-text);
+  box-shadow: 0 2px 8px var(--accent-glow);
+}
+.btn-primary:hover { box-shadow: 0 6px 20px var(--accent-glow); }
+
+/* Ghost button */
+.btn-ghost {
+  background: transparent;
+  color: var(--text-secondary);
+  border: 1px solid var(--border);
+}
+.btn-ghost:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-dim); }
+
+/* Danger / error state */
+.btn-danger {
+  background: var(--error-dim);
+  color: var(--error);
+  border: 1px solid rgba(240, 80, 80, 0.3);
+}
+.btn-danger:hover { background: var(--error); color: #fff; }
+
+/* Full-width variant */
+.btn-full { width: 100%; }
+
+#loginBtn {
+  width: 100%;
+  padding: 12px;
+  font-size: 14px;
+  margin-top: 4px;
+}
+
+#errorMsg {
+  color: var(--error);
+  font-size: 13px;
+  text-align: center;
+  margin-top: 12px;
+  min-height: 20px;
+  font-family: var(--font-mono);
+  animation: shake 0.3s ease;
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25%       { transform: translateX(-4px); }
+  75%       { transform: translateX(4px); }
+}
+
+/* ============================================================
+   THEME TOGGLE CHIP
+   ============================================================ */
+.theme-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 10px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 99px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.theme-btn:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: var(--accent-dim);
+}
+
+.theme-btn .icon { font-size: 13px; line-height: 1; }
+
+/* ============================================================
+   ACTION LINKS (inline nav items)
+   ============================================================ */
 .action-link {
-    color: var(--accent);
-    text-decoration: none;
-    padding: 0 8px;
-    transition: .2s;
-    cursor: pointer;
+  color: var(--text-secondary);
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: var(--radius-sm);
+  transition: color 0.2s, background 0.2s;
+  text-decoration: none;
+  user-select: none;
 }
 
 .action-link:hover {
-    text-shadow: 0 0 8px var(--accent);
-    color: var(--text);
+  color: var(--accent);
+  background: var(--accent-dim);
 }
 
-#loginScreen{
-    min-height:100vh;
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    padding:20px;
+/* ============================================================
+   VAULT APP SHELL
+   ============================================================ */
+#vaultApp { display: none; position: relative; z-index: 1; }
+
+/* ============================================================
+   HEADER
+   ============================================================ */
+header {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  padding: 0;
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
 }
 
-.login-box{
-    width:100%;
-    max-width:420px;
-    background:var(--card);
-    border:1px solid var(--accent);
-    border-radius:14px;
-    padding:30px;
-    box-shadow:0 0 20px var(--border-alpha);
+/* Top nav bar — logo + actions */
+.header-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 20px;
+  gap: 12px;
+  flex-wrap: wrap;
 }
 
-.login-box h2{
-    text-align:center;
-    color:var(--accent);
-    margin-bottom:20px;
+.header-logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
-input{
-    width:100%;
-    padding:12px;
-    background:var(--input-bg);
-    border:1px solid var(--input-border);
-    color:var(--text);
-    outline:none;
-    border-radius:8px;
+.header-logo-badge {
+  width: 30px;
+  height: 30px;
+  border: 1.5px solid var(--accent);
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 10px var(--accent-glow);
 }
 
-input:focus{
-    border-color:var(--accent);
-    box-shadow:0 0 10px var(--border-alpha);
+.header-logo-title {
+  font-family: var(--font-mono);
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--accent);
+  letter-spacing: 3px;
+  text-transform: uppercase;
 }
 
-button{
-    cursor:pointer;
-    border:none;
-    padding:12px 16px;
-    border-radius:8px;
-    background:var(--accent);
-    color:var(--btn-text);
-    font-weight:bold;
-    transition:.25s;
+.header-logo-version {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--text-secondary);
+  letter-spacing: 1px;
+  margin-top: 2px;
 }
 
-button:hover{
-    transform:translateY(-2px);
-    box-shadow:0 0 15px var(--border-alpha);
+/* Nav action pill row */
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-wrap: wrap;
 }
 
-#loginBtn{
-    width:100%;
-    margin-top:12px;
+.header-divider {
+  width: 1px;
+  height: 16px;
+  background: var(--border);
+  margin: 0 4px;
 }
 
-#errorMsg{
-    color:var(--error);
-    margin-top:12px;
-    text-align:center;
+/* Dashboard panels row */
+.header-panels {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1px;
+  background: var(--border);
+  border-top: 1px solid var(--border);
 }
 
-#vaultApp{
-    display:none;
+/* Individual panel */
+.panel {
+  background: var(--surface);
+  padding: 14px 18px;
 }
 
-#loading{
-    text-align:center;
-    padding:25px;
-    color:var(--accent);
+.panel-label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
 }
 
-.folder{
-    margin:20px;
-    border:1px solid var(--border-alpha);
-    border-radius:12px;
-    overflow:hidden;
+.panel-label::before {
+  content: "";
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 6px var(--accent);
+  animation: blink 2s infinite;
 }
 
-.folder-header{
-    padding:14px 18px;
-    background:var(--panel-bg);
-    color:var(--accent);
-    cursor:pointer;
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.3; }
 }
 
-.folder-content{
-    display:none;
-    grid-template-columns:repeat(auto-fill,minmax(280px,1fr));
-    gap:15px;
-    padding:15px;
+/* Console log panel */
+.console-panel { height: 160px; }
+
+.console-log {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-secondary);
+  line-height: 1.5;
+  overflow-y: auto;
+  height: 85%;
 }
 
-.file-card{
-    background:var(--card);
-    border:1px solid var(--border-alpha);
-    border-radius:12px;
-    padding:15px;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    transition:.3s;
+.console-log .log-line { display: block; }
+.console-log .log-time { color: var(--accent); margin-right: 4px; opacity: 0.7; }
+
+/* ASCII art / vault core panel */
+.core-panel {
+  height: 160px;
+  display: grid;
+  //align-items: center;
+  //justify-content: center;
 }
 
-.file-card:hover{
-    transform:translateY(-4px);
-    border-color:var(--accent);
-    box-shadow:0 0 15px var(--border-alpha);
+.ascii-art {
+  font-family: var(--font-ui);
+  white-space: pre;
+  font-size: 9px;
+  line-height: 1.2;
+  color: var(--accent);
+  text-shadow: 0 0 8px var(--accent-glow);
+  text-align: center;
+  opacity: 1;
+  overflow-y: auto;
 }
 
-.file-name{
-    color:var(--accent);
-    word-break:break-word;
-    margin-bottom:12px;
-    font-weight: bold;
+/* Mobile: collapse panels to single-column */
+@media (max-width: 600px) {
+  .header-panels { grid-template-columns: 1fr; }
+  .core-panel { display: none; } /* Hide ASCII on mobile to save space */
+  .console-panel { height: 80px; }
 }
 
+/* ============================================================
+   MAIN CONTENT AREA
+   ============================================================ */
+#vaultMain {
+  padding: 0 0 60px 0;
+  inset: 0;
+  background-image:
+    linear-gradient(0deg, var(--border) 1px, transparent 2px),
+    linear-gradient(90deg, var(--border) 1px, transparent 1px);
+  background-size: 48px 48px;
+ }
+
+/* ============================================================
+   LOADING INDICATOR
+   ============================================================ */
+#loading {
+  display: none;
+  padding: 40px 20px;
+  text-align: center;
+  color: var(--text-secondary);
+  font-family: var(--font-mono);
+  font-size: 13px;
+  letter-spacing: 1px;
+}
+
+.loading-dots::after {
+  content: '';
+  animation: loadDots 1.5s infinite;
+}
+
+@keyframes loadDots {
+  0%   { content: ''; }
+  33%  { content: '.'; }
+  66%  { content: '..'; }
+  100% { content: '...'; }
+}
+
+.loading-bar {
+  width: 200px;
+  height: 2px;
+  background: var(--border);
+  border-radius: 99px;
+  margin: 16px auto 0;
+  overflow: hidden;
+}
+
+.loading-bar-fill {
+  height: 100%;
+  width: 40%;
+  background: var(--accent);
+  border-radius: 99px;
+  animation: loadSlide 1.2s ease-in-out infinite alternate;
+  box-shadow: 0 0 8px var(--accent);
+}
+
+@keyframes loadSlide {
+  from { transform: translateX(-60px); }
+  to   { transform: translateX(220px); }
+}
+
+/* ============================================================
+   FOLDERS & FILE CARDS
+   ============================================================ */
+#foldersContainer {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* Folder accordion */
+.folder {
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  transition: border-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+.folder:hover {
+  border-color: var(--border-strong);
+  box-shadow: var(--shadow-md);
+}
+
+.folder-header {
+  padding: 14px 18px;
+  background: var(--surface-2);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  user-select: none;
+  gap: 10px;
+  transition: background 0.2s ease;
+}
+
+.folder-header:hover { background: var(--surface-3); }
+
+.folder-header-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Folder icon — animated chevron */
+.folder-icon {
+  width: 28px;
+  height: 28px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--surface);
+  color: var(--accent);
+  font-size: 13px;
+  transition: background 0.2s, border-color 0.2s;
+  flex-shrink: 0;
+}
+
+.folder.open .folder-icon { background: var(--accent-dim); border-color: var(--border-strong); }
+
+.folder-name {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+  letter-spacing: 0.5px;
+}
+
+.folder-count {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--accent);
+  background: var(--accent-dim);
+  border: 1px solid var(--border-strong);
+  border-radius: 99px;
+  padding: 2px 9px;
+}
+
+.folder-chevron {
+  color: var(--text-secondary);
+  font-size: 12px;
+  transition: transform 0.25s ease;
+  flex-shrink: 0;
+}
+
+.folder.open .folder-chevron { transform: rotate(180deg); }
+
+/* File grid inside folder */
+.folder-content {
+  display: none;
+  grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+  gap: 14px;
+  padding: 16px;
+  background: var(--bg);
+  border-top: 1px solid var(--border);
+}
+
+.folder-content.open { display: grid; }
+
+@media (max-width: 480px) {
+  .folder-content { grid-template-columns: 1fr; }
+  #foldersContainer { padding: 12px; gap: 10px; }
+}
+
+/* ============================================================
+   FILE CARD
+   ============================================================ */
+.file-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  transition: transform 0.22s ease, border-color 0.22s ease, box-shadow 0.22s ease;
+  box-shadow: var(--shadow-sm);
+}
+
+.file-card:hover {
+  transform: translateY(-3px);
+  border-color: var(--border-strong);
+  box-shadow: var(--shadow-md), var(--shadow-glow);
+}
+
+.file-card-top { flex: 1; display: flex; flex-direction: column; gap: 10px; }
+
+.file-name {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--accent);
+  word-break: break-all;
+  line-height: 1.4;
+}
+
+/* Media preview */
 .media-preview-box {
-    width: 100%;
-    height: 160px;
-    background: rgba(0, 0, 0, 0.15);
-    border: 1px dashed var(--border-alpha);
-    border-radius: 8px;
-    margin-bottom: 12px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    overflow: hidden;
+  width: 100%;
+  height: 148px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.media-preview-box img, 
+.media-preview-box img,
 .media-preview-box video {
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-    background: transparent;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
 }
 
-
-.file-desc{
-    color:var(--muted);
-    font-size:14px;
-    margin-bottom:12px;
-    line-height: 1.4;
+.file-desc {
+  font-size: 12px;
+  color: var(--text-secondary);
+  line-height: 1.55;
 }
 
-.file-actions{
-    display:flex;
-    gap:8px;
-    margin-top: auto;
+/* Card actions row */
+.file-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: auto;
 }
 
-.download-btn{
-    display:inline-block;
-    text-decoration:none;
-    color:var(--btn-text);
-    background:var(--accent);
-    padding:10px 12px;
-    border-radius:8px;
-    font-weight:bold;
-    text-align: center;
-    flex: 1;
+.file-actions-row {
+  display: flex;
+  gap: 8px;
 }
 
-.run-btn{
-    display:inline-block;
-    text-decoration:none;
-    color:black;
-    background:var(--accent);
-    padding:10px 12px;
-    border-radius:8px;
-    font-weight:bold;
-    text-align: center;
-    flex: 1;
+/* Specific card button styles */
+.download-btn,
+.run-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  flex: 1;
+  padding: 9px 12px;
+  border-radius: var(--radius-md);
+  font-size: 12px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: transform 0.18s, box-shadow 0.18s, background 0.18s;
+  cursor: pointer;
+  border: none;
 }
 
-.spacer{
-    height:40px;
+.download-btn {
+  background: var(--accent);
+  color: var(--btn-text);
+  box-shadow: 0 2px 8px var(--accent-glow);
 }
 
-/* ==========================================================================
-   HIGH-FIDELITY DECOY SPLIT-SCREEN WORKSPACE OVERLAY
-   ========================================================================== */
+.download-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px var(--accent-glow);
+}
+
+.run-btn {
+  background: var(--surface-3);
+  color: var(--text);
+  border: 1px solid var(--border);
+}
+
+.run-btn:hover {
+  background: var(--surface-2);
+  border-color: var(--border-strong);
+  transform: translateY(-2px);
+}
+
+.canva-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: 100%;
+  padding: 9px 12px;
+  background: linear-gradient(135deg, #7c4dff, #00b5d8);
+  color: #fff;
+  border-radius: var(--radius-md);
+  font-size: 12px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: transform 0.18s, box-shadow 0.18s, filter 0.18s;
+}
+
+.canva-btn:hover {
+  transform: translateY(-2px);
+  filter: brightness(1.12);
+  box-shadow: 0 6px 18px rgba(124, 77, 255, 0.35);
+}
+
+/* ============================================================
+   SEARCH BAR (in-vault)
+   ============================================================ */
+.vault-search-bar {
+  padding: 16px 20px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.vault-search-wrap {
+  position: relative;
+  flex: 1;
+  max-width: 480px;
+}
+
+.vault-search-icon {
+  position: absolute;
+  left: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-secondary);
+  font-size: 14px;
+  pointer-events: none;
+}
+
+#searchInput {
+  width: 100%;
+  padding: 9px 14px 9px 34px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 99px;
+  color: var(--text);
+  font-family: var(--font-ui);
+  font-size: 13px;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+#searchInput:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-dim);
+}
+
+#searchInput::placeholder { color: var(--text-secondary); opacity: 0.6; }
+
+/* ============================================================
+   MOBILE RESPONSIVE HEADER ADJUSTMENTS
+   ============================================================ */
+@media (max-width: 640px) {
+  .header-nav { padding: 10px 14px; }
+  .header-actions { gap: 2px; }
+  .action-link { font-size: 11px; padding: 4px 6px; }
+  .vault-search-bar { padding: 12px 14px; }
+  .folder-header { padding: 12px 14px; }
+  .file-card { padding: 14px; }
+}
+
+@media (max-width: 400px) {
+  .header-logo-title { font-size: 13px; letter-spacing: 2px; }
+}
+
+/* ============================================================
+   EMPTY STATES
+   ============================================================ */
+.vault-error {
+  margin: 20px;
+  padding: 20px;
+  background: var(--error-dim);
+  border: 1px solid rgba(240, 80, 80, 0.25);
+  border-radius: var(--radius-lg);
+  color: var(--error);
+  font-family: var(--font-mono);
+  font-size: 13px;
+}
+
+/* ============================================================
+   FOOTER SPACER
+   ============================================================ */
+.vault-footer {
+  height: 82px;
+}
+
+/* ============================================================
+   DECOY WORKSPACE OVERLAY (visionBlock)
+   — Preserved exactly; only minor polish added
+   ============================================================ */
 #visionBlock {
-    display: none;
-    position: fixed;
-    inset: 0;
-    width: 100vw;
-    height: 100vh;
-    background: #111111;
-    z-index: 100000;
-    user-select: text;
+  display: none;
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  background: #111111;
+  z-index: 100000;
+  user-select: text;
 }
 
 #visionBlock.active {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 4px;
-    background: #202020;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4px;
+  background: #202020;
 }
 
-/* --- LEFT SIDE: WINDOWS 11 NOTEPAD CLONE --- */
+/* LEFT: Notepad clone */
 .decoy-notepad {
-    background: #1e1e1e;
-    display: flex;
-    flex-direction: column;
-    height: 100vh;
-    overflow: hidden;
-    font-family: "Segoe UI", -apple-system, sans-serif;
+  background: #1e1e1e;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
+  font-family: "Segoe UI", -apple-system, sans-serif;
 }
 
 .np-titlebar {
-    height: 40px;
-    background: #1c1c1c;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0 12px;
-    font-size: 12px;
-    color: #ffffff;
-    border-bottom: 1px solid #2b2b2b;
+  height: 40px;
+  background: #1c1c1c;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 12px;
+  font-size: 12px;
+  color: #ffffff;
+  border-bottom: 1px solid #2b2b2b;
 }
 
-.np-tabs {
-    display: flex;
-    align-items: flex-end;
-    height: 100%;
-}
+.np-tabs { display: flex; align-items: flex-end; height: 100%; }
 
 .np-tab {
-    background: #1e1e1e;
-    padding: 8px 16px 6px 16px;
-    border-radius: 6px 6px 0 0;
-    font-size: 12px;
-    display: flex;
-    align-items: center;
-    gap: 15px;
-    border: 1px solid #2b2b2b;
-    border-bottom: none;
-    margin-bottom: -1px;
+  background: #1e1e1e;
+  padding: 8px 16px 6px 16px;
+  border-radius: 6px 6px 0 0;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  border: 1px solid #2b2b2b;
+  border-bottom: none;
+  margin-bottom: -1px;
 }
 
 .np-menubar {
-    height: 35px;
-    background: #1e1e1e;
-    display: flex;
-    align-items: center;
-    padding: 0 10px;
-    gap: 18px;
-    font-size: 12px;
-    color: #cccccc;
-    border-bottom: 1px solid #2b2b2b;
+  height: 35px;
+  background: #1e1e1e;
+  display: flex;
+  align-items: center;
+  padding: 0 10px;
+  gap: 18px;
+  font-size: 12px;
+  color: #cccccc;
+  border-bottom: 1px solid #2b2b2b;
 }
 
 .np-textarea-container {
-    flex: 1;
-    padding: 12px;
-    background: #1e1e1e;
+  flex: 1;
+  padding: 12px;
+  background: #1e1e1e;
 }
 
 .np-textarea {
-    width: 100%;
-    height: 100%;
-    background: transparent;
-    border: none;
-    outline: none;
-    color: #e3e3e3;
-    font-family: "Consolas", "Courier New", monospace;
-    font-size: 13px;
-    line-height: 1.5;
-    resize: none;
+  width: 100%;
+  height: 100%;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: #e3e3e3;
+  font-family: "Consolas", "Courier New", monospace;
+  font-size: 13px;
+  line-height: 1.5;
+  resize: none;
 }
 
 .np-statusbar {
-    height: 24px;
-    background: #1c1c1c;
-    border-top: 1px solid #2b2b2b;
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-    padding: 0 20px;
-    font-size: 11px;
-    color: #858585;
-    gap: 20px;
+  height: 24px;
+  background: #1c1c1c;
+  border-top: 1px solid #2b2b2b;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 0 20px;
+  font-size: 11px;
+  color: #858585;
+  gap: 20px;
 }
 
-/* --- RIGHT SIDE: MOCK LOCALHOST CHROMIUM BROWSER --- */
+/* RIGHT: Mock browser */
 .decoy-browser {
-    background: #ffffff;
-    display: flex;
-    flex-direction: column;
-    height: 100vh;
-    overflow: hidden;
-    font-family: system-ui, -apple-system, sans-serif;
-    color: #333333;
+  background: #ffffff;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
+  font-family: system-ui, -apple-system, sans-serif;
+  color: #333333;
 }
 
 .br-header {
-    background: #dee1e6;
-    padding: 8px 8px 4px 8px;
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-    border-bottom: 1px solid #b6b9be;
+  background: #dee1e6;
+  padding: 8px 8px 4px 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  border-bottom: 1px solid #b6b9be;
 }
 
-.br-tabs {
-    display: flex;
-    gap: 4px;
-}
+.br-tabs { display: flex; gap: 4px; }
 
 .br-tab {
-    background: #ffffff;
-    padding: 6px 16px;
-    border-radius: 8px 8px 0 0;
-    font-size: 12px;
-    font-weight: 500;
-    color: #1f2023;
+  background: #ffffff;
+  padding: 6px 16px;
+  border-radius: 8px 8px 0 0;
+  font-size: 12px;
+  font-weight: 500;
+  color: #1f2023;
 }
 
 .br-navigation-bar {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 2px 4px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 2px 4px;
 }
 
 .br-nav-arrows {
-    color: #5f6368;
-    font-size: 16px;
-    display: flex;
-    gap: 12px;
-    font-weight: bold;
-    cursor: default;
+  color: #5f6368;
+  font-size: 16px;
+  display: flex;
+  gap: 12px;
+  font-weight: bold;
+  cursor: default;
 }
 
 .br-address-bar {
-    flex: 1;
-    background: #f1f3f4;
-    border-radius: 30px;
-    padding: 6px 16px;
-    font-size: 13px;
-    color: #202124;
-    border: 1px solid transparent;
+  flex: 1;
+  background: #f1f3f4;
+  border-radius: 30px;
+  padding: 6px 16px;
+  font-size: 13px;
+  color: #202124;
+  border: 1px solid transparent;
 }
 
-/* --- RENDER CONTAINER FOR THE BROKEN MOCK APP --- */
 .br-viewport {
-    flex: 1;
-    background-color: #09090b;
-    color: #f4f4f5;
-    padding: 1rem;
-    overflow-x: auto;
-    overflow-y: auto;
-    position: relative;
+  flex: 1;
+  background-color: #09090b;
+  color: #f4f4f5;
+  padding: 1rem;
+  overflow-x: auto;
+  overflow-y: auto;
+  position: relative;
 }
 
-/* APP CONTAINER WITH BUG #1: Extreme Overflow Boundary Shift */
 .broken-app-container {
-    background-color: #18181b;
-    border: 1px solid #3f3f46;
-    border-radius: 8px;
-    padding: 2rem;
-    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
-    position: relative;
-    
-    width: 140%; /* INTENTIONAL BUG: Forces horizontal distortion */
-    order: 2px dashed #ff3333; /* Highlights the workspace container malfunction */
+  background-color: #18181b;
+  border: 1px solid #3f3f46;
+  border-radius: 8px;
+  padding: 2rem;
+  box-shadow: 0 10px 25px -5px rgba(0,0,0,0.5);
+  position: relative;
+  width: 140%; /* Intentional: simulates a broken overflow layout */
 }
 
 .layout-error-tag {
-    position: absolute;
-    top: -12px;
-    right: 20px;
-    background: #ff3333;
-    color: white;
-    font-family: monospace;
-    font-size: 11px;
-    font-weight: bold;
-    padding: 2px 8px;
-    border-radius: 4px;
+  position: absolute;
+  top: -12px;
+  right: 20px;
+  background: #ff3333;
+  color: white;
+  font-family: monospace;
+  font-size: 11px;
+  font-weight: bold;
+  padding: 2px 8px;
+  border-radius: 4px;
 }
 
-/* HEADER WITH BUG #2: Overlapping Absolute CSS Placement Collision */
 .broken-app-header {
-    text-align: center;
-    margin-bottom: 2rem;
-    position: relative;
-    height: 65px; /* Too small for contents, causes absolute items to smash together */
+  text-align: center;
+  margin-bottom: 2rem;
+  position: relative;
+  height: 65px; /* Intentional: causes overlap */
 }
 
 .broken-app-header h1 {
-    font-size: 1.5rem;
-    font-weight: 700;
-    letter-spacing: -0.025em;
-    position: absolute;
-    width: 100%;
-    top: 0;
-    left: 0;
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  position: absolute;
+  width: 100%;
+  top: 0;
+  left: 0;
 }
 
-.broken-app-header h1 span {
-    color: #10b981;
-}
+.broken-app-header h1 span { color: #10b981; }
 
 .broken-app-header p {
-    color: #a1a1aa;
-    font-size: 0.9rem;
-    line-height: 1.4;
-    position: absolute;
-    width: 100%;
-    top: 12px; /* INTENTIONAL CRASH: Directly overlapping with the H1 element text */
+  color: #a1a1aa;
+  font-size: 0.9rem;
+  line-height: 1.4;
+  position: absolute;
+  width: 100%;
+  top: 12px; /* Intentional: overlaps h1 */
 }
 
-/* Standard mock form styles below the bug zones */
 .mock-field {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-    margin-bottom: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
 }
 
 .mock-field label {
-    font-size: 0.85rem;
-    color: #a1a1aa;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
+  font-size: 0.85rem;
+  color: #a1a1aa;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
 }
 
 .mock-field input {
-    background-color: #27272a;
-    border: 1px solid #3f3f46;
-    color: #f4f4f5;
-    padding: 0.75rem 1rem;
-    border-radius: 8px;
-    font-size: 1rem;
-    outline: none;
-    width: 100%;
+  background-color: #27272a;
+  border: 1px solid #3f3f46;
+  color: #f4f4f5;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  font-size: 1rem;
+  outline: none;
+  width: 100%;
 }
 
 .mock-results-panel {
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
 }
 
 .mock-result-box {
-    background-color: #09090b;
-    border: 1px solid #3f3f46;
-    padding: 0.75rem 1rem;
-    border-radius: 8px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+  background-color: #09090b;
+  border: 1px solid #3f3f46;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
-.mock-result-box.active-indicator {
-    border-color: rgba(16, 185, 129, 0.4);
-}
-
-.mock-result-box.active-indicator .result-value {
-    color: #10b981;
-}
-
+.mock-result-box.active-indicator { border-color: rgba(16,185,129,0.4); }
+.mock-result-box.active-indicator .result-value { color: #10b981; }
 .result-label { font-size: 0.9rem; color: #a1a1aa; }
 .result-value { font-size: 1.1rem; font-weight: 700; }
 
 .mock-info-box {
-    margin-top: 1.25rem;
-    padding: 0.75rem 1rem;
-    background-color: rgba(39, 39, 42, 0.4);
-    border-radius: 8px;
-    font-size: 0.8rem;
-    color: #a1a1aa;
-    border-left: 3px solid #10b981;
+  margin-top: 1.25rem;
+  padding: 0.75rem 1rem;
+  background-color: rgba(39,39,42,0.4);
+  border-radius: 8px;
+  font-size: 0.8rem;
+  color: #a1a1aa;
+  border-left: 3px solid #10b981;
 }
 
-/* BUG #3: Red Browser Inspect Debug Log Trace */
 .mock-browser-console {
-    height: 140px;
-    background: #181818;
-    border-top: 2px solid #333333;
-    font-family: 'Consolas', monospace;
-    font-size: 12px;
-    padding: 10px;
-    color: #cccccc;
-    overflow-y: auto;
+  height: 140px;
+  background: #181818;
+  border-top: 2px solid #333333;
+  font-family: 'Consolas', monospace;
+  font-size: 12px;
+  padding: 10px;
+  color: #cccccc;
+  overflow-y: auto;
 }
 
-.console-entry-err {
-    color: #ff5252;
-    margin-bottom: 4px;
+.console-entry-err { color: #ff5252; margin-bottom: 4px; }
+.console-entry-warn { color: #ffb300; margin-bottom: 4px; }
+
+/* Decoy responsive */
+@media (max-width: 850px) {
+  #visionBlock.active { grid-template-columns: 1fr; }
+  .decoy-browser { display: none; }
 }
 
-.console-entry-warn {
-    color: #ffb300;
-    margin-bottom: 4px;
-}
-
-@media(max-width:850px){
-    #visionBlock.active {
-        grid-template-columns: 1fr;
-    }
-    .decoy-browser {
-        display: none;
-    }
-}
-.canva-btn {
-    transition: .25s;
-}
-.canva-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 0 15px rgba(0, 196, 204, 0.4);
-    background: var(--accent);
-    color:black;
+/* ============================================================
+   REDUCED MOTION RESPECT
+   ============================================================ */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
 }
 </style>
 </head>
+
 <body>
 
+<!-- ============================================================
+     LOGIN SCREEN
+     ============================================================ -->
 <div id="loginScreen">
-    <div class="login-box">
-        <div style="text-align: right; margin-bottom: 15px;">
-            <span class="action-link theme-toggle-btn" style="font-size: 12px;">Day Mode</span>
-        </div>
-        <h2>VAULT ACCESS</h2>
-        <input type="password" id="passwordInput" placeholder="Enter password">
-        <button id="loginBtn">Unlock Vault</button>
-        <div id="errorMsg"></div>
+  <div class="login-box">
+
+    <!-- Theme toggle at top-right -->
+    <div class="login-theme-row">
+      <span class="theme-btn theme-toggle-btn">
+        <span class="icon">☀</span>
+        <span class="label">Day Mode</span>
+      </span>
     </div>
+
+    <!-- Logo / branding -->
+    <div class="login-logo">
+      <div class="login-logo-icon">
+        <!-- Lock icon SVG -->
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+          <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+        </svg>
+      </div>
+      <div>
+        <div class="login-logo-text">VAULT</div>
+      </div>
+    </div>
+
+    <h2>Secure Access Required</h2>
+
+    <!-- Password field with label -->
+    <div class="field-group">
+      <label for="passwordInput">Master Password</label>
+      <input type="password" id="passwordInput" placeholder="Enter vault password" autocomplete="current-password">
+    </div>
+
+    <button class="btn btn-primary btn-full" id="loginBtn">
+      <!-- Unlock icon -->
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+        <path d="M7 11V7a5 5 0 0 1 9.9-1"></path>
+      </svg>
+      Unlock Vault
+    </button>
+
+    <div id="errorMsg" role="alert" aria-live="polite"></div>
+  </div>
 </div>
 
+<!-- ============================================================
+     VAULT APPLICATION
+     ============================================================ -->
 <div id="vaultApp">
-    <header>
-        <div class="header-title-box">
-            <h1>VAULT SYSTEM v3</h1>
+
+  <!-- Sticky header -->
+  <header>
+
+    <!-- Top nav: logo + action links -->
+    <div class="header-nav">
+      <div class="header-logo">
+        <div class="header-logo-badge">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+          </svg>
         </div>
+        <div>
+          <div class="header-logo-title">Vault System</div>
+          <div class="header-logo-version">v3 · Secure Repository</div>
+        </div>
+      </div>
 
-        <div class="header-main-grid">
-            <div class="console-panel">
-                <div class="panel-title">DEV CONSOLE</div>
-                <div class="console-log" id="consoleLog"></div>
-            </div>
+      <div class="header-actions">
+        <span class="theme-btn theme-toggle-btn">
+          <span class="icon">☀</span>
+          <span class="label">Day Mode</span>
+        </span>
+        <div class="header-divider"></div>
+        <span class="action-link" id="syncRepoBtn" title="Force sync from GitHub">
+          <!-- Refresh icon -->
+          ↻ Sync
+        </span>
+        <span class="action-link" id="toggleFoldersBtn" title="Toggle all folders">
+          ▤ Folders
+        </span>
+      </div>
+    </div>
+</header>
+    <!-- Dashboard panels: console + ASCII art -->
+    <div class="header-panels">
+      <div class="panel console-panel">
+        <div class="panel-label">Dev Console</div>
+        <div class="console-log" id="consoleLog"></div>
+      </div>
 
-            <div class="core-panel">
-                <div class="panel-title">VAULT CORE</div>
-                <div class="ascii-art">───▄▀▀▀▄▄▄▄▄▄▄▀▀▀▄───
+      <div class="panel core-panel">
+        <div class="panel-label">Vault Core</div>
+        <div class="ascii-art">───▄▀▀▀▄▄▄▄▄▄▄▀▀▀▄───
 ───█▒▒░░░░░░░░░▒▒█───
 ────█░░█░░░░░█░░█────
 ─▄▄──█░░░▀█▀░░░█──▄▄─
@@ -732,40 +1333,55 @@ button:hover{
 █░░╦─╦╔╗╦─╔╗╔╗╔╦╗╔╗░░█
 █░░║║║╠─║─║─║║║║║╠─░░█
 █░░╚╩╝╚╝╚╝╚╝╚╝╩─╩╚╝░░█
-█▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄█
-</div>
-            </div>
-        </div>
+█▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄█</div>
+      </div>
+    </div>
 
-        <div class="header-action-bar">
-            <span class="action-link theme-toggle-btn">Day Mode</span> | 
-            <span class="action-link">Search</span> | 
-            <span class="action-link" id="syncRepoBtn">Sync Repo</span> | 
-            <span class="action-link" id="toggleFoldersBtn">Open Folders</span>
-        </div>
-    </header>
+  
 
-    <div id="loading">Loading repository...</div>
+  <!-- Search bar -->
+  <div class="vault-search-bar">
+    <div class="vault-search-wrap">
+      <span class="vault-search-icon">🔍</span>
+      <input type="text" id="searchInput" placeholder="Search files…" autocomplete="off">
+    </div>
+  </div>
+
+  <!-- Main content -->
+  <main id="vaultMain">
+    <!-- Loading indicator -->
+    <div id="loading">
+      <span class="loading-dots">Loading repository</span>
+      <div class="loading-bar"><div class="loading-bar-fill"></div></div>
+    </div>
+
+    <!-- Folder cards rendered by JS -->
     <div id="foldersContainer"></div>
-    <div class="spacer"></div>
+  
+
+  <div class="vault-footer"></div>
+</main>
 </div>
 
+<!-- ============================================================
+     DECOY WORKSPACE OVERLAY (preserved, styles unchanged)
+     ============================================================ -->
 <div id="visionBlock">
-    <div class="decoy-notepad">
-        <div class="np-titlebar">
-            <div class="np-tabs">
-                <div class="np-tab">
-                    <span>index.html</span>
-                    <span style="color:#858585; font-size:10px; margin-left:10px;">✕</span>
-                </div>
-            </div>
-            <div style="font-size:14px; letter-spacing:4px; color:#888;">─ ▢ ✕</div>
+  <div class="decoy-notepad">
+    <div class="np-titlebar">
+      <div class="np-tabs">
+        <div class="np-tab">
+          <span>index.html</span>
+          <span style="color:#858585; font-size:10px; margin-left:10px;">✕</span>
         </div>
-        <div class="np-menubar">
-            <span>File</span> <span>Edit</span> <span>Format</span> <span>View</span> <span>Help</span>
-        </div>
-        <div class="np-textarea-container">
-            <textarea class="np-textarea" spellcheck="false"><!DOCTYPE html>
+      </div>
+      <div style="font-size:14px; letter-spacing:4px; color:#888;">─ ▢ ✕</div>
+    </div>
+    <div class="np-menubar">
+      <span>File</span> <span>Edit</span> <span>Format</span> <span>View</span> <span>Help</span>
+    </div>
+    <div class="np-textarea-container">
+      <textarea class="np-textarea" spellcheck="false"><!DOCTYPE html>
 <html lang="uz">
 <head>
     <style>
@@ -816,483 +1432,491 @@ button:hover{
 </main>
 </body>
 </html></textarea>
-        </div>
-        <div class="np-statusbar">
-            <span id="npLineCol">Ln 18, Col 21</span>
-            <span>Windows (CRLF)</span>
-            <span>UTF-8</span>
-        </div>
+    </div>
+    <div class="np-statusbar">
+      <span id="npLineCol">Ln 18, Col 21</span>
+      <span>Windows (CRLF)</span>
+      <span>UTF-8</span>
+    </div>
+  </div>
+
+  <div class="decoy-browser">
+    <div class="br-header">
+      <div class="br-tabs">
+        <div class="br-tab">Xronologik metrika</div>
+        <div class="br-tab">New tab</div>
+        <div class="br-tab">+</div>
+      </div>
+      <div class="br-navigation-bar">
+        <div class="br-nav-arrows"><span>←</span> <span>→</span> <span>↻</span></div>
+        <div class="br-address-bar">file:///C:/Users/admin/Desktop/Informatika/index.html</div>
+      </div>
     </div>
 
-    <div class="decoy-browser">
-        <div class="br-header">
-            <div class="br-tabs">
-                <div class="br-tab">Xronologik metrika</div>
-                <div class ="br-tab">New tab</div>
-                <div class ="br-tab">+</div>
-            </div>
-            <div class="br-navigation-bar">
-                <div class="br-nav-arrows"><span>←</span> <span>→</span> <span>↻</span></div>
-                <div class="br-address-bar">file:///C:/Users/admin/Desktop/Informatika/index.html</div>
-            </div>
+    <div class="br-viewport">
+      <div class="broken-app-container">
+        <span class="layout-error-tag">[OVERFLOW BURSTED]</span>
+        <div class="broken-app-header">
+          <h1><span>Xronologik</span> Metrika</h1>
+          <p>Kiritilgan ko'rsatkichlardan biri (tug'ilgan yili yoki yoshi) orqali ikkinchisini aniqlash mexanizmi</p>
         </div>
-        
-        <div class="br-viewport">
-            
-            <div class="broken-app-container">
-                <span class="layout-error-tag">[OVERFLOW BURSTED]</span>
-                
-                <div class="broken-app-header">
-                    <h1><span>Xronologik</span> Metrika</h1>
-                    <p>Kiritilgan ko'rsatkichlardan biri (tug'ilgan yili yoki yoshi) orqali ikkinchisini aniqlash mexanizmi</p>
-                </div>
-
-                <div class="mock-field">
-                    <label>Ko'rsatkichni kiriting</label>
-                    <input type="number" value="2008" readonly>
-                </div>
-
-                <div class="mock-results-panel">
-                    <div class="mock-result-box active-indicator" id="boxYear">
-                        <span class="result-label">Tug'ilgan yil:</span>
-                        <span class="result-value" style="color:#10b981;">2008-yil</span>
-                    </div>
-                    <div class="mock-result-box">
-                        <span class="result-label">Joriy yosh:</span>
-                        <span class="result-value">18 yoshda</span>
-                    </div>
-                </div>
-
-                <div class="mock-info-box">
-                    <strong>✓ Aqlli boshqaruv:</strong> Agar 1, 2 yoki 3 xonali son kiritilsa yosh deb, 4 xonali son kiritilsa tug'ilgan yil deb qabul qilinadi.
-                </div>
-            </div>
-            
+        <div class="mock-field">
+          <label>Ko'rsatkichni kiriting</label>
+          <input type="number" value="2008" readonly>
         </div>
-        
-        <div class="mock-browser-console">
-            <div class="console-entry-err">❌ Uncaught BoundsError: Layout dimension configurations exceeded maximum document space (at index.html:11)</div>
-            <div class="console-entry-warn">⚠️ [CSS Layout] Overlapping viewport elements detected. Text boundary '.header p' collision over parent header element frame height.</div>
-            <div style="color: #00ff66;">&gt; _</div>
+        <div class="mock-results-panel">
+          <div class="mock-result-box active-indicator" id="boxYear">
+            <span class="result-label">Tug'ilgan yil:</span>
+            <span class="result-value" style="color:#10b981;">2008-yil</span>
+          </div>
+          <div class="mock-result-box">
+            <span class="result-label">Joriy yosh:</span>
+            <span class="result-value">18 yoshda</span>
+          </div>
         </div>
+        <div class="mock-info-box">
+          <strong>✓ Aqlli boshqaruv:</strong> Agar 1, 2 yoki 3 xonali son kiritilsa yosh deb, 4 xonali son kiritilsa tug'ilgan yil deb qabul qilinadi.
+        </div>
+      </div>
     </div>
+
+    <div class="mock-browser-console">
+      <div class="console-entry-err">❌ Uncaught BoundsError: Layout dimension configurations exceeded maximum document space (at index.html:11)</div>
+      <div class="console-entry-warn">⚠️ [CSS Layout] Overlapping viewport elements detected. Text boundary '.header p' collision over parent header element frame height.</div>
+      <div style="color: #00ff66;">&gt; _</div>
+    </div>
+  </div>
 </div>
 
+<!-- ============================================================
+     JAVASCRIPT
+     ============================================================ -->
 <script>
-/* --- THEME CONTROLLER ENGINE --- */
+/* ================================================================
+   THEME ENGINE
+   — Persists preference in localStorage; toggles data-theme on <html>
+   ================================================================ */
 const THEME_STORAGE_KEY = "vault_theme_mode";
 
-function initTheme() {
-    const savedTheme = localStorage.getItem(THEME_STORAGE_KEY) || "dark";
-    document.documentElement.setAttribute("data-theme", savedTheme);
-}
-initTheme();
+// Apply saved theme immediately (before paint) to avoid FOUC
+(function initTheme() {
+  const saved = localStorage.getItem(THEME_STORAGE_KEY) || "dark";
+  document.documentElement.setAttribute("data-theme", saved);
+})();
 
 function updateThemeUI() {
-    const currentTheme = document.documentElement.getAttribute("data-theme") || "dark";
-    const buttons = document.querySelectorAll(".theme-toggle-btn");
-    buttons.forEach(btn => {
-        btn.textContent = currentTheme === "dark" ? "Day Mode" : "Dark Mode";
-    });
+  const theme = document.documentElement.getAttribute("data-theme") || "dark";
+  const isDark = theme === "dark";
+  document.querySelectorAll(".theme-toggle-btn").forEach(btn => {
+    const label = btn.querySelector(".label");
+    const icon  = btn.querySelector(".icon");
+    if (label) label.textContent = isDark ? "Day Mode"  : "Dark Mode";
+    if (icon)  icon.textContent  = isDark ? "☀"         : "🌙";
+  });
 }
 
 function toggleTheme() {
-    const currentTheme = document.documentElement.getAttribute("data-theme") || "dark";
-    const newTheme = currentTheme === "dark" ? "light" : "dark";
-    document.documentElement.setAttribute("data-theme", newTheme);
-    localStorage.setItem(THEME_STORAGE_KEY, newTheme);
-    updateThemeUI();
-    log(`System theme toggled to: ${newTheme.toUpperCase()} MODE`);
+  const current  = document.documentElement.getAttribute("data-theme") || "dark";
+  const newTheme = current === "dark" ? "light" : "dark";
+  document.documentElement.setAttribute("data-theme", newTheme);
+  localStorage.setItem(THEME_STORAGE_KEY, newTheme);
+  updateThemeUI();
+  log(`Theme: switched to ${newTheme.toUpperCase()}`);
 }
 
+// Delegate click for theme toggle buttons (login + header)
 document.addEventListener("click", e => {
-    if (e.target.classList.contains("theme-toggle-btn")) {
-        toggleTheme();
-    }
+  if (e.target.closest(".theme-toggle-btn")) toggleTheme();
 });
-/* --- END OF THEME CONTROLLER ENGINE --- */
 
-/* --- HOTKEY VISION LOCK ENGINE (SPLIT WORKSPACE SYSTEM) --- */
+/* ================================================================
+   HOTKEY DECOY ENGINE (ESC / DELETE = toggle split-screen overlay)
+   ================================================================ */
 let isLocked = false;
 
-window.addEventListener('keydown', function(e) {
-    if (e.key === 'Escape') {
-        e.preventDefault();
-        document.documentElement.requestFullscreen();
-        toggleVisionBlock();
-    }else if (e.key === 'Delete') {
-        e.preventDefault();
-        document.documentElement.requestFullscreen();
-        toggleVisionBlock();
-    }
+window.addEventListener("keydown", e => {
+  if (e.key === "Escape" || e.key === "Delete") {
+    e.preventDefault();
+    document.documentElement.requestFullscreen?.();
+    toggleVisionBlock();
+  }
 });
 
 function toggleVisionBlock() {
-    const overlay = document.getElementById('visionBlock');
-    isLocked = !isLocked;
-    
-    if (isLocked) {
-        overlay.classList.add('active');
-        log("CRITICAL: Vision block deployed [SPLIT SYSTEM WORKSPACE DECOY]");
-        
-        // Pause active previews
-        document.querySelectorAll('.media-preview-box video').forEach(video => {
-            if(!video.paused) {
-                video.pause();
-                video.dataset.wasPlaying = "true";
-            }
-        });
-    } else {
-        overlay.classList.remove('active');
-        log("SYSTEM: Decoy deactivated. Vault restored.");
-        
-        // Resume active previews
-        document.querySelectorAll('.media-preview-box video').forEach(video => {
-            if(video.dataset.wasPlaying === "true") {
-                video.play();
-                delete video.dataset.wasPlaying;
-            }
-        });
-    }
+  const overlay = document.getElementById("visionBlock");
+  isLocked = !isLocked;
+  overlay.classList.toggle("active", isLocked);
+
+  if (isLocked) {
+    log("CRITICAL: Vision block deployed");
+    document.querySelectorAll(".media-preview-box video").forEach(v => {
+      if (!v.paused) { v.pause(); v.dataset.wasPlaying = "true"; }
+    });
+  } else {
+    log("SYSTEM: Decoy deactivated. Vault restored.");
+    document.querySelectorAll(".media-preview-box video").forEach(v => {
+      if (v.dataset.wasPlaying === "true") { v.play(); delete v.dataset.wasPlaying; }
+    });
+  }
 }
 
-// Track Row/Col selection changes inside the decoy notepad text space
-const textarea = document.querySelector('.np-textarea');
-const lineColDisplay = document.getElementById('npLineCol');
+// Notepad cursor line/col tracker
+const npTextarea    = document.querySelector(".np-textarea");
+const npLineColDisp = document.getElementById("npLineCol");
 
 function updateLineCol() {
-    const textLines = textarea.value.substr(0, textarea.selectionStart).split("\n");
-    const currentLine = textLines.length;
-    const currentCol = textLines[textLines.length - 1].length + 1;
-    lineColDisplay.textContent = `Ln ${currentLine}, Col ${currentCol}`;
+  const lines = npTextarea.value.substr(0, npTextarea.selectionStart).split("\n");
+  npLineColDisp.textContent = `Ln ${lines.length}, Col ${lines[lines.length - 1].length + 1}`;
 }
 
-textarea.addEventListener('keyup', updateLineCol);
-textarea.addEventListener('click', updateLineCol);
-/* --- END OF HOTKEY DECOY ENGINE --- */
+npTextarea.addEventListener("keyup",  updateLineCol);
+npTextarea.addEventListener("click",  updateLineCol);
 
+/* ================================================================
+   VAULT CORE CONFIG
+   ================================================================ */
 const API_ROOT = "https://api.github.com/repos/uz-bekk/info/contents";
-const SHORT_TXT_URL = "https://raw.githubusercontent.com/uz-bekk/info/main/short.txt";
-const SESSION_KEY = "vault_session_v2";
-const PASSWORD_HASH = "2bf0064d802c91d9dff63bd0d406922198f2843d9338b5b5ec52890e040c00fc";
+const SHORT_TXT_URL  = "https://raw.githubusercontent.com/uz-bekk/info/main/short.txt";
+const SESSION_KEY    = "vault_session_v2";
+const PASSWORD_HASH  = "2bf0064d802c91d9dff63bd0d406922198f2843d9338b5b5ec52890e040c00fc";
 
-const descriptions = {};
+const descriptions   = {};
 
-function getRunUrl(file){
-    const repoBase = "https://uz-bekk.github.io/info/";
-    return repoBase + file.path;
+/* ================================================================
+   UTILITY HELPERS
+   ================================================================ */
+function getRunUrl(file) {
+  return "https://uz-bekk.github.io/info/" + file.path;
 }
 
-function log(message){
-    const box = document.getElementById("consoleLog");
-    if (!box) return;
-    const time = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-    box.innerHTML += `[${time}] ${message}<br>`;
-    box.scrollTop = box.scrollHeight;
+// Append a timestamped line to the console panel
+function log(message) {
+  const box = document.getElementById("consoleLog");
+  if (!box) return;
+  const time = new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+  const line = document.createElement("span");
+  line.className = "log-line";
+  line.innerHTML = `<span class="log-time">[${time}]</span>${message}`;
+  box.appendChild(line);
+  box.scrollTop = box.scrollHeight;
 }
 
-async function sha256(text){
-    const data = new TextEncoder().encode(text);
-    const hashBuffer = await crypto.subtle.digest("SHA-256", data);
-    return [...new Uint8Array(hashBuffer)]
-        .map(b => b.toString(16).padStart(2, "0"))
-        .join("");
+// SHA-256 via Web Crypto API
+async function sha256(text) {
+  const data   = new TextEncoder().encode(text);
+  const buffer = await crypto.subtle.digest("SHA-256", data);
+  return [...new Uint8Array(buffer)].map(b => b.toString(16).padStart(2, "0")).join("");
 }
 
-async function login(){
-    const input = document.getElementById("passwordInput").value;
-    log("Password check initiated");
-    const hash = await sha256(input);
+/* ================================================================
+   AUTHENTICATION
+   ================================================================ */
+async function login() {
+  const input = document.getElementById("passwordInput").value;
+  const errEl = document.getElementById("errorMsg");
+  errEl.textContent = "";
+  log("Auth: verifying password…");
 
-    if(hash === PASSWORD_HASH){
-        log("Authentication successful");
-        sessionStorage.setItem(SESSION_KEY, "true");
-        showVault();
-    }else{
-        log("Authentication failed");
-        document.getElementById("errorMsg").textContent = "Invalid password";
+  const hash = await sha256(input);
+
+  if (hash === PASSWORD_HASH) {
+    log("Auth: access granted ✓");
+    sessionStorage.setItem(SESSION_KEY, "true");
+    showVault();
+  } else {
+    log("Auth: access denied ✗");
+    errEl.textContent = "Invalid password — please try again.";
+    document.getElementById("passwordInput").value = "";
+    document.getElementById("passwordInput").focus();
+  }
+}
+
+function showVault() {
+  document.getElementById("loginScreen").style.display = "none";
+  document.getElementById("vaultApp").style.display    = "block";
+  loadVault();
+}
+
+/* ================================================================
+   DATA FETCHING
+   ================================================================ */
+async function fetchJSON(url) {
+  const res = await fetch(url);
+  if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
+  return res.json();
+}
+
+async function loadDescriptions() {
+  try {
+    log("Loading descriptions (short.txt)…");
+    const res = await fetch(SHORT_TXT_URL);
+    if (!res.ok) throw new Error("short.txt unavailable");
+    const lines = (await res.text()).split(/\r?\n/);
+
+    for (const raw of lines) {
+      const line = raw.trim();
+      if (!line) continue;
+      const m = line.match(/^\d+\.\s*([^\s]+)\s+"([\s\S]+)"/);
+      if (!m) continue;
+      const file = m[1].trim().toLowerCase();
+      let   desc = m[2].replace(/\s+/g, " ").trim();
+      let   canva = null;
+
+      if (desc.includes("| Canva:")) {
+        const parts = desc.split("| Canva:");
+        desc  = parts[0].trim();
+        canva = parts[1].trim();
+      }
+
+      descriptions[file] = { text: desc, canva };
     }
+    log("Descriptions loaded ✓");
+  } catch (err) {
+    log("short.txt error: " + err.message);
+  }
 }
 
-function showVault(){
-    document.getElementById("loginScreen").style.display = "none";
-    document.getElementById("vaultApp").style.display = "block";
-    loadVault();
+async function getFolderContents(url) {
+  const files = [];
+  try {
+    const items = await fetchJSON(url);
+    for (const item of items) {
+      if (item.type === "dir") {
+        log(`Scanning subfolder: ${item.name}`);
+        files.push(...await getFolderContents(item.url));
+      } else if (item.type === "file") {
+        files.push(item);
+        log(`Loaded: ${item.name}`);
+      }
+    }
+  } catch (err) {
+    log("Scan error: " + err.message);
+  }
+  return files;
 }
 
-async function fetchJSON(url){
-    const response = await fetch(url);
-    if(!response.ok){
-        throw new Error(`${response.status} ${response.statusText}`);
-    }
-    return response.json();
-}
-async function loadDescriptions(){
-    try{
-        log("Loading short.txt");
-        const response = await fetch(SHORT_TXT_URL);
-        if(!response.ok){
-            throw new Error("short.txt unavailable");
-        }
-        const text = await response.text();
-        const lines = text.split(/\r?\n/);
+/* ================================================================
+   FILE CARD RENDERER
+   ================================================================ */
+function createFileCard(file) {
+  const nameLower  = file.name.toLowerCase();
+  const descData   = descriptions[nameLower] || { text: "No description provided.", canva: null };
+  const isHtml     = nameLower.endsWith(".html");
+  const isImage    = /\.(png|jpg|jpeg|gif|svg|webp)$/.test(nameLower);
+  const isVideo    = /\.(mp4|webm|ogg)$/.test(nameLower);
 
-        for(const line of lines){
-            const cleaned = line.trim();
-            if(!cleaned) continue;
-            
-            // Matches: [Number].[Filename] "[Description Text]"
-            const match = cleaned.match(/^\d+\.\s*([^\s]+)\s+"([\s\S]+)"/);
-            if(match){
-                const file = match[1].trim().toLowerCase();
-                let fullDesc = match[2].replace(/\s+/g, " ").trim();
-                
-                let canvaUrl = null;
-                // Look for our custom delimiter inside the string
-                if (fullDesc.includes("| Canva:")) {
-                    const parts = fullDesc.split("| Canva:");
-                    fullDesc = parts[0].trim();        // The clean description text
-                    canvaUrl = parts[1].trim();       // The raw URL string
-                }
+  let mediaHtml = "";
+  if (isImage && file.download_url) {
+    mediaHtml = `
+      <div class="media-preview-box">
+        <img src="${file.download_url}" alt="${file.name}" loading="lazy">
+      </div>`;
+  } else if (isVideo && file.download_url) {
+    mediaHtml = `
+      <div class="media-preview-box">
+        <video src="${file.download_url}" controls muted loop preload="metadata"></video>
+      </div>`;
+  }
 
-                // Explicitly store as a structured object
-                descriptions[file] = {
-                    text: fullDesc,
-                    canva: canvaUrl
-                };
-            }
-        }
-        log("short.txt loaded successfully");
-    }
-    catch(error){
-        log("short.txt error: " + error.message);
-    }
-}
+  const runBtn    = isHtml
+    ? `<a class="run-btn" href="${getRunUrl(file)}" target="_blank" rel="noopener">
+         <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+         Run
+       </a>`
+    : "";
 
-async function getFolderContents(url){
-    let files = [];
-    try{
-        const items = await fetchJSON(url);
-        for(const item of items){
-            if(item.type === "dir"){
-                log("Scanning folder: " + item.name);
-                const nested = await getFolderContents(item.url);
-                files.push(...nested);
-            }
-            else if(item.type === "file"){
-                files.push(item);
-                log("File loaded: " + item.name);
-            }
-        }
-    }
-    catch(error){
-        log("Folder scan error: " + error.message);
-    }
-    return files;
-}
+  const canvaBtn  = descData.canva
+    ? `<a class="canva-btn" href="${descData.canva}" target="_blank" rel="noopener">
+         ✏ Edit in Canva
+       </a>`
+    : "";
 
-function createFileCard(file){
-    const filenameLower = file.name.toLowerCase();
-    
-    // Safely look up the file object or fall back to default values
-    const descData = descriptions[filenameLower] || { text: "No description provided.", canva: null };
-    const descText = descData.text;
-    const canvaLink = descData.canva;
-
-    const isHtml = filenameLower.endsWith(".html");
-    const isImage = filenameLower.endsWith(".png") || filenameLower.endsWith(".jpg") || 
-                    filenameLower.endsWith(".jpeg") || filenameLower.endsWith(".gif") || 
-                    filenameLower.endsWith(".svg") || filenameLower.endsWith(".webp");
-                    
-    const isVideo = filenameLower.endsWith(".mp4") || filenameLower.endsWith(".webm") || 
-                    filenameLower.endsWith(".ogg");
-
-    let mediaPreviewHtml = "";
-
-    if(isImage && file.download_url) {
-        mediaPreviewHtml = `
-            <div class="media-preview-box">
-                <img src="${file.download_url}" alt="${file.name}" loading="lazy">
-            </div>
-        `;
-    } 
-    else if(isVideo && file.download_url) {
-        mediaPreviewHtml = `
-            <div class="media-preview-box">
-                <video src="${file.download_url}" controls muted loop preload="metadata"></video>
-            </div>
-        `;
-    }
-
-    return `
-        <div class="file-card">
-            <div>
-                <div class="file-name">${file.name}</div>
-                ${mediaPreviewHtml}
-                <div class="file-desc">${descText}</div>
-            </div>
-
-            <div class="file-actions" style="display: flex; flex-direction: column; gap: 8px;">
-                <div style="display: flex; gap: 8px; width: 100%;">
-                    <a class="download-btn"
-                       href="${file.path}"
-                       target="_blank"
-                       download="${file.name}">
-                       Download
-                    </a>
-
-                    ${isHtml ? `
-                    <a class="run-btn"
-                       href="${getRunUrl(file)}"
-                       target="_blank">
-                       Run
-                    </a>` : ""}
-                </div>
-                
-                ${canvaLink ? `
-                <a class="canva-btn" 
-                   href="${canvaLink}" 
-                   target="_blank" 
-                   style="display:inline-block;
-    text-decoration:none;
-    color:black;
-    background:var(--accent);
-    padding:10px 12px;
-    border-radius:8px;
-    font-weight:bold;
-    text-align: center;
-    flex: 1; transition: 0.2s;">
-                   Edit in Canva
-                </a>` : ""}
-            </div>
+  return `
+    <div class="file-card">
+      <div class="file-card-top">
+        <div class="file-name">${file.name}</div>
+        ${mediaHtml}
+        <div class="file-desc">${descData.text}</div>
+      </div>
+      <div class="file-actions">
+        <div class="file-actions-row">
+          <a class="download-btn" href="${file.path}" target="_blank" download="${file.name}">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+              <polyline points="7 10 12 15 17 10"></polyline>
+              <line x1="12" y1="15" x2="12" y2="3"></line>
+            </svg>
+            Download
+          </a>
+          ${runBtn}
         </div>
-    `;
+        ${canvaBtn}
+      </div>
+    </div>`;
 }
+
+/* ================================================================
+   VAULT LOADER  (cache-first; force-refresh on demand)
+   ================================================================ */
+const CACHE_FOLDERS_KEY = "vault_cached_folders";
+const CACHE_DESCS_KEY   = "vault_cached_descriptions";
 
 async function loadVault(forceRefresh = false) {
-    document.getElementById("loading").style.display = "block";
-    const container = document.getElementById("foldersContainer");
-    
-    const CACHE_FOLDERS_KEY = "vault_cached_folders";
-    const CACHE_DESCS_KEY = "vault_cached_descriptions";
+  const loadingEl  = document.getElementById("loading");
+  const container  = document.getElementById("foldersContainer");
+  loadingEl.style.display = "block";
+  container.innerHTML     = "";
 
-    try {
-        let foldersData = null;
+  // Reset open/close state whenever vault is reloaded
+  allFoldersOpen = false;
+  const toggleBtn = document.getElementById("toggleFoldersBtn");
+  if (toggleBtn) toggleBtn.textContent = "▤ Folders";
 
-        if (!forceRefresh) {
-            const cachedFolders = localStorage.getItem(CACHE_FOLDERS_KEY);
-            const cachedDescs = localStorage.getItem(CACHE_DESCS_KEY);
+  try {
+    let foldersData = null;
 
-            if (cachedFolders && cachedDescs) {
-                log("CACHE: Restoring repository from local storage...");
-                foldersData = JSON.parse(cachedFolders);
-                
-                // Clear and re-populate global descriptions object map
-                Object.keys(descriptions).forEach(key => delete descriptions[key]);
-                Object.assign(descriptions, JSON.parse(cachedDescs));
-            }
-        }
-
-        // Fetch data from GitHub if cache doesn't exist or we forced a sync
-        if (!foldersData) {
-            log("NETWORK: Fetching fresh repository configurations...");
-            await loadDescriptions(); 
-            
-            log("Fetching repository root...");
-            const rootItems = await fetchJSON(API_ROOT);
-            const folders = rootItems.filter(item => item.type === "dir");
-
-            foldersData = [];
-            for (const folder of folders) {
-                const files = await getFolderContents(folder.url);
-                foldersData.push({
-                    name: folder.name,
-                    files: files
-                });
-            }
-
-            // Update localStorage
-            localStorage.setItem(CACHE_FOLDERS_KEY, JSON.stringify(foldersData));
-            localStorage.setItem(CACHE_DESCS_KEY, JSON.stringify(descriptions));
-            log("CACHE: Local storage records successfully updated.");
-        }
-
-        // Render UI Elements
-        container.innerHTML = "";
-        for (const folder of foldersData) {
-            const folderElement = document.createElement("div");
-            folderElement.className = "folder";
-
-            folderElement.innerHTML = `
-                <div class="folder-header">
-                    <span>${folder.name}</span>
-                    <span>(${folder.files.length})</span>
-                </div>
-                <div class="folder-content" style="display: none;">
-                    ${folder.files.map(createFileCard).join("")}
-                </div>
-            `;
-
-            const header = folderElement.querySelector(".folder-header");
-            const content = folderElement.querySelector(".folder-content");
-
-            header.addEventListener("click", () => {
-                content.style.display = content.style.display === "grid" ? "none" : "grid";
-            });
-
-            container.appendChild(folderElement);
-        }
-        log("Repository display built successfully.");
-    } catch (error) {
-        log("Repository Engine Error: " + error.message);
-        container.innerHTML = `<div style="padding:20px;color:#ff6666;">Failed to process vault files. ${error.message}</div>`;
+    // Try cache unless forced refresh
+    if (!forceRefresh) {
+      const cf = localStorage.getItem(CACHE_FOLDERS_KEY);
+      const cd = localStorage.getItem(CACHE_DESCS_KEY);
+      if (cf && cd) {
+        log("CACHE: restoring from local storage…");
+        foldersData = JSON.parse(cf);
+        Object.keys(descriptions).forEach(k => delete descriptions[k]);
+        Object.assign(descriptions, JSON.parse(cd));
+      }
     }
-    document.getElementById("loading").style.display = "none";
+
+    // Network fetch if needed
+    if (!foldersData) {
+      log("NETWORK: fetching fresh repository data…");
+      await loadDescriptions();
+      log("Fetching repository root…");
+      const root    = await fetchJSON(API_ROOT);
+      const folders = root.filter(i => i.type === "dir");
+      foldersData   = [];
+
+      for (const folder of folders) {
+        const files = await getFolderContents(folder.url);
+        foldersData.push({ name: folder.name, files });
+      }
+
+      localStorage.setItem(CACHE_FOLDERS_KEY, JSON.stringify(foldersData));
+      localStorage.setItem(CACHE_DESCS_KEY,   JSON.stringify(descriptions));
+      log("CACHE: local storage updated ✓");
+    }
+
+    // Render folder accordions
+    container.innerHTML = "";
+    for (const folder of foldersData) {
+      const el = document.createElement("div");
+      el.className = "folder";
+
+      el.innerHTML = `
+        <div class="folder-header">
+          <div class="folder-header-left">
+            <div class="folder-icon">📁</div>
+            <span class="folder-name">${folder.name}</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:8px;">
+            <span class="folder-count">${folder.files.length}</span>
+            <span class="folder-chevron">▾</span>
+          </div>
+        </div>
+        <div class="folder-content">
+          ${folder.files.map(createFileCard).join("")}
+        </div>`;
+
+      // Toggle open/close on header click
+      el.querySelector(".folder-header").addEventListener("click", () => {
+        const content = el.querySelector(".folder-content");
+        const isOpen  = content.classList.contains("open");
+        content.classList.toggle("open", !isOpen);
+        el.classList.toggle("open", !isOpen);
+      });
+
+      container.appendChild(el);
+    }
+    log("Repository loaded successfully ✓");
+
+  } catch (err) {
+    log("Engine error: " + err.message);
+    container.innerHTML = `<div class="vault-error">⚠ Failed to load vault. ${err.message}</div>`;
+  }
+
+  loadingEl.style.display = "none";
 }
 
-document.getElementById("loginBtn").addEventListener("click", login);
-document.getElementById("passwordInput").addEventListener("keydown", e=>{
-    if(e.key === "Enter") login();
-});
+/* ================================================================
+   SEARCH — filters visible file cards live as user types
+   ================================================================ */
+document.getElementById("searchInput").addEventListener("input", function () {
+  const query = this.value.trim().toLowerCase();
 
-window.addEventListener("load", ()=>{
-    log("Vault System v3 initialized");
-    updateThemeUI();
-    if(sessionStorage.getItem(SESSION_KEY) === "true"){
-        log("Existing session restored");
-        showVault();
+  document.querySelectorAll(".folder").forEach(folder => {
+    const cards  = folder.querySelectorAll(".file-card");
+    let   anyVis = false;
+
+    cards.forEach(card => {
+      const name = card.querySelector(".file-name")?.textContent.toLowerCase() || "";
+      const desc = card.querySelector(".file-desc")?.textContent.toLowerCase() || "";
+      const show = !query || name.includes(query) || desc.includes(query);
+      card.style.display = show ? "" : "none";
+      if (show) anyVis = true;
+    });
+
+    // Auto-expand matching folders; show/hide entire folder based on matches
+    const content = folder.querySelector(".folder-content");
+    folder.style.display = anyVis || !query ? "" : "none";
+    if (query && anyVis) {
+      content.classList.add("open");
+      folder.classList.add("open");
     }
-});
-// Master open/close state tracker
-let allFoldersRevealed = false;
-
-document.getElementById("toggleFoldersBtn").addEventListener("click", function() {
-    const contents = document.querySelectorAll(".folder-content");
-    allFoldersRevealed = !allFoldersRevealed;
-
-    if (allFoldersRevealed) {
-        log("SYSTEM: Expanding folders to grid layout...");
-        contents.forEach(content => content.style.display = "grid");
-        this.textContent = "Close Folders";
-        this.style.color = "var(--accent)";
-    } else {
-        log("SYSTEM: Collapsing folders layout...");
-        contents.forEach(content => content.style.display = "none");
-        this.textContent = "Open Folders";
-        this.style.color = "var(--accent)";
-    }
+  });
 });
 
-// Force Synchronization Event Element
+/* ================================================================
+   TOGGLE ALL FOLDERS button
+   ================================================================ */
+let allFoldersOpen = false;
+
+document.getElementById("toggleFoldersBtn").addEventListener("click", function () {
+  allFoldersOpen = !allFoldersOpen;
+  document.querySelectorAll(".folder-content").forEach(c => {
+    c.classList.toggle("open", allFoldersOpen);
+    c.closest(".folder").classList.toggle("open", allFoldersOpen);
+  });
+  this.textContent = allFoldersOpen ? "▤ Close All" : "▤ Folders";
+  log(allFoldersOpen ? "SYSTEM: All folders expanded" : "SYSTEM: All folders collapsed");
+});
+
+/* ================================================================
+   SYNC REPO button — clears cache + force re-fetches
+   ================================================================ */
 document.getElementById("syncRepoBtn").addEventListener("click", () => {
-    log("SYSTEM: Clearing local memory cache. Forcing network sync...");
-    allFoldersRevealed = false;
-    const toggleBtn = document.getElementById("toggleFoldersBtn");
-    if (toggleBtn) {
-        toggleBtn.textContent = "Reveal Folders";
-        toggleBtn.style.color = "var(--accent)";
-    }
-    loadVault(true); // Forces clean pull bypassing storage cache registers
+  log("SYSTEM: Clearing cache, forcing network sync…");
+  loadVault(true);
+});
+
+/* ================================================================
+   KEYBOARD SHORTCUT: Enter on password input
+   ================================================================ */
+document.getElementById("passwordInput").addEventListener("keydown", e => {
+  if (e.key === "Enter") login();
+});
+
+document.getElementById("loginBtn").addEventListener("click", login);
+
+/* ================================================================
+   INIT on page load
+   ================================================================ */
+window.addEventListener("load", () => {
+  log("Vault System v3 initialized");
+  updateThemeUI();
+  if (sessionStorage.getItem(SESSION_KEY) === "true") {
+    log("Restoring existing session…");
+    showVault();
+  }
 });
 </script>
 
