@@ -1,0 +1,209 @@
+[
+  {
+    "name": "excell",
+    "files": [
+      {
+        "name": "1_baholar_jadvali.xlsx",
+        "path": "excell/1_baholar_jadvali.xlsx",
+        "download_url": "https://raw.githubusercontent.com/uz-bekk/info/main/excell/1_baholar_jadvali.xlsx",
+        "type": "file"
+      },
+      {
+        "name": "2_savdo_hisoboti_30_kun.xlsx",
+        "path": "excell/2_savdo_hisoboti_30_kun.xlsx",
+        "download_url": "https://raw.githubusercontent.com/uz-bekk/info/main/excell/2_savdo_hisoboti_30_kun.xlsx",
+        "type": "file"
+      },
+      {
+        "name": "3_kitob_katalogi.xlsx",
+        "path": "excell/3_kitob_katalogi.xlsx",
+        "download_url": "https://raw.githubusercontent.com/uz-bekk/info/main/excell/3_kitob_katalogi.xlsx",
+        "type": "file"
+      },
+      {
+        "name": "4_sport_reyting.xlsx",
+        "path": "excell/4_sport_reyting.xlsx",
+        "download_url": "https://raw.githubusercontent.com/uz-bekk/info/main/excell/4_sport_reyting.xlsx",
+        "type": "file"
+      },
+      {
+        "name": "5_talabalar_yotoqxona.xlsx",
+        "path": "excell/5_talabalar_yotoqxona.xlsx",
+        "download_url": "https://raw.githubusercontent.com/uz-bekk/info/main/excell/5_talabalar_yotoqxona.xlsx",
+        "type": "file"
+      },
+      {
+        "name": "6_kutubxona.xlsx",
+        "path": "excell/6_kutubxona.xlsx",
+        "download_url": "https://raw.githubusercontent.com/uz-bekk/info/main/excell/6_kutubxona.xlsx",
+        "type": "file"
+      },
+      {
+        "name": "7_sport_klubi_bazasi.xlsx",
+        "path": "excell/7_sport_klubi_bazasi.xlsx",
+        "download_url": "https://raw.githubusercontent.com/uz-bekk/info/main/excell/7_sport_klubi_bazasi.xlsx",
+        "type": "file"
+      },
+      {
+        "name": "8_maktab_jihozlari_DB.xlsx",
+        "path": "excell/8_maktab_jihozlari_DB.xlsx",
+        "download_url": "https://raw.githubusercontent.com/uz-bekk/info/main/excell/8_maktab_jihozlari_DB.xlsx",
+        "type": "file"
+      }
+    ]
+  },
+  {
+    "name": "graphics",
+    "files": [
+      {
+        "name": "1.png",
+        "path": "graphics/1.png",
+        "download_url": "https://raw.githubusercontent.com/uz-bekk/info/main/graphics/1.png",
+        "type": "file"
+      },
+      {
+        "name": "1withbg.png",
+        "path": "graphics/1withbg.png",
+        "download_url": "https://raw.githubusercontent.com/uz-bekk/info/main/graphics/1withbg.png",
+        "type": "file"
+      },
+      {
+        "name": "2.png",
+        "path": "graphics/2.png",
+        "download_url": "https://raw.githubusercontent.com/uz-bekk/info/main/graphics/2.png",
+        "type": "file"
+      },
+      {
+        "name": "3.png",
+        "path": "graphics/3.png",
+        "download_url": "https://raw.githubusercontent.com/uz-bekk/info/main/graphics/3.png",
+        "type": "file"
+      },
+      {
+        "name": "4.png",
+        "path": "graphics/4.png",
+        "download_url": "https://raw.githubusercontent.com/uz-bekk/info/main/graphics/4.png",
+        "type": "file"
+      },
+      {
+        "name": "UFQ.png",
+        "path": "graphics/UFQ.png",
+        "download_url": "https://raw.githubusercontent.com/uz-bekk/info/main/graphics/UFQ.png",
+        "type": "file"
+      },
+      {
+        "name": "muqova_ufq.png",
+        "path": "graphics/muqova_ufq.png",
+        "download_url": "https://raw.githubusercontent.com/uz-bekk/info/main/graphics/muqova_ufq.png",
+        "type": "file"
+      },
+      {
+        "name": "voleybasketbol.png",
+        "path": "graphics/voleybasketbol.png",
+        "download_url": "https://raw.githubusercontent.com/uz-bekk/info/main/graphics/voleybasketbol.png",
+        "type": "file"
+      },
+      {
+        "name": "voleybol-1.png",
+        "path": "graphics/voleybol-1.png",
+        "download_url": "https://raw.githubusercontent.com/uz-bekk/info/main/graphics/voleybol-1.png",
+        "type": "file"
+      },
+      {
+        "name": "voleybol-2.png",
+        "path": "graphics/voleybol-2.png",
+        "download_url": "https://raw.githubusercontent.com/uz-bekk/info/main/graphics/voleybol-2.png",
+        "type": "file"
+      },
+      {
+        "name": "yugurish01.png",
+        "path": "graphics/yugurish01.png",
+        "download_url": "https://raw.githubusercontent.com/uz-bekk/info/main/graphics/yugurish01.png",
+        "type": "file"
+      },
+      {
+        "name": "yugurish02.png",
+        "path": "graphics/yugurish02.png",
+        "download_url": "https://raw.githubusercontent.com/uz-bekk/info/main/graphics/yugurish02.png",
+        "type": "file"
+      }
+    ]
+  },
+  {
+    "name": "javascript",
+    "files": [
+      {
+        "name": "1_Calc.HTML",
+        "path": "javascript/1_Calc.HTML",
+        "download_url": "https://raw.githubusercontent.com/uz-bekk/info/main/javascript/1_Calc.HTML",
+        "type": "file"
+      },
+      {
+        "name": "2_app.HTML",
+        "path": "javascript/2_app.HTML",
+        "download_url": "https://raw.githubusercontent.com/uz-bekk/info/main/javascript/2_app.HTML",
+        "type": "file"
+      },
+      {
+        "name": "2_temperatura.HTML",
+        "path": "javascript/2_temperatura.HTML",
+        "download_url": "https://raw.githubusercontent.com/uz-bekk/info/main/javascript/2_temperatura.HTML",
+        "type": "file"
+      },
+      {
+        "name": "3_Currency.HTML",
+        "path": "javascript/3_Currency.HTML",
+        "download_url": "https://raw.githubusercontent.com/uz-bekk/info/main/javascript/3_Currency.HTML",
+        "type": "file"
+      },
+      {
+        "name": "3_pul.HTML",
+        "path": "javascript/3_pul.HTML",
+        "download_url": "https://raw.githubusercontent.com/uz-bekk/info/main/javascript/3_pul.HTML",
+        "type": "file"
+      },
+      {
+        "name": "4_GeoGIt.HTML",
+        "path": "javascript/4_GeoGIt.HTML",
+        "download_url": "https://raw.githubusercontent.com/uz-bekk/info/main/javascript/4_GeoGIt.HTML",
+        "type": "file"
+      },
+      {
+        "name": "4_geogit2.html",
+        "path": "javascript/4_geogit2.html",
+        "download_url": "https://raw.githubusercontent.com/uz-bekk/info/main/javascript/4_geogit2.html",
+        "type": "file"
+      },
+      {
+        "name": "5_JuftToq.HTML",
+        "path": "javascript/5_JuftToq.HTML",
+        "download_url": "https://raw.githubusercontent.com/uz-bekk/info/main/javascript/5_JuftToq.HTML",
+        "type": "file"
+      },
+      {
+        "name": "6_JuftSum.HTML",
+        "path": "javascript/6_JuftSum.HTML",
+        "download_url": "https://raw.githubusercontent.com/uz-bekk/info/main/javascript/6_JuftSum.HTML",
+        "type": "file"
+      },
+      {
+        "name": "7_AgeYear.HTML",
+        "path": "javascript/7_AgeYear.HTML",
+        "download_url": "https://raw.githubusercontent.com/uz-bekk/info/main/javascript/7_AgeYear.HTML",
+        "type": "file"
+      },
+      {
+        "name": "7_AgeYear2.html",
+        "path": "javascript/7_AgeYear2.html",
+        "download_url": "https://raw.githubusercontent.com/uz-bekk/info/main/javascript/7_AgeYear2.html",
+        "type": "file"
+      },
+      {
+        "name": "8_NumSum.HTML",
+        "path": "javascript/8_NumSum.HTML",
+        "download_url": "https://raw.githubusercontent.com/uz-bekk/info/main/javascript/8_NumSum.HTML",
+        "type": "file"
+      }
+    ]
+  }
+]
