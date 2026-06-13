@@ -6,6 +6,7 @@
 <title>Vault System v3</title>
 <link rel="icon" type="image/png" href="https://uz-bekk.github.io/info/favicon-32x32.png">
 
+<!-- Google Fonts: Inter (UI body) + JetBrains Mono (terminal/monospace) -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
@@ -86,6 +87,7 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
+/* Subtle ambient background gradient — theme-aware */
 body::before {
   content: "";
   position: fixed;
@@ -97,6 +99,9 @@ body::before {
   z-index: 0;
 }
 
+/* ============================================================
+   SCROLLBAR STYLING
+   ============================================================ */
 ::-webkit-scrollbar { width: 5px; height: 5px }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 99px; }
@@ -115,6 +120,7 @@ body::before {
   padding: 20px;
 }
 
+/* Animated grid backdrop — CSS only, performance-safe */
 #loginScreen::after {
   content: "";
   position: fixed;
@@ -146,6 +152,7 @@ body::before {
   to   { opacity: 1; transform: translateY(0); }
 }
 
+/* Vault logo / wordmark atop login card */
 .login-logo {
   display: flex;
   align-items: center;
@@ -166,6 +173,7 @@ body::before {
 }
 
 .login-logo-icon svg { display: block; }
+
 .login-logo-text {
   font-family: var(--font-mono);
   font-size: 18px;
@@ -192,6 +200,9 @@ body::before {
   margin-bottom: 20px;
 }
 
+/* ============================================================
+   FORM ELEMENTS — shared across login + anywhere
+   ============================================================ */
 .field-group {
   display: flex;
   flex-direction: column;
@@ -233,6 +244,9 @@ input[type="number"]:focus {
   box-shadow: 0 0 0 3px var(--accent-dim);
 }
 
+/* ============================================================
+   BUTTONS
+   ============================================================ */
 .btn {
   display: inline-flex;
   align-items: center;
@@ -254,6 +268,7 @@ input[type="number"]:focus {
 .btn:hover  { transform: translateY(-2px); box-shadow: var(--shadow-md); }
 .btn:active { transform: translateY(0);    box-shadow: none; }
 
+/* Solid accent button */
 .btn-primary {
   background: var(--accent);
   color: var(--btn-text);
@@ -261,6 +276,7 @@ input[type="number"]:focus {
 }
 .btn-primary:hover { box-shadow: 0 6px 20px var(--accent-glow); }
 
+/* Ghost button */
 .btn-ghost {
   background: transparent;
   color: var(--text-secondary);
@@ -268,12 +284,15 @@ input[type="number"]:focus {
 }
 .btn-ghost:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-dim); }
 
+/* Danger / error state */
 .btn-danger {
   background: var(--error-dim);
   color: var(--error);
   border: 1px solid rgba(240, 80, 80, 0.3);
 }
 .btn-danger:hover { background: var(--error); color: #fff; }
+
+/* Full-width variant */
 .btn-full { width: 100%; }
 
 #loginBtn {
@@ -299,6 +318,9 @@ input[type="number"]:focus {
   75%       { transform: translateX(4px); }
 }
 
+/* ============================================================
+   THEME TOGGLE CHIP
+   ============================================================ */
 .theme-btn {
   display: inline-flex;
   align-items: center;
@@ -321,8 +343,12 @@ input[type="number"]:focus {
   color: var(--accent);
   background: var(--accent-dim);
 }
+
 .theme-btn .icon { font-size: 13px; line-height: 1; }
 
+/* ============================================================
+   ACTION LINKS (inline nav items)
+   ============================================================ */
 .action-link {
   color: var(--text-secondary);
   font-size: 12px;
@@ -341,8 +367,14 @@ input[type="number"]:focus {
   background: var(--accent-dim);
 }
 
+/* ============================================================
+   VAULT APP SHELL
+   ============================================================ */
 #vaultApp { display: none; position: relative; z-index: 1; }
 
+/* ============================================================
+   HEADER
+   ============================================================ */
 header {
   background: var(--surface);
   border-bottom: 1px solid var(--border);
@@ -354,6 +386,7 @@ header {
   -webkit-backdrop-filter: blur(12px);
 }
 
+/* Top nav bar — logo + actions */
 .header-nav {
   display: flex;
   align-items: center;
@@ -397,6 +430,7 @@ header {
   margin-top: 2px;
 }
 
+/* Nav action pill row */
 .header-actions {
   display: flex;
   align-items: center;
@@ -411,6 +445,7 @@ header {
   margin: 0 4px;
 }
 
+/* Dashboard panels row */
 .header-panels {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -419,6 +454,7 @@ header {
   border-top: 1px solid var(--border);
 }
 
+/* Individual panel */
 .panel {
   background: var(--surface);
   padding: 14px 18px;
@@ -453,7 +489,9 @@ header {
   50%       { opacity: 0.3; }
 }
 
+/* Console log panel */
 .console-panel { height: 160px; }
+
 .console-log {
   font-family: var(--font-mono);
   font-size: 11px;
@@ -466,9 +504,12 @@ header {
 .console-log .log-line { display: block; }
 .console-log .log-time { color: var(--accent); margin-right: 4px; opacity: 0.7; }
 
+/* ASCII art / vault core panel */
 .core-panel {
   height: 160px;
   display: grid;
+  //align-items: center;
+  //justify-content: center;
 }
 
 .ascii-art {
@@ -483,12 +524,16 @@ header {
   overflow-y: auto;
 }
 
+/* Mobile: collapse panels to single-column */
 @media (max-width: 600px) {
   .header-panels { grid-template-columns: 1fr; }
-  .core-panel { display: none; }
+  .core-panel { display: none; } /* Hide ASCII on mobile to save space */
   .console-panel { height: 80px; }
 }
 
+/* ============================================================
+   MAIN CONTENT AREA
+   ============================================================ */
 #vaultMain {
   padding: 0 0 60px 0;
   inset: 0;
@@ -496,8 +541,11 @@ header {
     linear-gradient(0deg, var(--border) 1px, transparent 2px),
     linear-gradient(90deg, var(--border) 1px, transparent 1px);
   background-size: 48px 48px;
-}
+ }
 
+/* ============================================================
+   LOADING INDICATOR
+   ============================================================ */
 #loading {
   display: none;
   padding: 40px 20px;
@@ -543,6 +591,9 @@ header {
   to   { transform: translateX(220px); }
 }
 
+/* ============================================================
+   FOLDERS & FILE CARDS
+   ============================================================ */
 #foldersContainer {
   padding: 20px;
   display: flex;
@@ -550,6 +601,7 @@ header {
   gap: 12px;
 }
 
+/* Folder accordion */
 .folder {
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
@@ -576,8 +628,14 @@ header {
 }
 
 .folder-header:hover { background: var(--surface-3); }
-.folder-header-left { display: flex; align-items: center; gap: 10px; }
 
+.folder-header-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Folder icon — animated chevron */
 .folder-icon {
   width: 28px;
   height: 28px;
@@ -594,6 +652,7 @@ header {
 }
 
 .folder.open .folder-icon { background: var(--accent-dim); border-color: var(--border-strong); }
+
 .folder-name {
   font-family: var(--font-mono);
   font-size: 13px;
@@ -621,6 +680,7 @@ header {
 
 .folder.open .folder-chevron { transform: rotate(180deg); }
 
+/* File grid inside folder */
 .folder-content {
   display: none;
   grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
@@ -637,6 +697,9 @@ header {
   #foldersContainer { padding: 12px; gap: 10px; }
 }
 
+/* ============================================================
+   FILE CARD
+   ============================================================ */
 .file-card {
   background: var(--surface);
   border: 1px solid var(--border);
@@ -656,6 +719,7 @@ header {
 }
 
 .file-card-top { flex: 1; display: flex; flex-direction: column; gap: 10px; }
+
 .file-name {
   font-family: var(--font-mono);
   font-size: 12px;
@@ -665,6 +729,7 @@ header {
   line-height: 1.4;
 }
 
+/* Media preview */
 .media-preview-box {
   width: 100%;
   height: 148px;
@@ -690,6 +755,7 @@ header {
   line-height: 1.55;
 }
 
+/* Card actions row */
 .file-actions {
   display: flex;
   flex-direction: column;
@@ -697,8 +763,12 @@ header {
   margin-top: auto;
 }
 
-.file-actions-row { display: flex; gap: 8px; }
+.file-actions-row {
+  display: flex;
+  gap: 8px;
+}
 
+/* Specific card button styles */
 .download-btn,
 .run-btn {
   display: inline-flex;
@@ -761,6 +831,9 @@ header {
   box-shadow: 0 6px 18px rgba(124, 77, 255, 0.35);
 }
 
+/* ============================================================
+   SEARCH BAR (in-vault)
+   ============================================================ */
 .vault-search-bar {
   padding: 16px 20px;
   background: var(--surface);
@@ -806,6 +879,9 @@ header {
 
 #searchInput::placeholder { color: var(--text-secondary); opacity: 0.6; }
 
+/* ============================================================
+   MOBILE RESPONSIVE HEADER ADJUSTMENTS
+   ============================================================ */
 @media (max-width: 640px) {
   .header-nav { padding: 10px 14px; }
   .header-actions { gap: 2px; }
@@ -819,6 +895,9 @@ header {
   .header-logo-title { font-size: 13px; letter-spacing: 2px; }
 }
 
+/* ============================================================
+   EMPTY STATES
+   ============================================================ */
 .vault-error {
   margin: 20px;
   padding: 20px;
@@ -830,10 +909,16 @@ header {
   font-size: 13px;
 }
 
-.vault-footer { height: 82px; }
+/* ============================================================
+   FOOTER SPACER
+   ============================================================ */
+.vault-footer {
+  height: 82px;
+}
 
 /* ============================================================
    DECOY WORKSPACE OVERLAY (visionBlock)
+   — Preserved exactly; only minor polish added
    ============================================================ */
 #visionBlock {
   display: none;
@@ -853,6 +938,7 @@ header {
   background: #202020;
 }
 
+/* LEFT: Notepad clone */
 .decoy-notepad {
   background: #1e1e1e;
   display: flex;
@@ -875,6 +961,7 @@ header {
 }
 
 .np-tabs { display: flex; align-items: flex-end; height: 100%; }
+
 .np-tab {
   background: #1e1e1e;
   padding: 8px 16px 6px 16px;
@@ -900,7 +987,12 @@ header {
   border-bottom: 1px solid #2b2b2b;
 }
 
-.np-textarea-container { flex: 1; padding: 12px; background: #1e1e1e; }
+.np-textarea-container {
+  flex: 1;
+  padding: 12px;
+  background: #1e1e1e;
+}
+
 .np-textarea {
   width: 100%;
   height: 100%;
@@ -927,6 +1019,7 @@ header {
   gap: 20px;
 }
 
+/* RIGHT: Mock browser */
 .decoy-browser {
   background: #ffffff;
   display: flex;
@@ -947,6 +1040,7 @@ header {
 }
 
 .br-tabs { display: flex; gap: 4px; }
+
 .br-tab {
   background: #ffffff;
   padding: 6px 16px;
@@ -956,7 +1050,13 @@ header {
   color: #1f2023;
 }
 
-.br-navigation-bar { display: flex; align-items: center; gap: 10px; padding: 2px 4px; }
+.br-navigation-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 2px 4px;
+}
+
 .br-nav-arrows {
   color: #5f6368;
   font-size: 16px;
@@ -993,7 +1093,7 @@ header {
   padding: 2rem;
   box-shadow: 0 10px 25px -5px rgba(0,0,0,0.5);
   position: relative;
-  width: 140%;
+  width: 140%; /* Intentional: simulates a broken overflow layout */
 }
 
 .layout-error-tag {
@@ -1013,7 +1113,7 @@ header {
   text-align: center;
   margin-bottom: 2rem;
   position: relative;
-  height: 65px;
+  height: 65px; /* Intentional: causes overlap */
 }
 
 .broken-app-header h1 {
@@ -1027,13 +1127,14 @@ header {
 }
 
 .broken-app-header h1 span { color: #10b981; }
+
 .broken-app-header p {
   color: #a1a1aa;
   font-size: 0.9rem;
   line-height: 1.4;
   position: absolute;
   width: 100%;
-  top: 12px;
+  top: 12px; /* Intentional: overlaps h1 */
 }
 
 .mock-field {
@@ -1061,7 +1162,12 @@ header {
   width: 100%;
 }
 
-.mock-results-panel { display: flex; flex-direction: column; gap: 0.75rem; }
+.mock-results-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
 .mock-result-box {
   background-color: #09090b;
   border: 1px solid #3f3f46;
@@ -1101,11 +1207,15 @@ header {
 .console-entry-err { color: #ff5252; margin-bottom: 4px; }
 .console-entry-warn { color: #ffb300; margin-bottom: 4px; }
 
+/* Decoy responsive */
 @media (max-width: 850px) {
   #visionBlock.active { grid-template-columns: 1fr; }
   .decoy-browser { display: none; }
 }
 
+/* ============================================================
+   REDUCED MOTION RESPECT
+   ============================================================ */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     animation-duration: 0.01ms !important;
@@ -1117,8 +1227,13 @@ header {
 
 <body>
 
+<!-- ============================================================
+     LOGIN SCREEN
+     ============================================================ -->
 <div id="loginScreen">
   <div class="login-box">
+
+    <!-- Theme toggle at top-right -->
     <div class="login-theme-row">
       <span class="theme-btn theme-toggle-btn">
         <span class="icon">☀</span>
@@ -1126,8 +1241,10 @@ header {
       </span>
     </div>
 
+    <!-- Logo / branding -->
     <div class="login-logo">
       <div class="login-logo-icon">
+        <!-- Lock icon SVG -->
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
           <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
@@ -1140,12 +1257,14 @@ header {
 
     <h2>Secure Access Required</h2>
 
+    <!-- Password field with label -->
     <div class="field-group">
       <label for="passwordInput">Master Password</label>
       <input type="password" id="passwordInput" placeholder="Enter vault password" autocomplete="current-password">
     </div>
 
     <button class="btn btn-primary btn-full" id="loginBtn">
+      <!-- Unlock icon -->
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
         <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
         <path d="M7 11V7a5 5 0 0 1 9.9-1"></path>
@@ -1157,8 +1276,15 @@ header {
   </div>
 </div>
 
+<!-- ============================================================
+     VAULT APPLICATION
+     ============================================================ -->
 <div id="vaultApp">
+
+  <!-- Sticky header -->
   <header>
+
+    <!-- Top nav: logo + action links -->
     <div class="header-nav">
       <div class="header-logo">
         <div class="header-logo-badge">
@@ -1180,6 +1306,7 @@ header {
         </span>
         <div class="header-divider"></div>
         <span class="action-link" id="syncRepoBtn" title="Force sync from GitHub">
+          <!-- Refresh icon -->
           ↻ Sync
         </span>
         <span class="action-link" id="toggleFoldersBtn" title="Toggle all folders">
@@ -1187,17 +1314,17 @@ header {
         </span>
       </div>
     </div>
-  </header>
+</header>
+    <!-- Dashboard panels: console + ASCII art -->
+    <div class="header-panels">
+      <div class="panel console-panel">
+        <div class="panel-label">Dev Console</div>
+        <div class="console-log" id="consoleLog"></div>
+      </div>
 
-  <div class="header-panels">
-    <div class="panel console-panel">
-      <div class="panel-label">Dev Console</div>
-      <div class="console-log" id="consoleLog"></div>
-    </div>
-
-    <div class="panel core-panel">
-      <div class="panel-label">Vault Core</div>
-      <div class="ascii-art">───▄▀▀▀▄▄▄▄▄▄▄▀▀▀▄───
+      <div class="panel core-panel">
+        <div class="panel-label">Vault Core</div>
+        <div class="ascii-art">───▄▀▀▀▄▄▄▄▄▄▄▀▀▀▄───
 ───█▒▒░░░░░░░░░▒▒█───
 ────█░░█░░░░░█░░█────
 ─▄▄──█░░░▀█▀░░░█──▄▄─
@@ -1207,9 +1334,12 @@ header {
 █░░║║║╠─║─║─║║║║║╠─░░█
 █░░╚╩╝╚╝╚╝╚╝╚╝╩─╩╚╝░░█
 █▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄█</div>
+      </div>
     </div>
-  </div>
 
+  
+
+  <!-- Search bar -->
   <div class="vault-search-bar">
     <div class="vault-search-wrap">
       <span class="vault-search-icon">🔍</span>
@@ -1217,17 +1347,25 @@ header {
     </div>
   </div>
 
+  <!-- Main content -->
   <main id="vaultMain">
+    <!-- Loading indicator -->
     <div id="loading">
       <span class="loading-dots">Loading repository</span>
       <div class="loading-bar"><div class="loading-bar-fill"></div></div>
     </div>
 
+    <!-- Folder cards rendered by JS -->
     <div id="foldersContainer"></div>
-    <div class="vault-footer"></div>
-  </main>
+  
+
+  <div class="vault-footer"></div>
+</main>
 </div>
 
+<!-- ============================================================
+     DECOY WORKSPACE OVERLAY (preserved, styles unchanged)
+     ============================================================ -->
 <div id="visionBlock">
   <div class="decoy-notepad">
     <div class="np-titlebar">
@@ -1249,12 +1387,13 @@ header {
     <style>
         .container {
             background-color: #18181b;
-            width: 140%;
+            width: 140%; /* BUG: Causes severe viewport clipping bounds */
+            position: relative;
         }
         .header {
             text-align: center;
             position: relative;
-            height: 65px;
+            height: 65px; /* BUG: Box container height constraint forces collision */
         }
         .header h1 {
             font-size: 1.5rem;
@@ -1264,7 +1403,7 @@ header {
         .header p {
             color: #a1a1aa;
             position: absolute;
-            top: 12px;
+            top: 12px; /* BUG: Positions description directly over h1 header text */
         }
     </style>
 </head>
@@ -1349,12 +1488,17 @@ header {
   </div>
 </div>
 
+<!-- ============================================================
+     JAVASCRIPT
+     ============================================================ -->
 <script>
 /* ================================================================
    THEME ENGINE
+   — Persists preference in localStorage; toggles data-theme on <html>
    ================================================================ */
 const THEME_STORAGE_KEY = "vault_theme_mode";
 
+// Apply saved theme immediately (before paint) to avoid FOUC
 (function initTheme() {
   const saved = localStorage.getItem(THEME_STORAGE_KEY) || "dark";
   document.documentElement.setAttribute("data-theme", saved);
@@ -1380,6 +1524,7 @@ function toggleTheme() {
   log(`Theme: switched to ${newTheme.toUpperCase()}`);
 }
 
+// Delegate click for theme toggle buttons (login + header)
 document.addEventListener("click", e => {
   if (e.target.closest(".theme-toggle-btn")) toggleTheme();
 });
@@ -1415,6 +1560,7 @@ function toggleVisionBlock() {
   }
 }
 
+// Notepad cursor line/col tracker
 const npTextarea    = document.querySelector(".np-textarea");
 const npLineColDisp = document.getElementById("npLineCol");
 
@@ -1427,9 +1573,9 @@ npTextarea.addEventListener("keyup",  updateLineCol);
 npTextarea.addEventListener("click",  updateLineCol);
 
 /* ================================================================
-   VAULT CORE CONFIG — Static Manifest Powered (Bypasses API limits)
+   VAULT CORE CONFIG
    ================================================================ */
-const MANIFEST_URL   = "https://raw.githubusercontent.com/uz-bekk/info/main/vault_manifest.json";
+const API_ROOT = "https://api.github.com/repos/uz-bekk/info/contents";
 const SHORT_TXT_URL  = "https://raw.githubusercontent.com/uz-bekk/info/main/short.txt";
 const SESSION_KEY    = "vault_session_v2";
 const PASSWORD_HASH  = "2bf0064d802c91d9dff63bd0d406922198f2843d9338b5b5ec52890e040c00fc";
@@ -1443,6 +1589,7 @@ function getRunUrl(file) {
   return "https://uz-bekk.github.io/info/" + file.path;
 }
 
+// Append a timestamped line to the console panel
 function log(message) {
   const box = document.getElementById("consoleLog");
   if (!box) return;
@@ -1454,6 +1601,7 @@ function log(message) {
   box.scrollTop = box.scrollHeight;
 }
 
+// SHA-256 via Web Crypto API
 async function sha256(text) {
   const data   = new TextEncoder().encode(text);
   const buffer = await crypto.subtle.digest("SHA-256", data);
@@ -1528,6 +1676,25 @@ async function loadDescriptions() {
   }
 }
 
+async function getFolderContents(url) {
+  const files = [];
+  try {
+    const items = await fetchJSON(url);
+    for (const item of items) {
+      if (item.type === "dir") {
+        log(`Scanning subfolder: ${item.name}`);
+        files.push(...await getFolderContents(item.url));
+      } else if (item.type === "file") {
+        files.push(item);
+        log(`Loaded: ${item.name}`);
+      }
+    }
+  } catch (err) {
+    log("Scan error: " + err.message);
+  }
+  return files;
+}
+
 /* ================================================================
    FILE CARD RENDERER
    ================================================================ */
@@ -1589,7 +1756,7 @@ function createFileCard(file) {
 }
 
 /* ================================================================
-   VAULT LOADER (Single JSON compilation fetch)
+   VAULT LOADER  (cache-first; force-refresh on demand)
    ================================================================ */
 const CACHE_FOLDERS_KEY = "vault_cached_folders";
 const CACHE_DESCS_KEY   = "vault_cached_descriptions";
@@ -1600,6 +1767,7 @@ async function loadVault(forceRefresh = false) {
   loadingEl.style.display = "block";
   container.innerHTML     = "";
 
+  // Reset open/close state whenever vault is reloaded
   allFoldersOpen = false;
   const toggleBtn = document.getElementById("toggleFoldersBtn");
   if (toggleBtn) toggleBtn.textContent = "▤ Folders";
@@ -1607,6 +1775,7 @@ async function loadVault(forceRefresh = false) {
   try {
     let foldersData = null;
 
+    // Try cache unless forced refresh
     if (!forceRefresh) {
       const cf = localStorage.getItem(CACHE_FOLDERS_KEY);
       const cd = localStorage.getItem(CACHE_DESCS_KEY);
@@ -1618,18 +1787,26 @@ async function loadVault(forceRefresh = false) {
       }
     }
 
+    // Network fetch if needed
     if (!foldersData) {
-      log("NETWORK: pulling fresh layout manifest…");
+      log("NETWORK: fetching fresh repository data…");
       await loadDescriptions();
-      
-      // Fetches precompiled manifest structure securely from CDN instead of rate-limited API
-      foldersData = await fetchJSON(MANIFEST_URL);
+      log("Fetching repository root…");
+      const root    = await fetchJSON(API_ROOT);
+      const folders = root.filter(i => i.type === "dir");
+      foldersData   = [];
+
+      for (const folder of folders) {
+        const files = await getFolderContents(folder.url);
+        foldersData.push({ name: folder.name, files });
+      }
 
       localStorage.setItem(CACHE_FOLDERS_KEY, JSON.stringify(foldersData));
       localStorage.setItem(CACHE_DESCS_KEY,   JSON.stringify(descriptions));
       log("CACHE: local storage updated ✓");
     }
 
+    // Render folder accordions
     container.innerHTML = "";
     for (const folder of foldersData) {
       const el = document.createElement("div");
@@ -1650,6 +1827,7 @@ async function loadVault(forceRefresh = false) {
           ${folder.files.map(createFileCard).join("")}
         </div>`;
 
+      // Toggle open/close on header click
       el.querySelector(".folder-header").addEventListener("click", () => {
         const content = el.querySelector(".folder-content");
         const isOpen  = content.classList.contains("open");
@@ -1659,7 +1837,7 @@ async function loadVault(forceRefresh = false) {
 
       container.appendChild(el);
     }
-    log("Repository successfully parsed ✓");
+    log("Repository loaded successfully ✓");
 
   } catch (err) {
     log("Engine error: " + err.message);
@@ -1670,7 +1848,7 @@ async function loadVault(forceRefresh = false) {
 }
 
 /* ================================================================
-   SEARCH FILTER LIVE INTERACTION
+   SEARCH — filters visible file cards live as user types
    ================================================================ */
 document.getElementById("searchInput").addEventListener("input", function () {
   const query = this.value.trim().toLowerCase();
@@ -1687,6 +1865,7 @@ document.getElementById("searchInput").addEventListener("input", function () {
       if (show) anyVis = true;
     });
 
+    // Auto-expand matching folders; show/hide entire folder based on matches
     const content = folder.querySelector(".folder-content");
     folder.style.display = anyVis || !query ? "" : "none";
     if (query && anyVis) {
@@ -1697,7 +1876,7 @@ document.getElementById("searchInput").addEventListener("input", function () {
 });
 
 /* ================================================================
-   TOGGLE ALL FOLDERS BUTTON INTERACTION
+   TOGGLE ALL FOLDERS button
    ================================================================ */
 let allFoldersOpen = false;
 
@@ -1712,7 +1891,7 @@ document.getElementById("toggleFoldersBtn").addEventListener("click", function (
 });
 
 /* ================================================================
-   SYNC REPO INTERACTION
+   SYNC REPO button — clears cache + force re-fetches
    ================================================================ */
 document.getElementById("syncRepoBtn").addEventListener("click", () => {
   log("SYSTEM: Clearing cache, forcing network sync…");
@@ -1720,7 +1899,7 @@ document.getElementById("syncRepoBtn").addEventListener("click", () => {
 });
 
 /* ================================================================
-   INITIALIZATION
+   KEYBOARD SHORTCUT: Enter on password input
    ================================================================ */
 document.getElementById("passwordInput").addEventListener("keydown", e => {
   if (e.key === "Enter") login();
@@ -1728,6 +1907,9 @@ document.getElementById("passwordInput").addEventListener("keydown", e => {
 
 document.getElementById("loginBtn").addEventListener("click", login);
 
+/* ================================================================
+   INIT on page load
+   ================================================================ */
 window.addEventListener("load", () => {
   log("Vault System v3 initialized");
   updateThemeUI();

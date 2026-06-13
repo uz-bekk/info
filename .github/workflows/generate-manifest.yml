@@ -1,0 +1,73 @@
+name: Generate Vault Manifest
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch: # Allows you to run it manually from the Actions tab
+
+permissions:
+  contents: write # Allows the workflow to save the file back to your repository
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Run Manifest Generator Script
+        run: |
+          node -e '
+          const fs = require("fs");
+          const path = require("path");
+          const rawRoot = "https://raw.githubusercontent.com/uz-bekk/info/main";
+          
+          function walkDir(dirPath, baseDir) {
+              let files = [];
+              const items = fs.readdirSync(dirPath, { withFileTypes: true });
+              for (const item of items) {
+                  // Ignore hidden files and system directories
+                  if (item.name.startsWith(".") || item.name === "node_modules") continue;
+                  
+                  const fullPath = path.join(dirPath, item.name);
+                  const relPath = path.relative(baseDir, fullPath).replace(/\\/g, "/");
+                  
+                  if (item.isDirectory()) {
+                      files.push(...walkDir(fullPath, baseDir));
+                  } else if (item.isFile()) {
+                      files.push({
+                          name: item.name,
+                          path: relPath,
+                          download_url: `${rawRoot}/${relPath}`,
+                          type: "file"
+                      });
+                  }
+              }
+              return files;
+          }
+          
+          const rootItems = fs.readdirSync(".", { withFileTypes: true });
+          const foldersData = [];
+          
+          for (const item of rootItems) {
+              if (item.isDirectory() && !item.name.startsWith(".")) {
+                  const files = walkDir(path.join(".", item.name), ".");
+                  foldersData.push({ name: item.name, files });
+              }
+          }
+          
+          fs.writeFileSync("vault_manifest.json", JSON.stringify(foldersData, null, 2));
+          console.log("Static vault_manifest.json successfully compiled!");
+          '
+
+      - name: Commit and Push Manifest Changes
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "automated: update vault_manifest.json [skip ci]"
+          file_pattern: "vault_manifest.json"
